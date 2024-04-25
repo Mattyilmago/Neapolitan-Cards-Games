@@ -7,8 +7,8 @@ import java.util.Objects;
  */
 public class Card {
     int value;
-    Character seed;
-   final private Character[] seeds = {'B','C','D','S'};
+    Character seed; //seme della carta, uso: B -> bastoni, C -> coppe, D -> denari, S -> spade"
+
     public int getValue() {
         return value;
     }
@@ -26,7 +26,7 @@ public class Card {
 
     public void setSeed(Character seed) {
         if (!seed.toString().toUpperCase().matches("[BCDS]"))
-            throw new IllegalArgumentException("ERRORE il seme non è corretto. Uso: B -> bastoni, C -> coppe, D -> denari, S -> spade");
+            throw new IllegalArgumentException("ERRORE il seme non è corretto.");
 
         this.seed = seed;
     }

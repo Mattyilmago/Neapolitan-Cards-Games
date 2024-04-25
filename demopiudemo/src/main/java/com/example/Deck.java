@@ -5,8 +5,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
 
-public class Deck {
-    ArrayList<Card> cards;
+public class Deck extends CardContainer{
    private final Character[] seeds = {'B', 'C', 'D', 'S'};
 
     public Deck() {
@@ -63,15 +62,14 @@ public class Deck {
     @Override
     public String toString() {
         return "Deck{" +
-                "cards=" + cards +
-                ", seeds=" + Arrays.toString(seeds) +
-                '}';
+                cards +'}';
     }
 
     public static void main(String[] args) {
         Deck deck = new Deck();
         shuffle(deck);
         shuffle(deck);
+        deck.add(new Card(2,'S'));
         return;
     }
 }
