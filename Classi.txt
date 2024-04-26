@@ -1,23 +1,39 @@
 Classi per il gioco:
 - Card 
-	int value (da uno a dieci) 
-	Character seed ( B -> bastoni, C -> coppe, D -> denari, S -> spade)
+	int value (da uno a dieci);
+	Character seed ( B -> bastoni, C -> coppe, D -> denari, S -> spade);
 
 - Deck
+const lenght=40;
 	Arraylist<Card> cards (una lista contenente le carte del mazzo)
 
 - Table
-	Arraylist<Card> cards (una lista contenente le carte sul tavolo)
+ Character tipoDiGioco;
+ int numeroDiMazzi=1;
+	Arraylist<Card> carteSulTavolo = Deck();
+
 	Player[] players (un array contente i giocatori della partita cosi da avere un ordine per i ruoli)
 
+Qui metterei un dizionario con il relativo ruolo tipo {"banco":PlayerBanco,"p1":Player}
+
 - Hand
+//toglierei questa
 	Arraylist<Card> cards (una lista contenente le carte in mano al giocatore)
 	
 - DeckPlayer
+//questa non l'ho capita
 	Arraylist<Card> cards (una lista contenente il mazzetto vinto dal giocatore)
 	Player player 
-	
+
+
+- PlayerInGioco extends Player
+  ArrayList<Card> carteInMano;
+  int punti;
+
 - Player 
 	String Id (nome univoco per ogni account)
+
+ Map partiteVintePerGioco (non so se esiste in Java, ma comunque intendo un dizionario o struct) {"settemezzo":puntiSetteMezzo}
+ 
 
 
