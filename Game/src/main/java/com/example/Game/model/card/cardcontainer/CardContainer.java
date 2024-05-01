@@ -1,6 +1,6 @@
-package com.example.demopiudemo.model.card.cardcontainer;
+package com.example.Game.model.card.cardcontainer;
 
-import com.example.demopiudemo.model.card.Card;
+import com.example.Game.model.card.Card;
 
 import java.util.ArrayList;
 import java.util.Objects;

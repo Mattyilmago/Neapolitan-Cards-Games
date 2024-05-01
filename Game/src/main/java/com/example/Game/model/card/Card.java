@@ -1,4 +1,4 @@
-package com.example.demopiudemo.model.card;
+package com.example.Game.model.card;
 
 import java.util.Objects;
 
@@ -58,5 +58,10 @@ public class Card {
                 "value=" + value +
                 ", seed=" + seed +
                 '}';
+    }
+
+    public static void main(String[] args) {
+        Card c = new Card(1,'b');
+        System.out.println(c);
     }
 }

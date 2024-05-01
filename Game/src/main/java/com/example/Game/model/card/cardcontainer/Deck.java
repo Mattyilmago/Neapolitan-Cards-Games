@@ -1,6 +1,6 @@
-package com.example.demopiudemo.model.card.cardcontainer;
+package com.example.Game.model.card.cardcontainer;
 
-import com.example.demopiudemo.model.card.Card;
+import com.example.Game.model.card.Card;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,11 +8,11 @@ import java.util.Objects;
 import java.util.Random;
 
 public class Deck extends CardContainer {
-    private final int lenght = 40;
+    private final int length = 40;
     private final Character[] seeds = {'B', 'C', 'D', 'S'};
 
-    public void Deck() {
-        ArrayList<Card> deck = new ArrayList<Card>(lenght);
+    public Deck() {
+        ArrayList<Card> deck = new ArrayList<Card>(length);
         for (int s = 0; s < 4; s++) {
             for (int i = 1; i <= 10; i++) {
                 deck.add(new Card(i, seeds[s]));

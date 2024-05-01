@@ -1,4 +1,4 @@
-package com.example.demopiudemo;
+package com.example.Game;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
