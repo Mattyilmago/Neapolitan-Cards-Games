@@ -5,24 +5,51 @@ import com.example.Game.model.card.Card;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public abstract class CardContainer {
+public abstract class CardContainer{
     ArrayList<Card> cards;
 
     public ArrayList<Card> getCards() {
         return cards;
     }
 
-    public void add(Card card){
+    public void add(Card card) {
         cards.add(card);
     }
-    public void remove(Card card){
+
+    public void remove(Card card) {
         cards.remove(card);
     }
-    public void clear(){
+
+    public void removeLast() {
+        if (cards.isEmpty()) {
+            return;
+        }
+        cards.remove(cards.size() - 1);
+    }
+
+    public void clear() {
         cards.clear();
     }
 
-    public void moveCardTo(Card card, CardContainer dest){
+    public int size() {
+        return cards.size();
+    }
+
+    public Boolean contains(Card card) {
+        return cards.contains(card);
+    }
+
+    public int cardsWithSameSeed(Character seed) {
+        int numberOfCards = 0;
+        for (int i = 0; i < cards.size(); i++) {
+            if (cards.get(i).getSeed() == seed) {
+                numberOfCards++;
+            }
+        }
+        return numberOfCards;
+    }
+
+    public void moveCardTo(Card card, CardContainer dest) {
         this.remove(card);
         dest.add(card);
     }

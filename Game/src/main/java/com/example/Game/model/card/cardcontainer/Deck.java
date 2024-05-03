@@ -9,7 +9,7 @@ import java.util.Random;
 
 public class Deck extends CardContainer {
     private final int length = 40;
-    private final Character[] seeds = {'B', 'C', 'D', 'S'};
+    public static final Character[] seeds = {'B', 'C', 'D', 'S'};
 
     public Deck() {
         ArrayList<Card> deck = new ArrayList<Card>(length);
@@ -38,9 +38,6 @@ public class Deck extends CardContainer {
         return cards;
     }
 
-    public Character[] getSeeds() {
-        return seeds;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -67,6 +64,8 @@ public class Deck extends CardContainer {
         Deck deck = new Deck();
         deck.shuffle();
         deck.add(new Card(2, 'S'));
+        System.out.println(deck);
+        deck.removeLast();
         System.out.println(deck);
     }
 }
