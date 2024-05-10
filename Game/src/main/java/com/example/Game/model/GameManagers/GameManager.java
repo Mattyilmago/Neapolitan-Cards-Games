@@ -5,12 +5,11 @@ import com.example.Game.Player;
 import java.util.ArrayList;
 
 public abstract class GameManager {
-    private ArrayList<Player> players;
+    public ArrayList<Player> players;
 
-    public int calculatePoints(Player player) {
-        return 0;
-    }
-    public int calculatePoints(Player player,ArrayList<Player> players) {
-        return 0;
-    }
+    public void calculatePoints(ArrayList<Player> players) {}
+
+    public void calculatePointsForPlayer(Player player){}
+
+
 }

@@ -2,7 +2,6 @@ package com.example.Game.model.GameManagers;
 
 import com.example.Game.Player;
 import com.example.Game.model.card.Card;
-import com.example.Game.model.card.cardcontainer.Deck;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +9,7 @@ import java.util.HashMap;
 public class GameManagerScopa extends GameManager {
     private final HashMap<Integer, Integer> conversionTablePrimiera; //hashmap per i punti della primiera
 
-    public GameManagerScopa() {
+    public GameManagerScopa(ArrayList<Player> players) {
         conversionTablePrimiera = new HashMap<>();
         conversionTablePrimiera.put(7, 21);
         conversionTablePrimiera.put(6, 18);
@@ -22,11 +21,13 @@ public class GameManagerScopa extends GameManager {
         conversionTablePrimiera.put(8, 10);
         conversionTablePrimiera.put(9, 10);
         conversionTablePrimiera.put(10, 10);
+        this.players = players;
     }
 
 
     /**
      * Calculates the points of Primiera for each player
+     *
      * @param players
      * @return Player that wins Primiera
      */
@@ -34,46 +35,58 @@ public class GameManagerScopa extends GameManager {
         int[] points = new int[players.size()];
 
         for (int i = 0; i < players.size(); i++) {
-            for (Character s : Deck.seeds) {
-                 points[i] += players.get(i).getHighestValue(conversionTablePrimiera, s);
+            for (Character s : Card.seeds) {
+                points[i] += players.get(i).getHighestValue(conversionTablePrimiera, s);
             }
         }
 
-        if(points[0] > points[1]) {
+        System.out.println(players.getFirst().getId() + " Has: " + points[0]);
+        System.out.println(players.getLast().getId() + " Has: " + points[1]);
+        if (points[0] > points[1]) {
             return players.getFirst();
+        } else if (points[0] < points[1]) {
+            return players.getLast();
         }
-        return players.getLast();
+        return null;
     }
 
-    /**
-     * Calculates the points of Scopa for one player
-     * @param player Player to calculate the points
-     * @param players Arraylist of the players
-     * @return Points won of the player
-     */
-    @Override
-    public int calculatePoints(Player player, ArrayList<Player> players) {
+
+    public void calculatePointsScopa(ArrayList<Player> players, int[] scope) {
+        for (Player p : players) {
+            calculatePointsForPlayer(p, players, scope[players.indexOf(p)]);
+        }
+    }
+
+    public void calculatePointsForPlayer(Player player, ArrayList<Player> players, int scope) {
         int points = 0;
 
         //Un punto per chi ha il maggior numero delle carte
         if (player.getDeckPlayer().size() > 20) {
+            System.out.println(player.getId() + " wins carte");
             points++;
         }
 
         //Un punto per chi ha il maggior numero di carte di denari
-        if (player.getDeckPlayer().cardsWithSameSeed('D') > 5) {
+        if (player.getDeckPlayer().cardsNumberWithSameSeed('D') > 5) {
+            System.out.println(player.getId() + " wins denari");
             points++;
         }
 
         //un punto per chi ha il settebello
         if (player.getDeckPlayer().contains(new Card(7, 'D'))) {
+            System.out.println(player.getId() + " wins settebbello");
             points++;
         }
 
         //un punto per chi vince la primiera
         if (player.equals(playerWinsPrimiera(players))) {
+            System.out.println(player.getId() + " wins primiera");
             points++;
         }
-        return points;
+
+        points += scope;
+        player.setPoints(player.getPoints() + points);
+        System.out.println(player.getId() + " got " + points + " points");
+        System.out.println("Now he has " + player.getPoints() + " points\n");
     }
 }

@@ -3,11 +3,13 @@ package com.example.Game.model.card;
 import java.util.Objects;
 
 /**
- *
+ * Class card that accept only cards with value between 1 and 10 and seeds in [BCDS]
+ * usage: B -> bastoni, C -> coppe, D -> denari, S -> spade
  */
 public class Card {
     int value;
-    Character seed; //seme della carta, uso: B -> bastoni, C -> coppe, D -> denari, S -> spade"
+    Character seed; //seme della carta, uso: B -> bastoni, C -> coppe, D -> denari, S -> spade
+    public static final Character[] seeds = {'B', 'C', 'D', 'S'};
 
     public int getValue() {
         return value;

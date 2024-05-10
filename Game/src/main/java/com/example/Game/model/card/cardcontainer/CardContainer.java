@@ -5,7 +5,7 @@ import com.example.Game.model.card.Card;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public abstract class CardContainer{
+public abstract class CardContainer {
     ArrayList<Card> cards;
 
     public ArrayList<Card> getCards() {
@@ -39,7 +39,13 @@ public abstract class CardContainer{
         return cards.contains(card);
     }
 
-    public int cardsWithSameSeed(Character seed) {
+    /**
+     * Calculate the number of cards with same seed
+     *
+     * @param seed
+     * @return the nuber of cards with same seed
+     */
+    public int cardsNumberWithSameSeed(Character seed) {
         int numberOfCards = 0;
         for (int i = 0; i < cards.size(); i++) {
             if (cards.get(i).getSeed() == seed) {
@@ -49,9 +55,25 @@ public abstract class CardContainer{
         return numberOfCards;
     }
 
+    /**
+     * Create an arraylist of card filled with cards on same seed
+     *
+     * @param seed
+     * @return Arraylist of cards
+     */
+    public ArrayList<Card> cardsWithSameSeed(Character seed) {
+        ArrayList<Card> cardsSameSeed = new ArrayList<>();
+        for (Card c : cards) {
+            if (c.getSeed() == seed) {
+                cardsSameSeed.add(c);
+            }
+        }
+        return cardsSameSeed;
+    }
+
     public void moveCardTo(Card card, CardContainer dest) {
-        this.remove(card);
         dest.add(card);
+        this.remove(card);
     }
 
     @Override
@@ -66,4 +88,7 @@ public abstract class CardContainer{
     public int hashCode() {
         return Objects.hash(cards);
     }
+
+    @Override
+    public String toString() {return "Cards=" + cards + '}';}
 }
