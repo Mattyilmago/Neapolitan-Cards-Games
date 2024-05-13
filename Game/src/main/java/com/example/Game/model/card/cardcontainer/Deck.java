@@ -14,7 +14,6 @@ public class Deck extends CardContainer {
         for (int s = 0; s < 4; s++) {
             for (int i = 1; i <= 10; i++) {
                 deck.add(new Card(i, Card.seeds[s]));
-                System.out.println(deck.get(i - 1 + 10 * s).toString());
             }
         }
         this.cards = deck;
@@ -52,12 +51,4 @@ public class Deck extends CardContainer {
         return "Deck{" + this.size() + " " + cards + '}';
     }
 
-    public static void main(String[] args) {
-        Deck deck = new Deck();
-        deck.shuffle();
-        deck.add(new Card(2, 'S'));
-        System.out.println(deck);
-        deck.removeLast();
-        System.out.println(deck);
-    }
 }

@@ -1,5 +1,7 @@
 package com.example.Game.model.card;
 
+import javafx.scene.image.Image;
+
 import java.util.Objects;
 
 /**
@@ -10,6 +12,13 @@ public class Card {
     int value;
     Character seed; //seme della carta, uso: B -> bastoni, C -> coppe, D -> denari, S -> spade
     public static final Character[] seeds = {'B', 'C', 'D', 'S'};
+
+    public Card(int value, Character seed) {
+        setSeed(seed);
+        setValue(value);
+        this.value = value;
+        this.seed = seed;
+    }
 
     public int getValue() {
         return value;
@@ -30,13 +39,6 @@ public class Card {
         if (!seed.toString().toUpperCase().matches("[BCDS]"))
             throw new IllegalArgumentException("ERRORE il seme non è corretto.");
 
-        this.seed = seed;
-    }
-
-    public Card(int value, Character seed) {
-        setSeed(seed);
-        setValue(value);
-        this.value = value;
         this.seed = seed;
     }
 

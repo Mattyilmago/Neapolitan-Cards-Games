@@ -40,7 +40,7 @@ public class Player {
                 deck.moveCardTo(deck.getCards().getFirst(), players.get(i).getDeckPlayer());
             }
             for(Player p : players){
-                System.out.println(p.getId() + "'s cards are " + p.getDeckPlayer().getCards()   );
+                System.out.println(p.getId() + "'s cards are " + p.getDeckPlayer().size() + p.getDeckPlayer().getCards()   );
             }
 
             GameManagerTressette gms = new GameManagerTressette(players);

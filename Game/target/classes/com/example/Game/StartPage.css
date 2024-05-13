@@ -1,4 +1,7 @@
-ImageView{
-   -fx-max-width: 100%;
-    -fx-fit-to-height: true;
+AnchorPane{
+    -fx-max-width: 100%;
+    -fx-max-height: 100%;
 }
+
+
+

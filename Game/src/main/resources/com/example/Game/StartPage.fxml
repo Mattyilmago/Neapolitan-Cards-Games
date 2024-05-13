@@ -12,12 +12,11 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
 <BorderPane prefHeight="600.0" prefWidth="335.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.Game.StartPageController">
    <center>
-      <AnchorPane BorderPane.alignment="CENTER">
+      <AnchorPane prefHeight="600.0" prefWidth="335.0" BorderPane.alignment="CENTER">
          <children>
-            <ImageView fitHeight="600.0" fitWidth="336.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="imageView" fitHeight="600.0" fitWidth="335.0" layoutY="1.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" styleClass="responsive" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <image>
                   <Image url="@Vesuvio.jpg" />
                </image>
@@ -25,8 +24,8 @@
                   <Rectangle2D />
                </viewport>
             </ImageView>
-            <Button alignment="CENTER" layoutX="110.0" layoutY="343.0" mnemonicParsing="false" onAction="#switchToScopa" prefHeight="61.0" prefWidth="113.0" text="Tras" />
-            <Text fontSmoothingType="LCD" layoutX="52.0" layoutY="204.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Le Tre Carte" textAlignment="CENTER" wrappingWidth="231.5830478668213">
+            <Button alignment="CENTER" layoutX="110.0" layoutY="343.0" mnemonicParsing="false" onAction="#switchToScopa" prefHeight="61.0" prefWidth="115.0" text="Tras" AnchorPane.bottomAnchor="195.99999999999997" AnchorPane.leftAnchor="110.0" AnchorPane.rightAnchor="110.39999999999999" AnchorPane.topAnchor="343.0" />
+            <Text fx:id="text" fontSmoothingType="LCD" layoutX="51.0" layoutY="191.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Le Tre Carte" textAlignment="CENTER" wrappingWidth="231.5830478668213" AnchorPane.bottomAnchor="398.07548828125" AnchorPane.leftAnchor="51.0" AnchorPane.rightAnchor="52.41695213317871" AnchorPane.topAnchor="136.88623046875">
                <font>
                   <Font name="Agency FB" size="55.0" />
                </font>
