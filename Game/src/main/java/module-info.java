@@ -3,6 +3,7 @@ module com.example.Game {
     requires javafx.fxml;
     requires java.desktop;
     requires java.sql;
+    requires com.google.gson;
 
 
     opens com.example.Game to javafx.fxml;
