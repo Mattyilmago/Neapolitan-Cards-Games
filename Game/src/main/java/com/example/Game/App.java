@@ -21,6 +21,7 @@ public class App extends Application {
         catch (Exception e) { throw new RuntimeException(e); }
         Scene scene = new Scene(root);
         stage.setTitle("Le Tre Carte");
+        stage.setResizable(false);
         scene.getStylesheets().add(getClass().getResource("StartPage.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
