@@ -8,7 +8,7 @@
 
 <AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.Game.GamesController">
    <children>
-      <AnchorPane layoutX="450.0" prefHeight="720.0" prefWidth="410.0" style="-fx-background-color: #154c79;">
+      <AnchorPane layoutX="435.2" prefHeight="720.0" prefWidth="439.0" style="-fx-background-color: #154c79;" AnchorPane.leftAnchor="435.2" AnchorPane.rightAnchor="435.20000000000005">
          <children>
             <Label fx:id="gameName" alignment="CENTER" contentDisplay="CENTER" layoutX="94.0" layoutY="43.0" prefHeight="78.0" prefWidth="222.0" text="Label" textAlignment="RIGHT" AnchorPane.leftAnchor="94.39999999999995" AnchorPane.rightAnchor="93.99999999999997">
                <font>
