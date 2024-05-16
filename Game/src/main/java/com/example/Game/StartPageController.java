@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -20,9 +21,11 @@ public class StartPageController{
     private ImageView imageView;
     @FXML
     private AnchorPane anchorPane;
+    @FXML
+    private Button mainButton;
 
     @FXML
-    protected void switchToScopa(ActionEvent event) throws IOException {
+    protected void switchToGamesMenu(ActionEvent event) throws IOException {
         Stage stage;
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("GamesMenu.fxml")));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();

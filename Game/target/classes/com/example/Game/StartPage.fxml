@@ -38,6 +38,6 @@
             </RadialGradient>
          </fill>
       </Text>
-      <Button alignment="CENTER" layoutX="548.8" layoutY="409.0" mnemonicParsing="false" onAction="#switchToScopa" prefHeight="98.0" prefWidth="182.0" text="Tras" AnchorPane.bottomAnchor="212.60000000000002" AnchorPane.leftAnchor="548.8" AnchorPane.rightAnchor="548.8" AnchorPane.topAnchor="409.0" />
+      <Button fx:id="mainButton" alignment="CENTER" layoutX="548.8" layoutY="409.0" mnemonicParsing="false" onAction="#switchToGamesMenu" prefHeight="98.0" prefWidth="182.0" text="Tras" AnchorPane.bottomAnchor="212.60000000000002" AnchorPane.leftAnchor="548.8" AnchorPane.rightAnchor="548.8" AnchorPane.topAnchor="409.0" />
    </children>
 </AnchorPane>

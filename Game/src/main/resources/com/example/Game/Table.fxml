@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.Game.TableController"
-            prefHeight="400.0" prefWidth="600.0">
 
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: linear-gradient(#326A1A 70%, #234A12 100%);" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.Game.TableController">
+   <children>
+      <AnchorPane fx:id="handPlayer1" layoutY="160.8" prefHeight="400.0" prefWidth="150.0" AnchorPane.bottomAnchor="160.79999999999995" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="160.8" />
+      <StackPane fx:id="deck" layoutX="938.0" layoutY="276.8" prefHeight="165.0" prefWidth="104.0" style="-fx-border-radius: 5px; -fx-border-color: #000000;" AnchorPane.bottomAnchor="277.6" AnchorPane.rightAnchor="205.0" AnchorPane.topAnchor="276.8" />
+      <AnchorPane fx:id="hand" layoutX="140.0" layoutY="520.2" prefHeight="150.0" prefWidth="1000.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="140.0" AnchorPane.rightAnchor="140.0" />
+      <AnchorPane fx:id="handPlayer3" layoutX="10.0" layoutY="170.8" prefHeight="400.0" prefWidth="150.0" AnchorPane.bottomAnchor="160.79" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="160.8" />
+      <AnchorPane fx:id="handPlayer2" layoutX="365.0" prefHeight="150.0" prefWidth="550.0" AnchorPane.leftAnchor="365.0" AnchorPane.rightAnchor="364.6" AnchorPane.topAnchor="10.0" />
+      <AnchorPane layoutX="265.6" layoutY="215.0" prefHeight="300.0" prefWidth="650.0" AnchorPane.rightAnchor="364.0" />
+   </children>
 </AnchorPane>
