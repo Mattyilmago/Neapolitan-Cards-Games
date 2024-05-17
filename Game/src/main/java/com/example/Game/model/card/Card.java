@@ -1,7 +1,9 @@
 package com.example.Game.model.card;
 
+import com.example.Game.App;
 import javafx.scene.image.Image;
 
+import java.net.URL;
 import java.util.Objects;
 
 /**
@@ -39,9 +41,8 @@ public class Card {
         if (!seed.toString().toUpperCase().matches("[BCDS]"))
             throw new IllegalArgumentException("ERRORE il seme non è corretto.");
 
-        this.seed = seed;
+        this.seed = Character.toUpperCase(seed);
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -65,7 +66,7 @@ public class Card {
     }
 
     public static void main(String[] args) {
-        Card c = new Card(1,'b');
+        Card c = new Card(1,'B');
         System.out.println(c);
     }
 }

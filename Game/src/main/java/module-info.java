@@ -9,4 +9,6 @@ module com.example.Game {
     exports com.example.Game;
     exports com.example.Game.model.GameManagers;
     opens com.example.Game.model.GameManagers to javafx.fxml;
+    exports com.example.Game.model.card;
+    opens com.example.Game.model.card to javafx.fxml;
 }
