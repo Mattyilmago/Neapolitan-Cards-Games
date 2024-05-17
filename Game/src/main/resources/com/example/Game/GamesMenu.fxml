@@ -36,7 +36,7 @@
             <ImageView fx:id="playersIcon" fitHeight="45.0" fitWidth="45.0" layoutX="234.0" layoutY="185.0" pickOnBounds="true" preserveRatio="true" />
             <ImageView fx:id="cardCreate" fitHeight="150.0" fitWidth="200.0" layoutX="79.0" layoutY="381.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" />
             <ImageView fx:id="cardEntry" fitHeight="150.0" fitWidth="200.0" layoutX="245.0" layoutY="381.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" />
-            <Text layoutX="79.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Crea stanza" textAlignment="CENTER" wrappingWidth="90.767822265625">
+            <Text layoutX="79.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Crea stanza"  textAlignment="CENTER" wrappingWidth="90.767822265625">
                <font>
                   <Font size="18.0" />
                </font>

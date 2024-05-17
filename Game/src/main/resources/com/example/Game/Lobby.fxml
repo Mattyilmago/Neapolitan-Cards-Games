@@ -13,7 +13,7 @@
          <children>
             <Button fx:id="entryButton" layoutX="244.0" layoutY="381.0" mnemonicParsing="false" onAction="#switchToTable" prefHeight="150.0" prefWidth="91.0" text="Button" />
             <Button fx:id="createButton" layoutX="79.0" layoutY="381.0" mnemonicParsing="false" onAction="#switchToTable" prefHeight="150.0" prefWidth="91.0" text="Button" />
-            <Label fx:id="gameName" alignment="CENTER" contentDisplay="CENTER" layoutX="94.4" layoutY="43.0" prefHeight="78.0" prefWidth="193.0" text="Label" textAlignment="CENTER" textFill="WHITE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <Label fx:id="gameName" alignment="CENTER" contentDisplay="CENTER" layoutX="1.0" prefHeight="78.0" prefWidth="193.0" text="NomeGioco" textAlignment="CENTER" textFill="WHITE" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="-1.0">
                <font>
                   <Font size="42.0" />
                </font>
@@ -36,7 +36,7 @@
             <ImageView fx:id="playersIcon" fitHeight="45.0" fitWidth="45.0" layoutX="234.0" layoutY="185.0" pickOnBounds="true" preserveRatio="true" />
             <ImageView fx:id="cardCreate" fitHeight="150.0" fitWidth="200.0" layoutX="79.0" layoutY="381.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" />
             <ImageView fx:id="cardEntry" fitHeight="150.0" fitWidth="200.0" layoutX="245.0" layoutY="381.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" />
-            <Text layoutX="79.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Crea stanza"  textAlignment="CENTER" wrappingWidth="90.767822265625">
+            <Text layoutX="79.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Crea stanza" textAlignment="CENTER" wrappingWidth="90.767822265625">
                <font>
                   <Font size="18.0" />
                </font>
@@ -46,6 +46,11 @@
                   <Font size="18.0" />
                </font>
             </Text>
+            <Label fx:id="RoomCode" alignment="CENTER" contentDisplay="CENTER" layoutX="260.0" layoutY="79.0" prefHeight="27.0" prefWidth="170.0" text="Codice Stanza:" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
    </children>
