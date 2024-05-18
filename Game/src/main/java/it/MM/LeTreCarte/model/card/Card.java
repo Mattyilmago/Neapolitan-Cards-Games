@@ -18,7 +18,7 @@ import java.util.Objects;
 public class Card {
     int value;
     Character seed; //seme della carta, uso: B -> bastoni, C -> coppe, D -> denari, S -> spade
-    Image image;
+    String image;
     public static final Character[] seeds = {'B', 'C', 'D', 'S'};
 
     public Card(int value, Character seed){
@@ -51,13 +51,13 @@ public class Card {
 //    }
 //
 
-    public Image getImage() {
+    public String getImage() {
         return image;
     }
 
     public void setImage() {
         //this.image = new Image(getClass().getResource("/Cards_jpg/" +this.value+"-"+this.seed+".jpg").toString());
-        this.image = new Image(App.class.getClassLoader().getResource("it/MM/LeTreCarte/Cards_jpg/" + getValue() + "-" + getSeed() + ".jpg").toString());
+        this.image = "Cards_jpg/" + getValue() + "-" + getSeed() + ".jpg";
     }
 
     public int getValue() {

@@ -50,6 +50,7 @@ public class GameServerEndpoint extends Endpoint {
                             String content = response.get("content").getAsString();
                             JsonArray giocatori = JsonParser.parseString(content).getAsJsonArray();
                             System.out.println("++"+giocatori.toString()+"+"+giocatori.size());
+                            SharedData.getInstance().getLobbyPlayers().clear();
                             for (int i = 0; i < giocatori.size(); i++) {
                                 SharedData.getInstance().getLobbyPlayers().add(giocatori.get(i).getAsString());
                                 System.out.println("aggiunto");
@@ -86,25 +87,25 @@ public class GameServerEndpoint extends Endpoint {
         return session;
     }
 
-//    @Override
-//    public void onClose(Session session, CloseReason closeReason) {
-//
-//        try {
-//            SharedData.getGSCInstance().connect();
-//            System.out.println("Client riconnesso"+closeReason.toString());
-//            Thread.sleep(2000);
-//        } catch (URISyntaxException e) {
-//            throw new RuntimeException(e);
-//        } catch (DeploymentException e) {
-//            throw new RuntimeException(e);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        super.onClose(session, closeReason);
-//    }
+    @Override
+    public void onClose(Session session, CloseReason closeReason) {
+
+        try {
+            SharedData.getGSCInstance().connect();
+            System.out.println("Client riconnesso"+closeReason.toString());
+            Thread.sleep(2000);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        } catch (DeploymentException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        super.onClose(session, closeReason);
+    }
 
 
 }

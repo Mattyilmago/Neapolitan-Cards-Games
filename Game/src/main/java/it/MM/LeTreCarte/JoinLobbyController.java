@@ -69,7 +69,7 @@ public class JoinLobbyController implements Initializable {
     @FXML
     protected void switchToGamesMenu(ActionEvent event) throws IOException {
         Stage stage;
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("it/MM/LeTreCarte/GamesMenu.fxml")));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("GamesMenu.fxml")));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("it/MM/LeTreCarte/GamesMenu.css").toExternalForm());
