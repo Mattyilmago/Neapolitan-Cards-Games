@@ -1,5 +1,7 @@
 package com.example.Game;
 
+import jakarta.websocket.DeploymentException;
+import jakarta.websocket.EncodeException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,7 +17,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -64,8 +68,7 @@ public class GamesController implements Initializable {
 
     @FXML
     public void changePlayers(ActionEvent event) {
-        if (isTwoPlayers) isTwoPlayers = false;
-        else isTwoPlayers = true;
+        isTwoPlayers = !isTwoPlayers;
         refreshPlayersButton();
     }
 
@@ -80,20 +83,55 @@ public class GamesController implements Initializable {
         curGame--;
         refreshGameNameLabel();
     }
+//    @FXML
+//    public void switchToTable(ActionEvent event) throws IOException {
+//        Stage stage;
+//        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Table.fxml")));
+//        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+//        Scene scene = new Scene(root);
+//        //scene.getStylesheets().add(getClass().getResource("Table.css").toExternalForm());
+//        stage.setScene(scene);
+//        stage.show();
+//    }
+
     @FXML
-    public void switchToTable(ActionEvent event) throws IOException {
+    public void createLobby(ActionEvent event) throws URISyntaxException, IOException, InterruptedException, DeploymentException, EncodeException {
+        SharedData.getInstance().setSelectedGame(games[curGame]);
+        SharedData.getGSCInstance().createRoom();
+        switchToLobby(event);
+    }
+
+    @FXML
+    public void joinLobby(ActionEvent event) throws URISyntaxException, IOException, InterruptedException {
+        SharedData.getInstance().setSelectedGame(games[curGame]);
+
         Stage stage;
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Table.fxml")));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("joinLobby.fxml")));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         //scene.getStylesheets().add(getClass().getResource("Table.css").toExternalForm());
+
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void switchToLobby(ActionEvent event) throws IOException {
+        //Save selected game
+        //SharedData.getInstance().setSelectedGame(games[curGame]);
+
+
+        Stage stage;
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Lobby.fxml")));
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        //scene.getStylesheets().add(getClass().getResource("Table.css").toExternalForm());
+
         stage.setScene(scene);
         stage.show();
     }
 
     public void refreshGameNameLabel() {
         gameName.setText(games[curGame]);
-        isTwoPlayers = true;
         refreshPlayersButton();
         refreshCardsImage();
 

@@ -14,11 +14,6 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        GameServerClient GSC = new GameServerClient();
-        GSC.initialize();
-        GSC.createRoom();
-
-
         Parent root = null;
         try {
             root = FXMLLoader.load(getClass().getResource("StartPage.fxml"));
