@@ -1,4 +1,4 @@
-module com.example.Game {
+module it.MM.LeTreCarte {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.desktop;
@@ -11,10 +11,10 @@ module com.example.Game {
     requires org.glassfish.tyrus.core;
 
 
-    opens com.example.Game to javafx.fxml;
-    exports com.example.Game;
-    exports com.example.Game.model.GameManagers;
-    opens com.example.Game.model.GameManagers to javafx.fxml;
-    exports com.example.Game.model.card;
-    opens com.example.Game.model.card to javafx.fxml;
+    opens it.MM.LeTreCarte to javafx.fxml;
+    exports it.MM.LeTreCarte;
+    exports it.MM.LeTreCarte.model.GameManagers;
+    opens it.MM.LeTreCarte.model.GameManagers to javafx.fxml;
+    exports it.MM.LeTreCarte.model.card;
+    opens it.MM.LeTreCarte.model.card to javafx.fxml;
 }
