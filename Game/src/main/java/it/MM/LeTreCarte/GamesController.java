@@ -96,9 +96,16 @@ public class GamesController implements Initializable {
 
     @FXML
     public void createLobby(ActionEvent event) throws URISyntaxException, IOException, InterruptedException, DeploymentException, EncodeException {
-        SharedData.getInstance().setSelectedGame(games[curGame]);
-        SharedData.getGSCInstance().createRoom();
-        switchToLobby(event);
+//        SharedData.getInstance().setSelectedGame(games[curGame]);
+//        SharedData.getGSCInstance().createRoom();
+//        switchToLobby(event);
+        Stage stage;
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Table.fxml")));
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        //scene.getStylesheets().add(getClass().getResource("Table.css").toExternalForm());
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML

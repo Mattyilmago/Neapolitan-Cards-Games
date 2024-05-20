@@ -72,7 +72,7 @@ public class JoinLobbyController implements Initializable {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("GamesMenu.fxml")));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("it/MM/LeTreCarte/GamesMenu.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("GamesMenu.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
@@ -93,7 +93,7 @@ public class JoinLobbyController implements Initializable {
 
 
         Stage stage;
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("it/MM/LeTreCarte/Lobby.fxml")));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Lobby.fxml")));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         //scene.getStylesheets().add(getClass().getResource("Table.css").toExternalForm());

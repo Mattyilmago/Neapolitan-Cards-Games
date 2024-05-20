@@ -35,6 +35,12 @@ public class Deck extends CardContainer {
     public ArrayList<Card> getCards() {return cards;}
 
 
+    public Card getFirst(){
+        Card tmp = this.cards.getFirst();
+        this.cards.removeFirst();
+        return tmp;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
