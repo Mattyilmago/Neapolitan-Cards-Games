@@ -1,10 +1,10 @@
 -Le Tre Carte RULES-
 
-========================================================================================================================
+============================================================================================
 
 SCOPA
 
-========================================================================================================================
+============================================================================================
 
 //GIOCO//
 
@@ -52,11 +52,11 @@ Per poter accedere alla primiera, oltre a totalizzare il punteggio di primiera p
 
 Nel gioco della Scopa si deve raggiungere il punteggio prestabilito. Normalmente questo punteggio è fissato ad 11. Al termine di ciascun round di gioco, si sommerà il punteggio dei partecipanti, con quello acquisito nei precedenti round. Qualora entrambi i giocatori o coppie raggiungessero o superassero gli 11 punti nello stesso round di gioco, vincerà il giocatore o la coppia che avrà totalizzato il punteggio più alto. In caso di punteggio in parità (esempio 12 a 12), si continuerà a giocare fino a che non sarà rotta la parità, e decretato così il vincitore.
 
-========================================================================================================================
+============================================================================================
 
 TRESSETTE
 
-========================================================================================================================
+============================================================================================
 
 //GIOCO//
 
@@ -116,11 +116,11 @@ Chi bussa deve dichiararlo entro il terzo turno, se non è stato dichiarato entr
 Nel gioco del Tressette si deve raggiungere il punteggio prestabilito. Normalmente questo punteggio è fissato a 21 o a 31. Al termine di ciascun round di gioco, si sommerà il punteggio dei partecipanti, con quello acquisito nei precedenti round. Qualora entrambi i giocatori o coppie raggiungessero o superassero i punti prestabiliti nello stesso round di gioco, vincerà il giocatore o la coppia che avrà totalizzato il punteggio più alto. In caso di punteggio in parità (esempio 32 a 32), si continuerà a giocare fino a che non sarà rotta la parità, e decretato così il vincitore.
 
 
-========================================================================================================================
+============================================================================================
 
 BRISCOLA
 
-========================================================================================================================
+============================================================================================
 
 //GIOCO//
 
