@@ -2,7 +2,6 @@ package it.MM.LeTreCarte;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,8 +12,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -119,7 +116,7 @@ public class LobbyController implements Initializable {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Table.fxml")));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
-        //scene.getStylesheets().add(getClass().getResource("Table.css").toExternalForm());
+        //scene.getStylesheets().addCard(getClass().getResource("Table.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }

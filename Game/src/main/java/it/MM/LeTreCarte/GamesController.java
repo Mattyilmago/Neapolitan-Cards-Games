@@ -19,7 +19,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -89,7 +88,7 @@ public class GamesController implements Initializable {
 //        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Table.fxml")));
 //        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
 //        Scene scene = new Scene(root);
-//        //scene.getStylesheets().add(getClass().getResource("Table.css").toExternalForm());
+//        //scene.getStylesheets().addCard(getClass().getResource("Table.css").toExternalForm());
 //        stage.setScene(scene);
 //        stage.show();
 //    }
@@ -103,7 +102,7 @@ public class GamesController implements Initializable {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Table.fxml")));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
-        //scene.getStylesheets().add(getClass().getResource("Table.css").toExternalForm());
+        //scene.getStylesheets().addCard(getClass().getResource("Table.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
@@ -116,7 +115,7 @@ public class GamesController implements Initializable {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("joinLobby.fxml")));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
-        //scene.getStylesheets().add(getClass().getResource("Table.css").toExternalForm());
+        //scene.getStylesheets().addCard(getClass().getResource("Table.css").toExternalForm());
 
         stage.setScene(scene);
         stage.show();
@@ -131,7 +130,7 @@ public class GamesController implements Initializable {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Lobby.fxml")));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
-        //scene.getStylesheets().add(getClass().getResource("Table.css").toExternalForm());
+        //scene.getStylesheets().addCard(getClass().getResource("Table.css").toExternalForm());
 
         stage.setScene(scene);
         stage.show();

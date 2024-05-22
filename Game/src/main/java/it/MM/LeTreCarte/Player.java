@@ -21,33 +21,6 @@ public class Player {
         this.points = 0;
     }
 
-    public static void main(String[] args) {
-        Player Chop = new Player("Chop");
-        Player Mago = new Player("Mago");
-
-        ArrayList<Player> players = new ArrayList<>();
-
-        players.add(Chop);
-        players.add(Mago);
-
-        Deck deck = new Deck();
-        deck.shuffle();
-
-        while (Mago.getPoints() < 21 && Chop.getPoints() < 21) {
-            while (!deck.getCards().isEmpty()) {
-                Random random = new Random();
-                int i = random.nextInt(0, 2);
-                deck.moveCardTo(deck.getCards().getFirst(), players.get(i).getDeckPlayer());
-            }
-            for(Player p : players){
-                System.out.println(p.getId() + "'s cards are " + p.getDeckPlayer().size() + p.getDeckPlayer().getCards()   );
-            }
-
-            GameManagerTressette gms = new GameManagerTressette(players);
-            gms.calculatePoints(players, new boolean[]{true, false});
-        }
-    }
-
     /**
      * Calculates the highest value for seed in DeckPlayer
      *
@@ -55,7 +28,7 @@ public class Player {
      * @param seed
      * @return Highest value for seed in DeckPlayer
      */
-    public int getHighestValue(HashMap<Integer, Integer> conversionTable, Character seed) {
+    public int getHighestValueForSeed(HashMap<Integer, Integer> conversionTable, Character seed) {
         ArrayList<Card> cardsWithSameSeed = this.deckPlayer.cardsWithSameSeed(seed);
         int highestValue = 0;
 

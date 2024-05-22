@@ -8,15 +8,22 @@ import java.util.Objects;
 public abstract class CardContainer {
     ArrayList<Card> cards;
 
+    public CardContainer() {
+        this.cards = new ArrayList<>();
+    }
+
+    public CardContainer(int length) {
+        this.cards = new ArrayList<>(length);
+    }
     public ArrayList<Card> getCards() {
         return cards;
     }
 
-    public void add(Card card) {
+    public void addCard(Card card) {
         cards.add(card);
     }
 
-    public void remove(Card card) {
+    public void removeCard(Card card) {
         cards.remove(card);
     }
 
@@ -24,7 +31,14 @@ public abstract class CardContainer {
         if (cards.isEmpty()) {
             return;
         }
-        cards.remove(cards.size() - 1);
+        cards.removeLast();
+    }
+
+    public void copyIn(CardContainer dest){
+        dest.clear();
+        for(Card card : cards){
+            dest.addCard(card);
+        }
     }
 
     public void clear() {
@@ -37,6 +51,28 @@ public abstract class CardContainer {
 
     public Boolean contains(Card card) {
         return cards.contains(card);
+    }
+
+    public Boolean containsCardSameValue(Card card){
+        for(Card c : this.cards){
+            if(c.getValue() == card.getValue()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Card bestCardSameValue(Card card){
+        if(contains(new Card(card.getValue(), 'D'))){
+            return new Card(card.getValue(), 'D');
+        }
+
+        for(Card c : this.cards){
+            if(card.getValue() == c.getValue()){
+                return c;
+            }
+        }
+        return null;
     }
 
     /**
@@ -72,8 +108,21 @@ public abstract class CardContainer {
     }
 
     public void moveCardTo(Card card, CardContainer dest) {
-        dest.add(card);
-        this.remove(card);
+        dest.addCard(card);
+        this.removeCard(card);
+    }
+
+    public void moveCardsTo(CardContainer dest) {
+        ArrayList<Card> cardsToMove = new ArrayList<>();
+        for (Card card : this.cards) {
+            dest.addCard(card);
+            cardsToMove.add(card);
+        }
+        this.cards.removeAll(cardsToMove);
+    }
+
+    public Card getLast() {
+        return this.cards.getLast();
     }
 
     @Override
@@ -91,4 +140,5 @@ public abstract class CardContainer {
 
     @Override
     public String toString() {return "Cards=" + cards + '}';}
+
 }

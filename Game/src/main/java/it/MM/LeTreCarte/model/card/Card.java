@@ -22,10 +22,9 @@ public class Card {
     public static final Character[] seeds = {'B', 'C', 'D', 'S'};
 
     public Card(int value, Character seed){
-        setSeed(seed);
         setValue(value);
         this.value = value;
-        this.seed = seed;
+        this.seed = checkSeed(seed);
         setImage();
         //this.image = loadImage("/com/example/Game/Cards_jpg/" + value + "-" + seed + ".jpg");
 //        try {
@@ -76,10 +75,14 @@ public class Card {
     }
 
     public void setSeed(Character seed) {
+        this.seed = checkSeed(seed);
+    }
+
+    public Character checkSeed(Character seed){
         if (!seed.toString().toUpperCase().matches("[BCDS]"))
             throw new IllegalArgumentException("ERRORE il seme non è corretto.");
 
-        this.seed = Character.toUpperCase(seed);
+        return Character.toUpperCase(seed);
     }
 
     @Override

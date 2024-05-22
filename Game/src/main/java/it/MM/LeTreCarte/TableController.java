@@ -5,14 +5,11 @@ import it.MM.LeTreCarte.model.card.cardcontainer.Deck;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.animation.TranslateTransition;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.*;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -21,7 +18,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.transform.Translate;
 import javafx.util.Duration;
-import org.junit.Before;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -92,11 +88,6 @@ public class TableController implements Initializable {
                 g.setGridLinesVisible(true);
                 g.setAlignment(Pos.CENTER);
                 setupGridPaneCols(g);
-//                if (hands.indexOf(g) % 2 == 0) {
-//                    setupGridPaneCols(g);
-//                } else {
-//                    setupGridPaneRows(g);
-//                }
             }
 
             //Creo la lista delle carte di fronte
@@ -126,7 +117,7 @@ public class TableController implements Initializable {
 //                    new Image(getClass().getResource(deck1.getCards().removeLast().getImage()).toExternalForm())
 //            );
 //
-//            imageGroups.add(new Group(im));
+//            imageGroups.addCard(new Group(im));
 //
 //
 //
@@ -223,7 +214,7 @@ public class TableController implements Initializable {
 //                            System.out.println("---------------------- node found");
 //                            node = tmpNode;
 //                            //clonedNode = tmpNode;
-//                            node.getTransforms().add(translate);
+//                            node.getTransforms().addCard(translate);
 //                            //nodeIndex=tmpNodeIndex;
 //                        }
 //                        //tmpNodeIndex++;
@@ -232,7 +223,7 @@ public class TableController implements Initializable {
                         //trovo l'indice della prima cella vuota, ricavo rows & cols
                         int index = findIndexOfFirstEmptyCell();
                         int targetRow = index/tableCols;
-                        int targetCol = targetRow==0 ? index : index%tableCols;
+                        int targetCol = targetRow == 0 ? index : index%tableCols;
 
                         //creo una copia di iv
                         ImageView tmpIV = new ImageView(iv.getImage());
@@ -358,7 +349,7 @@ public class TableController implements Initializable {
         int index=0;
         for(Boolean cellaOccupata : tableSupport){
             if(!cellaOccupata){
-                System.out.println("index: "+index);
+                System.out.println("index: " + index);
                 return index;
             }
             index++;
@@ -378,7 +369,7 @@ public class TableController implements Initializable {
 ////        if (cellNode == null) {
 ////            // Creare un nodo temporaneo
 ////            cellNode = new Region();
-////            gridPane.add(cellNode, colIndex, rowIndex);
+////            gridPane.addCard(cellNode, colIndex, rowIndex);
 ////            isTempNode = true;
 ////        }
 ////
@@ -395,7 +386,7 @@ public class TableController implements Initializable {
 ////
 ////        // Rimuovi il nodo temporaneo se è stato aggiunto in questo metodo
 ////        if (isTempNode) {
-////            gridPane.getChildren().remove(finalCellNode);
+////            gridPane.getChildren().removeCard(finalCellNode);
 ////        }
 ////        return coordinates;
 ////    }
@@ -430,7 +421,7 @@ public class TableController implements Initializable {
 //        for (int i = 0; i < 10; i++) {
 //            RowConstraints row = new RowConstraints();
 //            row.setPercentHeight(8); // Imposta l'altezza percentuale al 10%
-//            gridPane.getRowConstraints().add(row);
+//            gridPane.getRowConstraints().addCard(row);
 //        }
 ////        gridPane.setHgap(0);
 ////        gridPane.setVgap(0);
