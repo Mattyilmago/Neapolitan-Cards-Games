@@ -11,8 +11,6 @@
    <children>
       <AnchorPane fx:id="paneGames" layoutX="435.2" prefHeight="720.0" prefWidth="439.0" style="-fx-background-color: linear-gradient(#326A1A 60%, #19350D 100%);" AnchorPane.leftAnchor="435.2" AnchorPane.rightAnchor="435.20000000000005">
          <children>
-            <Button fx:id="entryButton" layoutX="244.0" layoutY="381.0" mnemonicParsing="false" onAction="#joinLobby" prefHeight="150.0" prefWidth="91.0" text="Button" />
-            <Button fx:id="createButton" layoutX="79.0" layoutY="381.0" mnemonicParsing="false" onAction="#createLobby" prefHeight="150.0" prefWidth="91.0" text="Button" />
             <Label fx:id="gameName" alignment="CENTER" contentDisplay="CENTER" layoutX="94.4" layoutY="43.0" prefHeight="78.0" prefWidth="193.0" text="Label" textAlignment="CENTER" textFill="WHITE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <font>
                   <Font size="42.0" />
@@ -34,9 +32,9 @@
                </font>
             </Button>
             <ImageView fx:id="playersIcon" fitHeight="45.0" fitWidth="45.0" layoutX="234.0" layoutY="185.0" pickOnBounds="true" preserveRatio="true" />
-            <ImageView fx:id="cardCreate" fitHeight="150.0" fitWidth="200.0" layoutX="79.0" layoutY="381.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" />
-            <ImageView fx:id="cardEntry" fitHeight="150.0" fitWidth="200.0" layoutX="245.0" layoutY="381.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" />
-            <Text layoutX="79.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Crea stanza"  textAlignment="CENTER" wrappingWidth="90.767822265625">
+            <ImageView fx:id="createImageView" fitHeight="150.0" fitWidth="91.0" layoutX="79.0" layoutY="381.0" onMouseClicked="#createLobby" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="entryImageView" fitHeight="150.0" fitWidth="91.0" layoutX="245.0" layoutY="381.0" onMouseClicked="#joinLobby" pickOnBounds="true" preserveRatio="true" />
+            <Text layoutX="79.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Crea stanza" textAlignment="CENTER" wrappingWidth="90.767822265625">
                <font>
                   <Font size="18.0" />
                </font>

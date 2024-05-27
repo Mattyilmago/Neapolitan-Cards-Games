@@ -16,6 +16,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -30,16 +31,10 @@ public class GamesController implements Initializable {
     private boolean isTwoPlayers = true;
 
     @FXML
-    private ImageView cardCreate;
+    private ImageView createImageView;
 
     @FXML
-    private ImageView cardEntry;
-
-    @FXML
-    private Button createButton;
-
-    @FXML
-    private Button entryButton;
+    private ImageView entryImageView;
 
     @FXML
     private Label gameName;
@@ -91,44 +86,28 @@ public class GamesController implements Initializable {
 //        //scene.getStylesheets().addCard(getClass().getResource("Table.css").toExternalForm());
 //        stage.setScene(scene);
 //        stage.show();
+
 //    }
 
-    @FXML
-    public void createLobby(ActionEvent event) throws URISyntaxException, IOException, InterruptedException, DeploymentException, EncodeException {
-//        SharedData.getInstance().setSelectedGame(games[curGame]);
+    public void createLobby(javafx.scene.input.MouseEvent mouseEvent) throws IOException {
+        //        SharedData.getInstance().setSelectedGame(games[curGame]);
 //        SharedData.getGSCInstance().createRoom();
 //        switchToLobby(event);
         Stage stage;
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Table.fxml")));
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        stage = (Stage)((Node)mouseEvent.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         //scene.getStylesheets().addCard(getClass().getResource("Table.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
 
-    @FXML
-    public void joinLobby(ActionEvent event) throws URISyntaxException, IOException, InterruptedException {
+    public void joinLobby(javafx.scene.input.MouseEvent mouseEvent) throws IOException {
         SharedData.getInstance().setSelectedGame(games[curGame]);
 
         Stage stage;
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("joinLobby.fxml")));
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        //scene.getStylesheets().addCard(getClass().getResource("Table.css").toExternalForm());
-
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    private void switchToLobby(ActionEvent event) throws IOException {
-        //Save selected game
-        //SharedData.getInstance().setSelectedGame(games[curGame]);
-
-
-        Stage stage;
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Lobby.fxml")));
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        stage = (Stage)((Node)mouseEvent.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         //scene.getStylesheets().addCard(getClass().getResource("Table.css").toExternalForm());
 
@@ -147,7 +126,6 @@ public class GamesController implements Initializable {
         if (curGame == games.length - 1) nextGameButton.setVisible(false);
         else nextGameButton.setVisible(true);
     }
-
     public void refreshPlayersButton() {
         if (isTwoPlayers) {
             playersButton.setText("2 giocatori");
@@ -159,12 +137,13 @@ public class GamesController implements Initializable {
             playersButton.setStyle("-fx-background-color: #521A6A");
         }
     }
+
     public void refreshCardsImage(){
         String create = cards[curGame * 2] + ".png";
         String entry = cards[curGame * 2 + 1] + ".png";
 
-        cardCreate.setImage(new Image(getClass().getResource("Cards_png/" + create).toExternalForm()));
-        cardEntry.setImage(new Image(getClass().getResource("Cards_png/" + entry).toExternalForm()));
+        createImageView.setImage(new Image(getClass().getResource("Cards_png/" + create).toExternalForm()));
+        entryImageView.setImage(new Image(getClass().getResource("Cards_png/" + entry).toExternalForm()));
     }
 }
 
