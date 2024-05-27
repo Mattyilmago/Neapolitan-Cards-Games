@@ -51,12 +51,12 @@ public class GameManagerScopa extends GameManager {
     }
 
     /**
-     * Backtracking algorithm that calculates the best choice of won cards
+     * Backtracking algorithm that calculates the best choice of won cards in the game of Scopa
      * @param card played card
      * @param sum current values'sum of the chosen cards
      * @param lvl level of algorithm
      * @param i current level of algorithm
-     * @param hasMostDenari true if the player has at least 5 denari's cards
+     * @param hasMostDenari true if the player has at least 5 denari's cards in his deckplayer
      */
     public void calculateWonCardsRec(Card card, int sum, int lvl, int i, boolean hasMostDenari) {
         if (i == lvl || sum == card.getValue()) {

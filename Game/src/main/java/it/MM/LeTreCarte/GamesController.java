@@ -160,11 +160,11 @@ public class GamesController implements Initializable {
         }
     }
     public void refreshCardsImage(){
-        String create = cards[curGame * 2] + ".jpg";
-        String entry = cards[curGame * 2 + 1] + ".jpg";
+        String create = cards[curGame * 2] + ".png";
+        String entry = cards[curGame * 2 + 1] + ".png";
 
-        cardCreate.setImage(new Image(getClass().getResource("Cards_jpg/" + create).toExternalForm()));
-        cardEntry.setImage(new Image(getClass().getResource("Cards_jpg/" + entry).toExternalForm()));
+        cardCreate.setImage(new Image(getClass().getResource("Cards_png/" + create).toExternalForm()));
+        cardEntry.setImage(new Image(getClass().getResource("Cards_png/" + entry).toExternalForm()));
     }
 }
 

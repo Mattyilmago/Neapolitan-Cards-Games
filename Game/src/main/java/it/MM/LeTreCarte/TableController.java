@@ -6,6 +6,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -109,60 +110,8 @@ public class TableController implements Initializable {
         } catch (RuntimeException e) {
             System.out.println(e);
         }
-
-
-//        //mano giocatore hand
-//        for(int i=0; i<10; i++) {
-//            ImageView im = new ImageView(
-//                    new Image(getClass().getResource(deck1.getCards().removeLast().getImage()).toExternalForm())
-//            );
-//
-//            imageGroups.addCard(new Group(im));
-//
-//
-//
-//            int finalI = i;
-//            im.setOnMouseClicked(new EventHandler<MouseEvent>() {
-//                TranslateTransition transition = new TranslateTransition(Duration.millis(300), im);
-//
-//                @Override
-//                public void handle(MouseEvent mouseEvent) {
-//                        transition.setByX(0);
-//                        transition.setByY(-200);
-//                        transition.play();
-//
-//
-////                    System.out.println(finalI);
-////                    transition.setFromX(imageGroups.get(finalI).getTranslateX());
-////                    transition.setFromY(imageGroups.get(finalI).getTranslateY());
-////
-////                    transition.setToX(imageGroups.get(finalI).getTranslateX());
-////                    transition.setToX(imageGroups.get(finalI).getTranslateY()-300);
-////                    transition.play();
-////                    System.out.println("played");
-//                }
-//            });
-//
-//            im.setFitHeight(135);
-//            im.setFitWidth(1000/11);
-//            hand.addColumn(i, im);
-//        }
-//
-//        //mano altri giocatori
-//
-
-
     }
-//
-//
-//    //Bisogna aggiungere l'inizializzazione del deck e aggiungere una carta ad una listview
-//
-//    @Override
-//    public void initialize(URL url, ResourceBundle resourceBundle) {
-//        //cardCreate.setImage(new Image(getClass().getResource(new Card(2,'D').getImage()).toExternalForm()));
-//        //ImageIO.read(getClass().getResource("/com/example/Game/Cards_jpg/" + value + "-" + seed + ".jpg"));
 
-    //    }
 
     /**
      * The function fills the gridview with ImageViews containing the cards.
@@ -173,25 +122,44 @@ public class TableController implements Initializable {
      * @param back
      */
     public void generatePlayersCards(GridPane gridview, ArrayList<GridPane> hands, ArrayList<Card> cards, boolean back) {
-//        gridview.setHgap(0); // Set horizontal gap to 0
-//        gridview.setVgap(0); // Set vertical gap to 0
-//        gridview.setPadding(new Insets(0)); // Set padding to 0
-
 
 
         for (int cardIndex = 0; cardIndex < 10; cardIndex++) {
-            Image image = new Image(getClass().getResource(back ? "Cards_jpg/test.jpg" : cards.get(cardIndex).getImage()).toExternalForm());
+            Image image = new Image(getClass().getResource(back ? "Cards_png/back.png" : cards.get(cardIndex).getImage()).toExternalForm());
             ImageView iv = new ImageView(image);
             iv.setPreserveRatio(true);
 
+            GridPane.setHalignment(iv, HPos.CENTER);
+            GridPane.setValignment(iv, VPos.CENTER);
+            GridPane.setMargin(iv, new Insets(0));
+
+            Pane pane = new Pane(iv);
+
+            iv.setFitWidth(gridview.getPrefWidth()/11);
+            iv.setFitHeight(gridview.getPrefHeight());
+            gridview.addColumn(cardIndex, pane);
+
             if(!back){
-                iv.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                pane.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        iv.setTranslateY(iv.getTranslateY() - 50);
+                    }
+                });
+
+                pane.setOnMouseExited(new EventHandler<MouseEvent>() {
+                    @Override public void handle (MouseEvent mouseEvent){
+                        iv.setTranslateY(iv.getTranslateY() + 50);
+                    }
+                });
+
+                pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent mouseEvent) {
                         //trova cardIndex aggiornato, per risolvere il problema delle carte in mano che diminuiscono
                         int currentCardIndex=0;
                         for(Node node : gridview.getChildren()){
-                            if(node.equals(iv)){
+                            if(node.equals(pane)){
                                 break;
                             }
                             currentCardIndex++;
@@ -262,7 +230,7 @@ public class TableController implements Initializable {
                                         new KeyValue(translate.yProperty(), 0)
                                 ),
                                 new KeyFrame(new Duration(300), e ->{
-                                    gridview.getChildren().remove(iv);
+                                    gridview.getChildren().remove(pane);
                                     tmpIV.setVisible(true);
                                 },
                                         new KeyValue(translate.xProperty(), endX-startX),
@@ -297,47 +265,6 @@ public class TableController implements Initializable {
                     }
                 });
             }
-
-
-//            gridview.setAlignment(Pos.CENTER);
-//            GridPane.setHalignment(iv, HPos.CENTER);
-//            GridPane.setValignment(iv, VPos.CENTER);
-//            gridview.setPadding(new Insets(0));
-//            GridPane.setMargin(iv, new Insets(0));
-            GridPane.setHalignment(iv, HPos.CENTER);
-            GridPane.setValignment(iv, VPos.CENTER);
-            GridPane.setMargin(iv, new Insets(0));
-
-            iv.setFitWidth(gridview.getPrefWidth()/11);
-            iv.setFitHeight(gridview.getPrefHeight());
-            gridview.addColumn(cardIndex, iv);
-
-//            if (hands.indexOf(gridview) % 2 == 0) {
-//            // Carte player 0 e 2, il gridview è in ORIZZONTALE (1 x n)
-//
-//                iv.setFitWidth(gridview.getPrefWidth()/12);
-//                            //System.out.println("--- |"+gridview.getPrefWidth() + "-"+gridview.getPrefHeight());
-//                iv.setFitHeight(gridview.getPrefHeight());
-//                //im.setFitWidth(gridview.getPrefHeight() / 11);
-//
-//                //im.setFitHeight(gridview.getPrefHeight());
-//                gridview.addColumn(i, iv);
-//
-//            } else {
-//            // Carte player 1 e 3 il gridview è in VERTICALE (n x 1)
-//
-//
-//                //                  System.out.println("+++ |"+gridview.getPrefWidth() + "-"+gridview.getPrefHeight());
-//                iv.setRotate(90);
-//                            iv.setFitWidth(gridview.getPrefHeight() / 12);
-//                            //im.setFitHeight(im.getFitWidth());
-//                            iv.setFitHeight(gridview.getPrefWidth());
-////                im.setFitWidth(gridview.getPrefHeight() / 11);
-////                im.setFitHeight(gridview.getPrefHeight());
-//                gridview.addRow(i, iv);
-//
-//            }
-
         }
 
 
@@ -399,19 +326,16 @@ public class TableController implements Initializable {
 //     * @param colIndex L'indice della colonna
 //     * @return Il nodo nella cella, o null se non c'è nessun nodo
 //     */
-//    public static Node getNodeFromGridPane(GridPane gp, int totalCols ,int rowIndex, int colIndex) {
-//        return gp.getChildren().get(rowIndex*totalCols + colIndex);
-////        for (Node node : gp.get) {
-////
-////
-//////            Integer row = gp.getRowIndex(node);
-//////            Integer col = gp.getColumnIndex(node);
-//////            if (row != null && col != null && row == rowIndex && col == colIndex) {
-//////                return node;
-//////            }
-////        }
-////        return null;
-//    }
+    public static Node getNodeFromGridPane(GridPane gp ,int rowIndex, int colIndex) {
+        for (Node node : gp.getChildren()) {
+            Integer row = gp.getRowIndex(node);
+            Integer col = gp.getColumnIndex(node);
+            if (row != null && col != null && row == rowIndex && col == colIndex) {
+                return node;
+            }
+        }
+        return null;
+    }
 //
 //    private void setupGridPaneRows(GridPane gridPane) {
 //        // Rimuovi eventuali RowConstraints esistenti

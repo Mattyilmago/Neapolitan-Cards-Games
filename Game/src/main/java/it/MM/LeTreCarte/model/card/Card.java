@@ -26,9 +26,9 @@ public class Card {
         this.value = value;
         this.seed = checkSeed(seed);
         setImage();
-        //this.image = loadImage("/com/example/Game/Cards_jpg/" + value + "-" + seed + ".jpg");
+        //this.image = loadImage("/com/example/Game/Cards_png/" + value + "-" + seed + ".png");
 //        try {
-//            BufferedImage bi = ImageIO.read(getClass().getResource("/com/example/Game/Cards_jpg/" + value + "-" + seed + ".jpg"));
+//            BufferedImage bi = ImageIO.read(getClass().getResource("/com/example/Game/Cards_png/" + value + "-" + seed + ".png"));
 //            this.image=convertToFxImage(bi);
 //        } catch (IOException e) {
 //            throw new RuntimeException(e);
@@ -55,8 +55,8 @@ public class Card {
     }
 
     public void setImage() {
-        //this.image = new Image(getClass().getResource("/Cards_jpg/" +this.value+"-"+this.seed+".jpg").toString());
-        this.image = "Cards_jpg/" + getValue() + "-" + getSeed() + ".jpg";
+        //this.image = new Image(getClass().getResource("/Cards_png/" +this.value+"-"+this.seed+".png").toString());
+        this.image = "Cards_png/" + getValue() + "-" + getSeed() + ".png";
     }
 
     public int getValue() {
