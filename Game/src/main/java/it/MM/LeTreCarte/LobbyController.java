@@ -1,6 +1,12 @@
 package it.MM.LeTreCarte;
 
+import it.MM.LeTreCarte.model.card.Card;
+import jakarta.websocket.EncodeException;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -52,9 +58,18 @@ public class LobbyController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //addThisPlayer();
-        refreshGameNameLabel();
-        refreshRoomCode();
+
+        gameName.setText(SharedData.getInstance().getSelectedGame());
+
+        roomCode.textProperty().bind(SharedData.getInstance().getRoomCodeString());
+
+        SharedData.getInstance().isRoomOwner().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
+                startGame.setDisable(!t1);
+            }
+        });
+
 
         listPlayers.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
 
@@ -111,22 +126,45 @@ public class LobbyController implements Initializable {
 
 
     @FXML
-    public void switchToTable(ActionEvent event) throws IOException {
-        Stage stage;
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Table.fxml")));
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        //scene.getStylesheets().addCard(getClass().getResource("Table.css").toExternalForm());
-        stage.setScene(scene);
-        stage.show();
-    }
+    public void switchToTable(ActionEvent event) throws IOException, EncodeException {
+        SharedData.getGSCInstance().requestCards();
+        startGame.setDisable(true);
 
-    public void refreshGameNameLabel() {
-        gameName.setText(SharedData.getInstance().getSelectedGame());
-    }
+        Task<Void> waitForCards = new Task<Void>() {
 
-    public void refreshRoomCode() {
-        roomCode.setText(STR."Codice stanza: \{SharedData.getInstance().getRoomCode()}");
+            @Override
+            protected Void call() throws Exception {
+                while (SharedData.getInstance().getPlayerCards().size() != 10) {
+                    System.out.println("cards: " + SharedData.getInstance().getPlayerCards().size());
+                    Thread.sleep(500);
+                }
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                // Esegui l'aggiornamento dell'interfaccia utente sul thread dell'interfaccia utente
+                Platform.runLater(() -> {
+                    try {
+                        Stage stage;
+                        Parent root = null;
+                        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Table.fxml")));
+                        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+                        Scene scene = new Scene(root);
+                        //scene.getStylesheets().addCard(getClass().getResource("Table.css").toExternalForm());
+                        stage.setScene(scene);
+                        stage.show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+
+        };
+
+        new Thread(waitForCards).start();
+
+
     }
 
     public void addPlayers(){

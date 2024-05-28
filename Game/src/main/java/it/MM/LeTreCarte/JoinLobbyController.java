@@ -2,6 +2,7 @@ package it.MM.LeTreCarte;
 
 import jakarta.websocket.DeploymentException;
 import jakarta.websocket.EncodeException;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -79,24 +80,37 @@ public class JoinLobbyController implements Initializable {
 
     @FXML
     public void joinLobby(ActionEvent event) throws IOException, DeploymentException, EncodeException, URISyntaxException, InterruptedException {
-        //Access to lobby
         SharedData.getGSCInstance().joinRoom(roomCode.getText());
 
-        if(Objects.equals(SharedData.getInstance().getLastError(), "room_not_found")){
-            roomCode.clear();
-            roomCode.setPromptText("Stanza non trovata");
-            roomCode.setStyle("-fx-border-color: red;");
-            return;
-        }
+        SharedData.getInstance().getRoomCodeString().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
+                if(Objects.equals(t1, "-1")){
+                    roomCode.clear();
+                    roomCode.setPromptText("Stanza non trovata");
+                    roomCode.setStyle("-fx-border-color: red;");
+                    return;
+                }
+
+                Stage stage;
+                Parent root = null;
+                try {
+                    root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Lobby.fxml")));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+                Scene scene = new Scene(root);
+                //scene.getStylesheets().addCard(getClass().getResource("Table.css").toExternalForm());
+                stage.setScene(scene);
+                stage.show();
+            }
+        });
 
 
-        Stage stage;
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Lobby.fxml")));
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        //scene.getStylesheets().addCard(getClass().getResource("Table.css").toExternalForm());
-        stage.setScene(scene);
-        stage.show();
+
+
+
     }
 
 

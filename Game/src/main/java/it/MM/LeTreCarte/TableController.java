@@ -1,10 +1,16 @@
 package it.MM.LeTreCarte;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import it.MM.LeTreCarte.model.card.Card;
 import it.MM.LeTreCarte.model.card.cardcontainer.Deck;
+import jakarta.websocket.EncodeException;
+import jakarta.websocket.MessageHandler;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -20,14 +26,18 @@ import javafx.scene.layout.*;
 import javafx.scene.transform.Translate;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 
 public class TableController implements Initializable {
+    private final HashMap<String, ArrayList<ImageView>> handsWithCardsImView = new HashMap<>();
+    private final HashMap<String, GridPane> handsWithGridPane = new HashMap<>();
 
-    final Deck deck1 = new Deck();
 
     @FXML
     private AnchorPane root;
@@ -61,11 +71,95 @@ public class TableController implements Initializable {
     //contiene false se non è presente nessuna carta, true viceversa
     ArrayList<Boolean> tableSupport = new ArrayList<>();
 
+    private void startBackgroundListener(){
+        SharedData.getInstance().getMoves().addListener(
+                new ListChangeListener<JsonObject>() {
+                    @Override
+                    public void onChanged(Change<? extends JsonObject> c) {
+                        Platform.runLater(()->{
+                            JsonObject response = SharedData.getInstance().getMoves().getLast();
 
+                            if(!Objects.equals(response.get("clientID").getAsString(), SharedData.getInstance().getPlayerName()) && Objects.equals(response.get("type").getAsString(), "move")){
+                                String clientID = response.get("clientID").getAsString();
+                                int cardIndexInHand = response.get("cardIndexInHand").getAsInt();
+
+                                System.out.println(clientID);
+                                System.out.println(handsWithGridPane);
+
+                                ImageView cardToMove = handsWithCardsImView.get(clientID).get(cardIndexInHand);
+                                int targetCol = response.get("targetCol").getAsInt();
+                                int targetRow = response.get("targetRow").getAsInt();
+                                GridPane gridview = handsWithGridPane.get(clientID);
+                                int cardVal = response.get("card-val").getAsInt();
+                                Character cardSeed = response.get("card-seed").getAsString().toCharArray()[0];
+
+                                Translate translate2 = new Translate();
+                                cardToMove.getTransforms().add(translate2);
+                                //coordinate globali
+                                double startX = cardToMove.localToScene(0,0).getX();
+                                double startY = cardToMove.localToScene(0,0).getY();
+                                double endX = table.localToScene(table.getBoundsInLocal()).getMinX() + targetCol * table.getPrefWidth()/tableCols;
+                                double endY = table.localToScene(table.getBoundsInLocal()).getMinY() + targetRow * table.getPrefHeight()/tableRows;
+
+                                //creo una copia di iv
+                                ImageView cardInTable = new ImageView(new Image(getClass().getResource(new Card(cardVal, cardSeed).getImage()).toExternalForm()));
+                                cardInTable.setFitWidth(gridview.getPrefWidth()/11);
+                                cardInTable.setFitHeight(gridview.getPrefHeight());
+                                cardInTable.setVisible(false);
+                                //table.getChildren().remove(targetRow+targetCol);
+                                table.add(cardInTable, targetCol,targetRow);
+                                tableSupport.set(targetRow*targetCol+targetCol, true);
+
+
+                                //create animation
+                                Timeline cardToTableAnimation = new Timeline(
+                                        new KeyFrame(Duration.ZERO,
+                                                new KeyValue(translate2.xProperty(), 0),
+                                                new KeyValue(translate2.yProperty(), 0)
+                                        ),
+
+                                        new KeyFrame(new Duration(150),
+                                                new KeyValue(translate2.xProperty(), 0),
+                                                new KeyValue(translate2.yProperty(), 0)
+                                        ),
+
+                                        new KeyFrame(new Duration(300), e ->{
+                                            cardInTable.setVisible(true);
+
+
+                                            //Sposta i nodi rimanenti (si potrebbe fare animato ehh)
+                                            for (Node node : gridview.getChildren()) {
+                                                Integer currCol = GridPane.getColumnIndex(node);
+                                                if (currCol != null && currCol > (response.get("cardIndexInHand").getAsInt()-1)) {
+                                                    GridPane.setColumnIndex(node, currCol - 1);
+                                                }
+                                            }
+                                            gridview.getColumnConstraints().removeLast();
+
+
+
+                                        },
+                                                new KeyValue(translate2.xProperty(), endX-startX),
+                                                new KeyValue(translate2.yProperty(), endY-startY)
+                                        )
+                                );
+
+                                cardToTableAnimation.play();
+
+
+                            }
+                        });
+
+                    }
+                }
+        );
+
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        deck1.shuffle();
+        startBackgroundListener();
+
         table.setGridLinesVisible(true);
         table.setAlignment(Pos.CENTER);
 
@@ -78,12 +172,19 @@ public class TableController implements Initializable {
 
 
         try {
-            ArrayList<Card> frontCards = new ArrayList<>();
+            ArrayList<Card> frontCards = new ArrayList<>(SharedData.getInstance().getPlayerCards());
             ArrayList<GridPane> hands = new ArrayList<>();
             hands.add(hand);
             hands.add(handPlayer1);
             hands.add(handPlayer2);
             hands.add(handPlayer3);
+
+            int tmp = 0;
+            for (String clientName : SharedData.getInstance().getLobbyPlayers()){
+                handsWithGridPane.put(clientName, hands.get(tmp));
+                handsWithCardsImView.put(clientName, new ArrayList<>());
+                tmp++;
+            }
 
             for (GridPane g : hands) {
                 g.setGridLinesVisible(true);
@@ -92,24 +193,24 @@ public class TableController implements Initializable {
             }
 
             //Creo la lista delle carte di fronte
-            for (int j = 0; j < 10; j++) {
-                frontCards.add(deck1.getFirst());
-            }
-
-            generatePlayersCards(hand, hands, frontCards, false);
+            generatePlayersCards(hand, frontCards, false, 0);
 
             //Creo la lista delle carte girate
             for (int i = 0; i < 3; i++) {
                 ArrayList<Card> backCards = new ArrayList<>();
                 for (int j = 0; j < 10; j++) {
-                    backCards.add(deck1.getFirst());
+                    //backCards.add(deck1.getFirst());
                 }
-                generatePlayersCards(hands.get(i + 1), hands, backCards, true);
+                generatePlayersCards(hands.get(i + 1), backCards, true,i+1);
             }
 
         } catch (RuntimeException e) {
             System.out.println(e);
         }
+
+
+
+
     }
 
 
@@ -117,17 +218,18 @@ public class TableController implements Initializable {
      * The function fills the gridview with ImageViews containing the cards.
      * If the back is true then the
      * @param gridview
-     * @param hands
      * @param cards
      * @param back
      */
-    public void generatePlayersCards(GridPane gridview, ArrayList<GridPane> hands, ArrayList<Card> cards, boolean back) {
+    public void generatePlayersCards(GridPane gridview, ArrayList<Card> cards, boolean back, int playerIndex) {
 
 
         for (int cardIndex = 0; cardIndex < 10; cardIndex++) {
             Image image = new Image(getClass().getResource(back ? "Cards_png/back.png" : cards.get(cardIndex).getImage()).toExternalForm());
             ImageView iv = new ImageView(image);
             iv.setPreserveRatio(true);
+
+            handsWithCardsImView.get(SharedData.getInstance().getLobbyPlayers().get(playerIndex)).add(iv);
 
             GridPane.setHalignment(iv, HPos.CENTER);
             GridPane.setValignment(iv, VPos.CENTER);
@@ -138,6 +240,7 @@ public class TableController implements Initializable {
             iv.setFitWidth(gridview.getPrefWidth()/11);
             iv.setFitHeight(gridview.getPrefHeight());
             gridview.addColumn(cardIndex, pane);
+            gridview.setAlignment(Pos.CENTER);
 
             if(!back){
                 pane.setOnMouseEntered(new EventHandler<MouseEvent>() {
@@ -153,45 +256,30 @@ public class TableController implements Initializable {
                     }
                 });
 
+                int finalCardIndex = cardIndex;
                 pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent mouseEvent) {
                         //trova cardIndex aggiornato, per risolvere il problema delle carte in mano che diminuiscono
-                        int currentCardIndex=0;
-                        for(Node node : gridview.getChildren()){
-                            if(node.equals(pane)){
-                                break;
-                            }
-                            currentCardIndex++;
-                        }
+                        int currentCardIndex= (int) gridview.getChildren().stream().takeWhile(node -> !node.equals(pane)).count();
                         System.out.println("currentCardIndex: "+currentCardIndex);
 
                         //recupera la posizione globale della carta
                         Translate translate = new Translate();
                         iv.getTransforms().add(translate);
 
-                        //target I, J in table (I x J)
 
-                        //assert (index==-1); throw new RuntimeException("La table non contiene celle vuote");
-                        //Node clonedNode = null;
-//                    int tmpNodeIndex = 0;
-//                    int nodeIndex = -1;
-
-//                    for(Node tmpNode : gridview.getChildren()) {
-//                        if(tmpNode.equals(iv)){
-//                            System.out.println("---------------------- node found");
-//                            node = tmpNode;
-//                            //clonedNode = tmpNode;
-//                            node.getTransforms().addCard(translate);
-//                            //nodeIndex=tmpNodeIndex;
-//                        }
-//                        //tmpNodeIndex++;
-//                    }
-
-                        //trovo l'indice della prima cella vuota, ricavo rows & cols
                         int index = findIndexOfFirstEmptyCell();
                         int targetRow = index/tableCols;
                         int targetCol = targetRow == 0 ? index : index%tableCols;
+
+                        //Sending move to server
+                        try {
+                            SharedData.getGSCInstance().sendMove("cardToTable", cards.get(finalCardIndex), currentCardIndex, targetRow, targetCol, gridview.getColumnCount());
+                        } catch (EncodeException | IOException e) {
+                            System.out.println("Connection error: Could not send move to table.");
+                            throw new RuntimeException(e);
+                        }
 
                         //creo una copia di iv
                         ImageView tmpIV = new ImageView(iv.getImage());
@@ -212,56 +300,42 @@ public class TableController implements Initializable {
                         //coordinate globali
                         double startX = iv.localToScene(0,0).getX();
                         double startY = iv.localToScene(0,0).getY();
-//                    double endX = tableCellNode.localToScene(tableCellNode.getBoundsInLocal()).getMinX();
-//                    double endY = tableCellNode.localToScene(tableCellNode.getBoundsInLocal()).getMinY();
-
                         double endX = table.localToScene(table.getBoundsInLocal()).getMinX() + targetCol * table.getPrefWidth()/tableCols;
                         double endY = table.localToScene(table.getBoundsInLocal()).getMinY() + targetRow * table.getPrefHeight()/tableRows;
 
                         System.out.println("endX: "+endX+"| endY: "+endY);
 
-                        //crea l'animazione
-//                    int finalNodeIndex = nodeIndex;
-//                    Node finalClonedNode = clonedNode;
-
-                        Timeline timeline = new Timeline(
+                        //create animation
+                        Timeline cardToTableAnimation = new Timeline(
                                 new KeyFrame(Duration.ZERO,
                                         new KeyValue(translate.xProperty(), 0),
                                         new KeyValue(translate.yProperty(), 0)
                                 ),
+
                                 new KeyFrame(new Duration(300), e ->{
                                     gridview.getChildren().remove(pane);
                                     tmpIV.setVisible(true);
+
+
+                                    // Sposta i nodi rimanenti (si potrebbe fare animato ehh)
+                                    for (Node node : gridview.getChildren()) {
+                                        Integer currCol = GridPane.getColumnIndex(node);
+                                        if (currCol != null && currCol > (currentCardIndex-1)) {
+                                            GridPane.setColumnIndex(node, currCol - 1);
+                                        }
+                                    }
+                                    gridview.getColumnConstraints().removeLast();
+
+
+
                                 },
                                         new KeyValue(translate.xProperty(), endX-startX),
                                         new KeyValue(translate.yProperty(), endY-startY)
                                 )
                         );
-                        timeline.play();
 
+                        cardToTableAnimation.play();
 
-                        gridview.getColumnConstraints().remove(currentCardIndex-1);
-                        // Sposta i nodi rimanenti
-                        for (Node node : gridview.getChildren()) {
-                            Integer currCol = GridPane.getColumnIndex(node);
-                            if (currCol != null && currCol > (currentCardIndex-1)) {
-                                GridPane.setColumnIndex(node, currCol - 1);
-                            }
-                        }
-
-//                    transition.setByX(0);
-//                    transition.setByY(-200);
-//                    transition.play();
-
-
-//                    System.out.println(finalI);
-//                    transition.setFromX(imageGroups.get(finalI).getTranslateX());
-//                    transition.setFromY(imageGroups.get(finalI).getTranslateY());
-//
-//                    transition.setToX(getCellCoordinates(table, 2, 2)[0]);
-//                    transition.setToY(getCellCoordinates(table, 2, 2)[1]);
-//                    transition.play();
-//                    System.out.println("played");
                     }
                 });
             }
@@ -283,73 +357,6 @@ public class TableController implements Initializable {
         }
         return -1;
     }
-
-
-//    //TODO aggiustare la funzione
-////    public static double[] getCellCoordinates (GridPane gridPane,int rowIndex, int colIndex){
-////        double[] coordinates = new double[2];
-////
-////        // Trova o crea un nodo temporaneo nella cella specificata
-////        Node cellNode = getNodeFromGridPane(gridPane, rowIndex, colIndex);
-////        boolean isTempNode = false;
-////
-////        if (cellNode == null) {
-////            // Creare un nodo temporaneo
-////            cellNode = new Region();
-////            gridPane.addCard(cellNode, colIndex, rowIndex);
-////            isTempNode = true;
-////        }
-////
-////        final Node finalCellNode = cellNode;
-////        Platform.runLater(() -> {
-////            // Converti le coordinate del nodo alla scena
-////            Bounds cellBounds = finalCellNode.localToScene(finalCellNode.getBoundsInLocal());
-////            coordinates[0] = cellBounds.getMinX();
-////            coordinates[1] = cellBounds.getMinY();
-////
-////
-////            System.out.println("Cella [" + rowIndex + ", " + colIndex + "]: X = " + coordinates[0] + ", Y = " + coordinates[1]);
-////        });
-////
-////        // Rimuovi il nodo temporaneo se è stato aggiunto in questo metodo
-////        if (isTempNode) {
-////            gridPane.getChildren().removeCard(finalCellNode);
-////        }
-////        return coordinates;
-////    }
-//
-//    /**
-//     * Ottiene il nodo nella cella specificata del GridPane.
-//     *
-//     * //@param gridPane Il GridPane
-//     * @param rowIndex L'indice della riga
-//     * @param colIndex L'indice della colonna
-//     * @return Il nodo nella cella, o null se non c'è nessun nodo
-//     */
-    public static Node getNodeFromGridPane(GridPane gp ,int rowIndex, int colIndex) {
-        for (Node node : gp.getChildren()) {
-            Integer row = gp.getRowIndex(node);
-            Integer col = gp.getColumnIndex(node);
-            if (row != null && col != null && row == rowIndex && col == colIndex) {
-                return node;
-            }
-        }
-        return null;
-    }
-//
-//    private void setupGridPaneRows(GridPane gridPane) {
-//        // Rimuovi eventuali RowConstraints esistenti
-//        gridPane.getRowConstraints().clear();
-//
-//        // Aggiungi 10 RowConstraints con altezza percentuale del 10%
-//        for (int i = 0; i < 10; i++) {
-//            RowConstraints row = new RowConstraints();
-//            row.setPercentHeight(8); // Imposta l'altezza percentuale al 10%
-//            gridPane.getRowConstraints().addCard(row);
-//        }
-////        gridPane.setHgap(0);
-////        gridPane.setVgap(0);
-//    }
 
     private void setupGridPaneCols(GridPane gridPane) {
         // Rimuovi eventuali RowConstraints esistenti

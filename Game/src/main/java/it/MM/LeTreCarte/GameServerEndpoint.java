@@ -3,7 +3,9 @@ package it.MM.LeTreCarte;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import it.MM.LeTreCarte.model.card.Card;
 import jakarta.websocket.*;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 
 
@@ -45,29 +47,53 @@ public class GameServerEndpoint extends Endpoint {
                             SharedData.getInstance().setRoomCode(response.get("roomCode").getAsString());
                             SharedData.getInstance().setPlayerName(response.get("playerName").getAsString());
                             SharedData.getInstance().getLobbyPlayers().add(response.get("playerName").getAsString());
+                            SharedData.getInstance().setRoomOwner(true);
                         }break;
                         case "allPlayers":{
                             String content = response.get("content").getAsString();
                             JsonArray giocatori = JsonParser.parseString(content).getAsJsonArray();
-                            System.out.println("++"+giocatori.toString()+"+"+giocatori.size());
                             SharedData.getInstance().getLobbyPlayers().clear();
                             for (int i = 0; i < giocatori.size(); i++) {
-                                SharedData.getInstance().getLobbyPlayers().add(giocatori.get(i).getAsString());
-                                System.out.println("aggiunto");
+                                int finalI = i;
+                                Platform.runLater(()->{
+                                    SharedData.getInstance().getLobbyPlayers().add(giocatori.get(finalI).getAsString());
+                                });
                             }
                             System.out.println(SharedData.getInstance().getLobbyPlayers().toString());
 
                             //aggiungiGiocatoriAllaLista(giocatori);
 
                         }break;
+                        case "playerCards":{
+                            String content = response.get("content").getAsString();
+                            JsonArray carte = JsonParser.parseString(content).getAsJsonArray();
+
+                            SharedData.getInstance().getPlayerCards().clear();
+
+                            new Thread(()->{
+                                for (int i = 0; i < carte.size(); i++) {
+                                    JsonArray carta = carte.get(i).getAsJsonArray();
+                                    SharedData.getInstance().addPlayerCard(new Card(carta.get(0).getAsInt()+1,carta.get(1).getAsString().toCharArray()[0]));
+                                }
+                            }).start();
+
+                        }break;
+                        case "move":{
+                            System.out.println("ricevuto1");
+                            new Thread(()->{
+                                SharedData.getInstance().addMove(response);
+                            }).start();
+                        }break;
+
+
 
                     }
                 }else{
                     switch (response.get("error").getAsString()){
                         case "room_not_found":{
-                            SharedData.getInstance().setLastError("room_not_found");
+                            SharedData.getInstance().setRoomCode("-1");
                             System.out.println("room_not_found");
-                        }
+                        }break;
                     }
                 }
             }

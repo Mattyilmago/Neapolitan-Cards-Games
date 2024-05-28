@@ -89,12 +89,12 @@ public class GamesController implements Initializable {
 
 //    }
 
-    public void createLobby(javafx.scene.input.MouseEvent mouseEvent) throws IOException {
-        //        SharedData.getInstance().setSelectedGame(games[curGame]);
-//        SharedData.getGSCInstance().createRoom();
-//        switchToLobby(event);
+    public void createLobby(javafx.scene.input.MouseEvent mouseEvent) throws IOException, DeploymentException, EncodeException, URISyntaxException, InterruptedException {
+        SharedData.getInstance().setSelectedGame(games[curGame]);
+        SharedData.getGSCInstance().createRoom();
+
         Stage stage;
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Table.fxml")));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Lobby.fxml")));
         stage = (Stage)((Node)mouseEvent.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         //scene.getStylesheets().addCard(getClass().getResource("Table.css").toExternalForm());
