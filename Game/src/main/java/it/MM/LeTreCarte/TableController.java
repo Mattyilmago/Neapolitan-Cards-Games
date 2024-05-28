@@ -106,45 +106,41 @@ public class TableController implements Initializable {
                                 cardInTable.setFitWidth(gridview.getPrefWidth()/11);
                                 cardInTable.setFitHeight(gridview.getPrefHeight());
                                 cardInTable.setVisible(false);
-                                //table.getChildren().remove(targetRow+targetCol);
+
+                                table.getChildren().remove(targetRow+targetCol);
                                 table.add(cardInTable, targetCol,targetRow);
                                 tableSupport.set(targetRow*targetCol+targetCol, true);
 
 
                                 //create animation
-                                Timeline cardToTableAnimation = new Timeline(
+                                Timeline cardToTableAnimationENEMY = new Timeline(
                                         new KeyFrame(Duration.ZERO,
-                                                new KeyValue(translate2.xProperty(), 0),
-                                                new KeyValue(translate2.yProperty(), 0)
-                                        ),
-
-                                        new KeyFrame(new Duration(150),
                                                 new KeyValue(translate2.xProperty(), 0),
                                                 new KeyValue(translate2.yProperty(), 0)
                                         ),
 
                                         new KeyFrame(new Duration(300), e ->{
                                             cardInTable.setVisible(true);
+                                            gridview.getChildren().remove(cardToMove);
 
-
-                                            //Sposta i nodi rimanenti (si potrebbe fare animato ehh)
-                                            for (Node node : gridview.getChildren()) {
-                                                Integer currCol = GridPane.getColumnIndex(node);
-                                                if (currCol != null && currCol > (response.get("cardIndexInHand").getAsInt()-1)) {
-                                                    GridPane.setColumnIndex(node, currCol - 1);
-                                                }
-                                            }
-                                            gridview.getColumnConstraints().removeLast();
+//                                            //Sposta i nodi rimanenti (si potrebbe fare animato ehh)
+//                                            for (Node node : gridview.getChildren()) {
+//                                                Integer currCol = gridview.getColumnIndex(node);
+//                                                if (currCol != null && currCol > (cardIndexInHand-1)) {
+//                                                    gridview.setColumnIndex(node, currCol - 1);
+//                                                }
+//                                            }
+//                                            gridview.getColumnConstraints().removeLast();
 
 
 
                                         },
-                                                new KeyValue(translate2.xProperty(), endX-startX),
-                                                new KeyValue(translate2.yProperty(), endY-startY)
+                                                new KeyValue(translate2.xProperty(), -(endX-startX)),
+                                                new KeyValue(translate2.yProperty(), -(endY-startY))
                                         )
                                 );
 
-                                cardToTableAnimation.play();
+                                cardToTableAnimationENEMY.play();
 
 
                             }
@@ -175,16 +171,9 @@ public class TableController implements Initializable {
             ArrayList<Card> frontCards = new ArrayList<>(SharedData.getInstance().getPlayerCards());
             ArrayList<GridPane> hands = new ArrayList<>();
             hands.add(hand);
-            hands.add(handPlayer1);
             hands.add(handPlayer2);
+            hands.add(handPlayer1);
             hands.add(handPlayer3);
-
-            int tmp = 0;
-            for (String clientName : SharedData.getInstance().getLobbyPlayers()){
-                handsWithGridPane.put(clientName, hands.get(tmp));
-                handsWithCardsImView.put(clientName, new ArrayList<>());
-                tmp++;
-            }
 
             for (GridPane g : hands) {
                 g.setGridLinesVisible(true);
@@ -192,17 +181,32 @@ public class TableController implements Initializable {
                 setupGridPaneCols(g);
             }
 
-            //Creo la lista delle carte di fronte
-            generatePlayersCards(hand, frontCards, false, 0);
+            int tmp = 0;
+            for (String clientName : SharedData.getInstance().getLobbyPlayers()){
+                handsWithGridPane.put(clientName, hands.get(tmp));
+                handsWithCardsImView.put(clientName, new ArrayList<>());
 
-            //Creo la lista delle carte girate
-            for (int i = 0; i < 3; i++) {
-                ArrayList<Card> backCards = new ArrayList<>();
-                for (int j = 0; j < 10; j++) {
-                    //backCards.add(deck1.getFirst());
+                if(tmp==0){
+                    generatePlayersCards(hand, frontCards, false, 0);
+                }else{
+                    generatePlayersCards(hands.get(tmp), new ArrayList<Card>(), true,tmp);
                 }
-                generatePlayersCards(hands.get(i + 1), backCards, true,i+1);
+                tmp++;
             }
+
+
+
+//            //Creo la lista delle carte di fronte
+//
+//
+//            //Creo la lista delle carte girate
+//            for (int i = 0; i < 3; i++) {
+//                ArrayList<Card> backCards = new ArrayList<>();
+//                for (int j = 0; j < 10; j++) {
+//                    //backCards.add(deck1.getFirst());
+//                }
+//
+//            }
 
         } catch (RuntimeException e) {
             System.out.println(e);
@@ -330,7 +334,7 @@ public class TableController implements Initializable {
 
                                 },
                                         new KeyValue(translate.xProperty(), endX-startX),
-                                        new KeyValue(translate.yProperty(), endY-startY)
+                                        new KeyValue(translate.yProperty(), endY - startY)
                                 )
                         );
 
