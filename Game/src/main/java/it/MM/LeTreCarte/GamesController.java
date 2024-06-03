@@ -77,17 +77,18 @@ public class GamesController implements Initializable {
         curGame--;
         refreshGameNameLabel();
     }
-//    @FXML
-//    public void switchToTable(ActionEvent event) throws IOException {
-//        Stage stage;
-//        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Table.fxml")));
-//        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-//        Scene scene = new Scene(root);
-//        //scene.getStylesheets().addCard(getClass().getResource("Table.css").toExternalForm());
-//        stage.setScene(scene);
-//        stage.show();
 
-//    }
+    @FXML
+    public void switchToTable(ActionEvent event) throws IOException {
+        Stage stage;
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Table.fxml")));
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        //scene.getStylesheets().addCard(getClass().getResource("Table.css").toExternalForm());
+        stage.setScene(scene);
+        stage.show();
+
+    }
 
     public void createLobby(javafx.scene.input.MouseEvent mouseEvent) throws IOException, DeploymentException, EncodeException, URISyntaxException, InterruptedException {
         SharedData.getInstance().setSelectedGame(games[curGame]);

@@ -1,3 +1,18 @@
+#mainButton {
+    -fx-background-color:
+            rgba(0,0,0,0)
+            linear-gradient(#D5D3EB, #000000),
+            linear-gradient(#16537e 0%, #2D239B 20%, #211A72 80%, #1B155D 100%),
+            linear-gradient(#4f4dff, #02007f);
+    -fx-background-insets: 0,9 9 8 9,9,10,11;
+    -fx-background-radius: 40;
+    -fx-padding: 15 30 15 30;
+    -fx-font-family: "Helvetica";
+    -fx-font-size: 40px;
+    -fx-text-fill: #e5e5f2;
+    -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.1) , 2, 0.0, 0, 1);
+}
+
 
 
 

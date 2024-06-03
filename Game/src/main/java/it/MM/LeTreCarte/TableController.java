@@ -374,5 +374,8 @@ public class TableController implements Initializable {
         gridPane.setHgap(0);
         gridPane.setVgap(0);
     }
+
+
+
 }
 
