@@ -11,10 +11,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
 
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -53,6 +56,12 @@ public class GamesController implements Initializable {
 
     @FXML
     private Button previousGameButton;
+
+    @FXML
+    private Text labelCrea;
+
+    @FXML
+    private Text labelEntra;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -129,11 +138,11 @@ public class GamesController implements Initializable {
     }
     public void refreshPlayersButton() {
         if (isTwoPlayers) {
-            playersButton.setText("2 giocatori");
+            playersButton.setText("2 GIOCATORI");
             playersIcon.setImage(new Image(getClass().getResource("due-dita.png").toExternalForm()));
             playersButton.setStyle("-fx-background-color: #A92222");
         } else {
-            playersButton.setText("4 giocatori");
+            playersButton.setText("4 GIOCATORI");
             playersIcon.setImage(new Image(getClass().getResource("quattro-dita.png").toExternalForm()));
             playersButton.setStyle("-fx-background-color: #521A6A");
         }

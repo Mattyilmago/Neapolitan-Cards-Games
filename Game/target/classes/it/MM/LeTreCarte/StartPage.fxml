@@ -17,7 +17,7 @@
             <Image url="@Vesuvio.jpg" />
          </image>
       </ImageView>
-      <Text fx:id="title" fontSmoothingType="LCD" layoutX="524.2" layoutY="225.31376953125" strokeType="OUTSIDE" strokeWidth="0.0" text="Le Tre Carte" textAlignment="CENTER" wrappingWidth="231.5830478668213" AnchorPane.bottomAnchor="484.00000000000006" AnchorPane.leftAnchor="524.2" AnchorPane.rightAnchor="524.6000000000001" AnchorPane.topAnchor="171.2">
+      <Text fx:id="title" fontSmoothingType="LCD" layoutX="524.0" layoutY="203.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Le Tre Carte" textAlignment="CENTER" wrappingWidth="231.5830478668213" AnchorPane.topAnchor="148.88623046875">
          <font>
             <Font name="Agency FB" size="55.0" />
          </font>

@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 
@@ -23,6 +24,8 @@ public class StartPageController{
     private AnchorPane anchorPane;
     @FXML
     private Button mainButton;
+    @FXML
+    private Text title;
 
     @FXML
     protected void switchToGamesMenu(ActionEvent event) throws IOException {

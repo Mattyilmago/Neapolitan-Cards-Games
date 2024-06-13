@@ -1,0 +1,18 @@
+#gameName{
+    -fx-font-family: "Super Monday";
+    -fx-font-size: 80px;
+}
+#playersButton{
+    -fx-font-family: "Looks Sketchy";
+    -fx-font-size: 20px;
+    -fx-text-fill: #0c0c0c;
+    -fx-background-radius: 40;
+}
+#labelCrea{
+    -fx-font-family: "Looks Sketchy";
+    -fx-font-size: 25px;
+}
+#labelEntra{
+    -fx-font-family: "Looks Sketchy";
+    -fx-font-size: 25px;
+}
