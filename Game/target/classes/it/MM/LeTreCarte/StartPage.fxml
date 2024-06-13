@@ -17,27 +17,30 @@
             <Image url="@Vesuvio.jpg" />
          </image>
       </ImageView>
-      <Text fx:id="text" fontSmoothingType="LCD" layoutX="524.2" layoutY="225.31376953125" strokeType="OUTSIDE" strokeWidth="0.0" text="Le Tre Carte" textAlignment="CENTER" wrappingWidth="231.5830478668213" AnchorPane.bottomAnchor="484.00000000000006" AnchorPane.leftAnchor="524.2" AnchorPane.rightAnchor="524.6000000000001" AnchorPane.topAnchor="171.2">
+      <Text fx:id="title" fontSmoothingType="LCD" layoutX="524.2" layoutY="225.31376953125" strokeType="OUTSIDE" strokeWidth="0.0" text="Le Tre Carte" textAlignment="CENTER" wrappingWidth="231.5830478668213" AnchorPane.bottomAnchor="484.00000000000006" AnchorPane.leftAnchor="524.2" AnchorPane.rightAnchor="524.6000000000001" AnchorPane.topAnchor="171.2">
          <font>
             <Font name="Agency FB" size="55.0" />
          </font>
          <fill>
-            <RadialGradient centerX="0.4690265149141835" centerY="0.5" cycleMethod="REFLECT" radius="0.9">
+            <RadialGradient centerX="0.491150324323536" centerY="0.23863633473714196" cycleMethod="REFLECT" radius="0.9">
                <stops>
                   <Stop>
                      <color>
-                        <Color red="0.007407407276332378" green="0.9834567904472351" blue="1.0" />
+                        <Color red="0.7699804902076721" green="0.7823001742362976" blue="0.8315789699554443" />
                      </color>
                   </Stop>
                   <Stop offset="1.0">
                      <color>
-                        <Color red="0.16763603687286377" green="0.14880000054836273" blue="0.9300000071525574" />
+                        <Color red="0.01568627543747425" blue="1.0" />
                      </color>
                   </Stop>
                </stops>
             </RadialGradient>
          </fill>
       </Text>
-      <Button fx:id="mainButton" alignment="CENTER" layoutX="548.8" layoutY="409.0" mnemonicParsing="false" onAction="#switchToGamesMenu" prefHeight="98.0" prefWidth="182.0" text="Tras" AnchorPane.bottomAnchor="212.60000000000002" AnchorPane.leftAnchor="548.8" AnchorPane.rightAnchor="548.8" AnchorPane.topAnchor="409.0" />
+      <Button fx:id="mainButton" alignment="CENTER" layoutX="548.8" layoutY="409.0" mnemonicParsing="false" onAction="#switchToGamesMenu" prefHeight="98.0" prefWidth="182.0" text="Tras" AnchorPane.bottomAnchor="212.60000000000002" AnchorPane.leftAnchor="548.8" AnchorPane.rightAnchor="548.8" AnchorPane.topAnchor="409.0">
+         <font>
+            <Font name="Arial Narrow" size="30.0" />
+         </font></Button>
    </children>
 </AnchorPane>

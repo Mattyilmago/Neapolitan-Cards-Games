@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import it.MM.LeTreCarte.model.card.Card;
+import it.MM.LeTreCarte.model.card.cardcontainer.Hand;
 import jakarta.websocket.*;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -25,6 +26,17 @@ public class GameServerEndpoint extends Endpoint {
     public void onOpen(Session session, EndpointConfig endpointConfig) {
         System.out.println(STR."ClientEndpoint: server session opened\{session}");
         this.session = session;
+
+//        JsonObject json = new JsonObject();
+//        json.addProperty("type", "register");
+//        try {
+//            this.session.getBasicRemote().sendObject(json);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        } catch (EncodeException e) {
+//            throw new RuntimeException(e);
+//        }
+
         //this.session.setMaxIdleTimeout(600000);
 
         this.session.addMessageHandler(new MessageHandler.Whole<String>() {
@@ -36,6 +48,7 @@ public class GameServerEndpoint extends Endpoint {
                     switch (response.get("type").getAsString()){
                         case "register": {
                             SharedData.getInstance().setClientID(response.get("clientID").getAsString());
+                            //System.out.println("a" + SharedData.getInstance().getClientID());
                         }break;
                         case "joinRoom": {
                             SharedData.getInstance().setRoomCode(response.get("roomCode").getAsString());
@@ -66,9 +79,12 @@ public class GameServerEndpoint extends Endpoint {
                         }break;
                         case "playerCards":{
                             String content = response.get("content").getAsString();
-                            JsonArray carte = JsonParser.parseString(content).getAsJsonArray();
+                            JsonArray carte = JsonParser.parseString(content).getAsJsonArray(); // [ [], [] ]
 
                             SharedData.getInstance().getPlayerCards().clear();
+
+//                            Hand hand = new Hand();
+//                            hand.addCard();
 
                             new Thread(()->{
                                 for (int i = 0; i < carte.size(); i++) {

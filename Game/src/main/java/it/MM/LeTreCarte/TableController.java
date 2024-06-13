@@ -28,13 +28,11 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 public class TableController implements Initializable {
+                    // { nomeGiocatore1: [imgvw1, imgvw2], nomeGiocatore2: [...] }
     private final HashMap<String, ArrayList<ImageView>> handsWithCardsImView = new HashMap<>();
     private final HashMap<String, GridPane> handsWithGridPane = new HashMap<>();
 
@@ -79,17 +77,24 @@ public class TableController implements Initializable {
                         Platform.runLater(()->{
                             JsonObject response = SharedData.getInstance().getMoves().getLast();
 
-                            if(!Objects.equals(response.get("clientID").getAsString(), SharedData.getInstance().getPlayerName()) && Objects.equals(response.get("type").getAsString(), "move")){
-                                String clientID = response.get("clientID").getAsString();
-                                int cardIndexInHand = response.get("cardIndexInHand").getAsInt();
+                            if(Objects.equals(response.get("type").getAsString(), "move") && !Objects.equals(response.get("clientAKA").getAsString(), SharedData.getInstance().getPlayerName())){
+                                String clientAKA = response.get("clientAKA").getAsString();
+                                int cardIndexInHand = response.get("cardIndexInHand").getAsInt()-1;
 
-                                System.out.println(clientID);
+                                System.out.println(clientAKA);
                                 System.out.println(handsWithGridPane);
+                                System.out.println(handsWithCardsImView);
 
-                                ImageView cardToMove = handsWithCardsImView.get(clientID).get(cardIndexInHand);
+
+                                //#
+                                ImageView cardToMove = handsWithCardsImView.get(clientAKA).get(cardIndexInHand);
+                                handsWithCardsImView.get(clientAKA).remove(cardIndexInHand);
+
+
+
                                 int targetCol = response.get("targetCol").getAsInt();
                                 int targetRow = response.get("targetRow").getAsInt();
-                                GridPane gridview = handsWithGridPane.get(clientID);
+                                GridPane gridviewAKA = handsWithGridPane.get(clientAKA);
                                 int cardVal = response.get("card-val").getAsInt();
                                 Character cardSeed = response.get("card-seed").getAsString().toCharArray()[0];
 
@@ -103,8 +108,8 @@ public class TableController implements Initializable {
 
                                 //creo una copia di iv
                                 ImageView cardInTable = new ImageView(new Image(getClass().getResource(new Card(cardVal, cardSeed).getImage()).toExternalForm()));
-                                cardInTable.setFitWidth(gridview.getPrefWidth()/11);
-                                cardInTable.setFitHeight(gridview.getPrefHeight());
+                                cardInTable.setFitWidth(gridviewAKA.getPrefWidth()/11);
+                                cardInTable.setFitHeight(gridviewAKA.getPrefHeight());
                                 cardInTable.setVisible(false);
 
                                 table.getChildren().remove(targetRow+targetCol);
@@ -121,7 +126,7 @@ public class TableController implements Initializable {
 
                                         new KeyFrame(new Duration(300), e ->{
                                             cardInTable.setVisible(true);
-                                            gridview.getChildren().remove(cardToMove);
+                                            gridviewAKA.getChildren().remove(cardToMove);
 
 //                                            //Sposta i nodi rimanenti (si potrebbe fare animato ehh)
 //                                            for (Node node : gridview.getChildren()) {
@@ -140,6 +145,9 @@ public class TableController implements Initializable {
                                         )
                                 );
 
+
+                                gridviewAKA.getColumnConstraints().removeLast();
+
                                 cardToTableAnimationENEMY.play();
 
 
@@ -152,9 +160,22 @@ public class TableController implements Initializable {
 
     }
 
+
+
+
+
+    void sortLobbyPlayers(){
+        String me = SharedData.getInstance().getPlayerName();
+
+        SharedData.getInstance().getLobbyPlayers().remove(me);
+        SharedData.getInstance().getLobbyPlayers().addFirst(me);
+
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         startBackgroundListener();
+        sortLobbyPlayers();
 
         table.setGridLinesVisible(true);
         table.setAlignment(Pos.CENTER);
@@ -170,10 +191,19 @@ public class TableController implements Initializable {
         try {
             ArrayList<Card> frontCards = new ArrayList<>(SharedData.getInstance().getPlayerCards());
             ArrayList<GridPane> hands = new ArrayList<>();
-            hands.add(hand);
-            hands.add(handPlayer2);
-            hands.add(handPlayer1);
-            hands.add(handPlayer3);
+
+            if(SharedData.getInstance().getLobbyPlayers().size()==2){
+                hands.add(hand);            //mano giocatore principale
+                hands.add(handPlayer2);     //mano giocatore difronte
+            }else{
+                //4 giocatori
+                hands.add(hand);            //mano giocatore principale
+                hands.add(handPlayer1);     //mano giocatore a sx
+                hands.add(handPlayer2);     //mano giocatore difronte
+                hands.add(handPlayer3);     //mano giocatore a dx
+            }
+
+
 
             for (GridPane g : hands) {
                 g.setGridLinesVisible(true);
@@ -227,13 +257,15 @@ public class TableController implements Initializable {
      */
     public void generatePlayersCards(GridPane gridview, ArrayList<Card> cards, boolean back, int playerIndex) {
 
-
+        System.out.println("players: "+SharedData.getInstance().getLobbyPlayers().toString() +" - "+ SharedData.getInstance().getLobbyPlayers().get(playerIndex).toString());
         for (int cardIndex = 0; cardIndex < 10; cardIndex++) {
             Image image = new Image(getClass().getResource(back ? "Cards_png/back.png" : cards.get(cardIndex).getImage()).toExternalForm());
             ImageView iv = new ImageView(image);
             iv.setPreserveRatio(true);
 
+            System.out.println("porcoddio: "+SharedData.getInstance().getLobbyPlayers().get(playerIndex));
             handsWithCardsImView.get(SharedData.getInstance().getLobbyPlayers().get(playerIndex)).add(iv);
+
 
             GridPane.setHalignment(iv, HPos.CENTER);
             GridPane.setValignment(iv, VPos.CENTER);
@@ -339,6 +371,7 @@ public class TableController implements Initializable {
                         );
 
                         cardToTableAnimation.play();
+                        SharedData.getInstance().getPlayerCards().remove(finalCardIndex);
 
                     }
                 });

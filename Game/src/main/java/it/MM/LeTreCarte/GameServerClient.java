@@ -33,12 +33,21 @@ public class GameServerClient {
         //activeSession = this.container.connectToServer(this.endpoint, new URI(WebSocketServerURI));
         connect();
 
-        JsonObject dataToSend = new JsonObject();
-        dataToSend.addProperty("type", "createRoom");
-        dataToSend.addProperty("clientID", SharedData.getInstance().getClientID());
-        dataToSend.addProperty("gameType", SharedData.getInstance().getSelectedGame());
+        boolean done = false;
+        while(!done){
+            if(SharedData.getInstance().getClientID()!=null){
+                JsonObject dataToSend = new JsonObject();
+                dataToSend.addProperty("type", "createRoom");
 
-        this.endpoint.sendJSON(dataToSend);
+                dataToSend.addProperty("clientID", SharedData.getInstance().getClientID());
+                dataToSend.addProperty("gameType", SharedData.getInstance().getSelectedGame());
+                System.out.println(dataToSend);
+                this.endpoint.sendJSON(dataToSend);
+                done = true;
+            }
+            Thread.sleep(100);
+        }
+
     }
 
 
@@ -46,12 +55,19 @@ public class GameServerClient {
         //Session activeSession = this.container.connectToServer(this.endpoint, new URI(WebSocketServerURI));
         connect();
 
-        JsonObject dataToSend = new JsonObject();
-        dataToSend.addProperty("type", "joinRoom");
-        dataToSend.addProperty("clientID", SharedData.getInstance().getClientID());
-        dataToSend.addProperty("roomCode", roomCode);
+        boolean done = false;
+        while(!done){
+            if(SharedData.getInstance().getClientID()!=null){
+                JsonObject dataToSend = new JsonObject();
+                dataToSend.addProperty("type", "joinRoom");
+                dataToSend.addProperty("clientID", SharedData.getInstance().getClientID());
+                dataToSend.addProperty("roomCode", roomCode);
+                this.endpoint.sendJSON(dataToSend);
+                done = true;
+            }
+            Thread.sleep(100);
+        }
 
-        this.endpoint.sendJSON(dataToSend);
     }
 
     public void connect() throws URISyntaxException, DeploymentException, IOException {
@@ -95,7 +111,7 @@ public class GameServerClient {
         JsonObject dataToSend = new JsonObject();
         dataToSend.addProperty("success", "true");
         dataToSend.addProperty("type", "move");
-        dataToSend.addProperty("clientID", SharedData.getInstance().getPlayerName());
+        dataToSend.addProperty("clientAKA", SharedData.getInstance().getPlayerName());
         dataToSend.addProperty("roomCode", SharedData.getInstance().getRoomCode().toString());
         dataToSend.addProperty("cardIndexInHand", cardIndexInHand);
         dataToSend.addProperty("card-val", card.getValue());
@@ -113,6 +129,8 @@ public class GameServerClient {
         JsonObject dataToSend = new JsonObject();
         dataToSend.addProperty("type", "getPlayerCards");
         dataToSend.addProperty("roomCode", SharedData.getInstance().getRoomCode());
+        System.out.println(SharedData.getInstance().getClientID());
+        dataToSend.addProperty("clientID", SharedData.getInstance().getClientID());
 
         this.endpoint.sendJSON(dataToSend);
     }
