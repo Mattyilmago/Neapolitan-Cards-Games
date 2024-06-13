@@ -162,7 +162,7 @@ public class TableController implements Initializable {
 
 
                                         },
-                                                new KeyValue(translate2.xProperty(),calculateX(startX, endX)),
+                                                new KeyValue(translate2.xProperty(),calculateX(SharedData.getInstance().getLobbyPlayers().indexOf(clientAKA),startX, endX)),
                                                 new KeyValue(translate2.yProperty(), calculateY(startY, endY))
                                         )
 
@@ -409,7 +409,7 @@ public class TableController implements Initializable {
 
 
                                     },
-                                            new KeyValue(translate.xProperty(), calculateX(startX,endX)),
+                                            new KeyValue(translate.xProperty(), calculateX(0,startX,endX)),
                                             new KeyValue(translate.yProperty(), calculateY(startY,endY))
                                     )
                             );
