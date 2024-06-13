@@ -75,16 +75,18 @@ public class TableController implements Initializable {
         if(startY<endY){
             return -Math.abs(endY-startY);
         }else{
-            return endY-startY;
+            return Math.abs(endY-startY);
         }
     }
 
-    Number calculateX(double startX,double endX){
-        if(startX>endX){
-            return endX-startX;
+    Number calculateX(int position, double startX,double endX){
+        if(position==2){
+            return -Math.abs(endX-startX);
         }else{
-            return endX-startX;
+            return startX-endX;
         }
+
+
     }
 
     private void startBackgroundListener(){
@@ -97,7 +99,7 @@ public class TableController implements Initializable {
 
                             if(Objects.equals(response.get("type").getAsString(), "move") && !Objects.equals(response.get("clientAKA").getAsString(), SharedData.getInstance().getPlayerName())){
                                 String clientAKA = response.get("clientAKA").getAsString();
-                                int cardIndexInHand = response.get("cardIndexInHand").getAsInt()-1;
+                                int cardIndexInHand = response.get("cardIndexInHand").getAsInt();
 
                                 System.out.println(clientAKA);
                                 System.out.println(handsWithGridPane);
