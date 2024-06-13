@@ -10,7 +10,9 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -128,14 +130,15 @@ public class TableController implements Initializable {
                                             cardInTable.setVisible(true);
                                             gridviewAKA.getChildren().remove(cardToMove);
 
-//                                            //Sposta i nodi rimanenti (si potrebbe fare animato ehh)
-//                                            for (Node node : gridview.getChildren()) {
-//                                                Integer currCol = gridview.getColumnIndex(node);
-//                                                if (currCol != null && currCol > (cardIndexInHand-1)) {
-//                                                    gridview.setColumnIndex(node, currCol - 1);
-//                                                }
-//                                            }
-//                                            gridview.getColumnConstraints().removeLast();
+
+                                            // Sposta i nodi rimanenti (si potrebbe fare animato ehh)
+                                            for (Node node : gridviewAKA.getChildren()) {
+                                                Integer currCol = GridPane.getColumnIndex(node);
+                                                if (currCol != null && currCol > (cardIndexInHand-1)) {
+                                                    GridPane.setColumnIndex(node, currCol - 1);
+                                                }
+                                            }
+                                            gridviewAKA.getColumnConstraints().removeLast();
 
 
 
@@ -167,8 +170,20 @@ public class TableController implements Initializable {
     void sortLobbyPlayers(){
         String me = SharedData.getInstance().getPlayerName();
 
-        SharedData.getInstance().getLobbyPlayers().remove(me);
-        SharedData.getInstance().getLobbyPlayers().addFirst(me);
+        ObservableList<String> tmp = FXCollections.observableArrayList();
+        tmp.add(me);
+
+        int indexOfme = SharedData.getInstance().getLobbyPlayers().indexOf(me);
+        for (int index = indexOfme; index < SharedData.getInstance().getLobbyPlayers().size(); index++) {
+            tmp.add(SharedData.getInstance().getLobbyPlayers().get(index));
+        }
+
+        for(int j=0; j<indexOfme; j++){
+            tmp.add(SharedData.getInstance().getLobbyPlayers().get(j));
+        }
+
+        SharedData.getInstance().getLobbyPlayers().clear();
+        SharedData.getInstance().getLobbyPlayers().addAll(tmp);
 
     }
 
