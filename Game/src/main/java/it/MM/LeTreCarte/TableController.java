@@ -71,13 +71,20 @@ public class TableController implements Initializable {
     //contiene false se non è presente nessuna carta, true viceversa
     ArrayList<Boolean> tableSupport = new ArrayList<>();
 
-    Number calculateY(int position, double endY,double startY){
-        return switch (position) {
-            case 1 -> endY - startY;                    //sx
-            case 2 -> -(endY - startY);                 //difronte
-            case 3 -> endY - startY;                    //dx
-            default -> 0;                               //never used (myHand)
-        };
+    Number calculateY(double startY,double endY){
+        if(startY<endY){
+            return -Math.abs(endY-startY);
+        }else{
+            return endY-startY;
+        }
+    }
+
+    Number calculateX(double startX,double endX){
+        if(startX>endX){
+            return endX-startX;
+        }else{
+            return endX-startX;
+        }
     }
 
     private void startBackgroundListener(){
@@ -153,10 +160,8 @@ public class TableController implements Initializable {
 
 
                                         },
-                                                new KeyValue(translate2.xProperty(),
-                                                        -(endX-startX)
-                                                        ),
-                                                new KeyValue(translate2.yProperty(), calculateY(SharedData.getInstance().getLobbyPlayers().indexOf(clientAKA), startY, endY))
+                                                new KeyValue(translate2.xProperty(),calculateX(startX, endX)),
+                                                new KeyValue(translate2.yProperty(), calculateY(startY, endY))
                                         )
 
 
@@ -402,8 +407,8 @@ public class TableController implements Initializable {
 
 
                                     },
-                                            new KeyValue(translate.xProperty(), endX - startX),
-                                            new KeyValue(translate.yProperty(), endY - startY)
+                                            new KeyValue(translate.xProperty(), calculateX(startX,endX)),
+                                            new KeyValue(translate.yProperty(), calculateY(startY,endY))
                                     )
                             );
 
