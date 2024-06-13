@@ -71,6 +71,15 @@ public class TableController implements Initializable {
     //contiene false se non è presente nessuna carta, true viceversa
     ArrayList<Boolean> tableSupport = new ArrayList<>();
 
+    Number calculateY(int position, double endY,double startY){
+        return switch (position) {
+            case 1 -> endY - startY;                    //sx
+            case 2 -> -(endY - startY);                 //difronte
+            case 3 -> endY - startY;                    //dx
+            default -> 0;                               //never used (myHand)
+        };
+    }
+
     private void startBackgroundListener(){
         SharedData.getInstance().getMoves().addListener(
                 new ListChangeListener<JsonObject>() {
@@ -110,8 +119,8 @@ public class TableController implements Initializable {
 
                                 //creo una copia di iv
                                 ImageView cardInTable = new ImageView(new Image(getClass().getResource(new Card(cardVal, cardSeed).getImage()).toExternalForm()));
-                                cardInTable.setFitWidth(gridviewAKA.getPrefWidth()/11);
-                                cardInTable.setFitHeight(gridviewAKA.getPrefHeight());
+                                cardInTable.setFitWidth(hand.getPrefWidth()/11.5);
+                                cardInTable.setFitHeight(hand.getPrefHeight()*0.9);
                                 cardInTable.setVisible(false);
 
                                 table.getChildren().remove(targetRow+targetCol);
@@ -128,13 +137,14 @@ public class TableController implements Initializable {
 
                                         new KeyFrame(new Duration(300), e ->{
                                             cardInTable.setVisible(true);
+                                            cardToMove.setVisible(false);
                                             gridviewAKA.getChildren().remove(cardToMove);
 
 
                                             // Sposta i nodi rimanenti (si potrebbe fare animato ehh)
                                             for (Node node : gridviewAKA.getChildren()) {
                                                 Integer currCol = GridPane.getColumnIndex(node);
-                                                if (currCol != null && currCol > (cardIndexInHand-1)) {
+                                                if (currCol != null && currCol > (cardIndexInHand)) {
                                                     GridPane.setColumnIndex(node, currCol - 1);
                                                 }
                                             }
@@ -143,13 +153,15 @@ public class TableController implements Initializable {
 
 
                                         },
-                                                new KeyValue(translate2.xProperty(), -(endX-startX)),
-                                                new KeyValue(translate2.yProperty(), -(endY-startY))
+                                                new KeyValue(translate2.xProperty(),
+                                                        -(endX-startX)
+                                                        ),
+                                                new KeyValue(translate2.yProperty(), calculateY(SharedData.getInstance().getLobbyPlayers().indexOf(clientAKA), startY, endY))
                                         )
+
+
+
                                 );
-
-
-                                gridviewAKA.getColumnConstraints().removeLast();
 
                                 cardToTableAnimationENEMY.play();
 
@@ -174,7 +186,7 @@ public class TableController implements Initializable {
         tmp.add(me);
 
         int indexOfme = SharedData.getInstance().getLobbyPlayers().indexOf(me);
-        for (int index = indexOfme; index < SharedData.getInstance().getLobbyPlayers().size(); index++) {
+        for (int index = indexOfme+1; index < SharedData.getInstance().getLobbyPlayers().size(); index++) {
             tmp.add(SharedData.getInstance().getLobbyPlayers().get(index));
         }
 
@@ -184,6 +196,8 @@ public class TableController implements Initializable {
 
         SharedData.getInstance().getLobbyPlayers().clear();
         SharedData.getInstance().getLobbyPlayers().addAll(tmp);
+        System.out.println(tmp);
+
 
     }
 
@@ -307,86 +321,97 @@ public class TableController implements Initializable {
                     }
                 });
 
+
                 int finalCardIndex = cardIndex;
                 pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    boolean waitUntilAnimation = false;
                     @Override
                     public void handle(MouseEvent mouseEvent) {
-                        //trova cardIndex aggiornato, per risolvere il problema delle carte in mano che diminuiscono
-                        int currentCardIndex= (int) gridview.getChildren().stream().takeWhile(node -> !node.equals(pane)).count();
-                        System.out.println("currentCardIndex: "+currentCardIndex);
 
-                        //recupera la posizione globale della carta
-                        Translate translate = new Translate();
-                        iv.getTransforms().add(translate);
+                        if(!waitUntilAnimation){
+                            waitUntilAnimation = true;
+                            //trova cardIndex aggiornato, per risolvere il problema delle carte in mano che diminuiscono
+                            int currentCardIndex= (int) gridview.getChildren().stream().takeWhile(node -> !node.equals(pane)).count();
+                            System.out.println("currentCardIndex: "+currentCardIndex);
+
+                            //recupera la posizione globale della carta
+                            Translate translate = new Translate();
+                            iv.getTransforms().add(translate);
 
 
-                        int index = findIndexOfFirstEmptyCell();
-                        int targetRow = index/tableCols;
-                        int targetCol = targetRow == 0 ? index : index%tableCols;
+                            //target coordinates
+                            int index = findIndexOfFirstEmptyCell();
+                            int targetRow = index/tableCols;
+                            int targetCol = targetRow == 0 ? index : index%tableCols;
 
-                        //Sending move to server
-                        try {
-                            SharedData.getGSCInstance().sendMove("cardToTable", cards.get(finalCardIndex), currentCardIndex, targetRow, targetCol, gridview.getColumnCount());
-                        } catch (EncodeException | IOException e) {
-                            System.out.println("Connection error: Could not send move to table.");
-                            throw new RuntimeException(e);
+                            //Sending move to server
+                            try {
+                                SharedData.getGSCInstance().sendMove("cardToTable", cards.get(finalCardIndex), currentCardIndex, targetRow, targetCol, gridview.getColumnCount());
+                            } catch (EncodeException | IOException e) {
+                                System.out.println("Connection error: Could not send move to table.");
+                                throw new RuntimeException(e);
+                            }
+
+                            //creo una copia di iv
+                            ImageView tmpIV = new ImageView(iv.getImage());
+                            tmpIV.setFitWidth(gridview.getPrefWidth()/11.5);
+                            tmpIV.setFitHeight(gridview.getPrefHeight()*0.9);
+                            tmpIV.setVisible(false);
+
+
+
+                            System.out.println("Row: "+targetRow+"| col: "+targetCol);
+
+                            //t
+                            table.getChildren().remove(targetRow+targetCol);
+                            table.add(tmpIV, targetCol,targetRow);
+                            tableSupport.set(index, true);
+
+
+
+                            //coordinate globali
+                            double startX = iv.localToScene(0,0).getX();
+                            double startY = iv.localToScene(0,0).getY();
+                            double endX = table.localToScene(table.getBoundsInLocal()).getMinX() + targetCol * table.getPrefWidth()/tableCols;
+                            double endY = table.localToScene(table.getBoundsInLocal()).getMinY() + targetRow * table.getPrefHeight()/tableRows;
+
+                            System.out.println("endX: "+endX+"| endY: "+endY);
+
+                            //create animation
+                            Timeline cardToTableAnimation = new Timeline(
+                                    new KeyFrame(Duration.ZERO,
+                                            new KeyValue(translate.xProperty(), 0),
+                                            new KeyValue(translate.yProperty(), 0)
+                                    ),
+
+                                    new KeyFrame(new Duration(300), e ->{
+                                        gridview.getChildren().remove(pane);
+                                        tmpIV.setVisible(true);
+
+
+                                        // Sposta i nodi rimanenti (si potrebbe fare animato ehh)
+                                        for (Node node : gridview.getChildren()) {
+                                            Integer currCol = GridPane.getColumnIndex(node);
+                                            if (currCol != null && currCol > (currentCardIndex-1)) {
+                                                GridPane.setColumnIndex(node, currCol - 1);
+                                            }
+                                        }
+                                        gridview.getColumnConstraints().removeLast();
+                                        waitUntilAnimation=false;
+
+
+
+                                    },
+                                            new KeyValue(translate.xProperty(), endX - startX),
+                                            new KeyValue(translate.yProperty(), endY - startY)
+                                    )
+                            );
+
+                            cardToTableAnimation.play();
+
                         }
 
-                        //creo una copia di iv
-                        ImageView tmpIV = new ImageView(iv.getImage());
-                        tmpIV.setFitWidth(gridview.getPrefWidth()/11.5);
-                        tmpIV.setFitHeight(gridview.getPrefHeight()*0.9);
-                        tmpIV.setVisible(false);
 
-
-
-                        System.out.println("Row: "+targetRow+"| col: "+targetCol);
-
-                        table.getChildren().remove(targetRow+targetCol);
-                        table.add(tmpIV, targetCol,targetRow);
-                        tableSupport.set(index, true);
-
-
-
-                        //coordinate globali
-                        double startX = iv.localToScene(0,0).getX();
-                        double startY = iv.localToScene(0,0).getY();
-                        double endX = table.localToScene(table.getBoundsInLocal()).getMinX() + targetCol * table.getPrefWidth()/tableCols;
-                        double endY = table.localToScene(table.getBoundsInLocal()).getMinY() + targetRow * table.getPrefHeight()/tableRows;
-
-                        System.out.println("endX: "+endX+"| endY: "+endY);
-
-                        //create animation
-                        Timeline cardToTableAnimation = new Timeline(
-                                new KeyFrame(Duration.ZERO,
-                                        new KeyValue(translate.xProperty(), 0),
-                                        new KeyValue(translate.yProperty(), 0)
-                                ),
-
-                                new KeyFrame(new Duration(300), e ->{
-                                    gridview.getChildren().remove(pane);
-                                    tmpIV.setVisible(true);
-
-
-                                    // Sposta i nodi rimanenti (si potrebbe fare animato ehh)
-                                    for (Node node : gridview.getChildren()) {
-                                        Integer currCol = GridPane.getColumnIndex(node);
-                                        if (currCol != null && currCol > (currentCardIndex-1)) {
-                                            GridPane.setColumnIndex(node, currCol - 1);
-                                        }
-                                    }
-                                    gridview.getColumnConstraints().removeLast();
-
-
-
-                                },
-                                        new KeyValue(translate.xProperty(), endX-startX),
-                                        new KeyValue(translate.yProperty(), endY - startY)
-                                )
-                        );
-
-                        cardToTableAnimation.play();
-                        SharedData.getInstance().getPlayerCards().remove(finalCardIndex);
 
                     }
                 });
