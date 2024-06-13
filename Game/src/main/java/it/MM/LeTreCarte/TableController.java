@@ -71,22 +71,37 @@ public class TableController implements Initializable {
     //contiene false se non è presente nessuna carta, true viceversa
     ArrayList<Boolean> tableSupport = new ArrayList<>();
 
-    Number calculateY(double startY,double endY){
-        if(startY<endY){
-            return -Math.abs(endY-startY);
-        }else{
-            return Math.abs(endY-startY);
-        }
+    Number calculateY(int position, double startY,double endY){
+        return switch (position) {
+            case 0 -> {
+                System.out.println("Y0");
+                yield endY - startY;
+            }
+            case 1 -> {
+                System.out.println("Y1");
+                yield (endY - startY);
+            }
+            case 2 -> {
+                System.out.println("Y2");
+                yield -(endY - startY);
+            }
+            case 3 -> {
+                System.out.println("Y3");
+                yield startY - endY;
+            }
+            default -> 0;
+        };
     }
 
     Number calculateX(int position, double startX,double endX){
-        if(position==2){
-            return -Math.abs(endX-startX);
-        }else{
-            return startX-endX;
-        }
-
-
+        System.out.println("aaa"+startX+"|"+endX);
+        return switch (position){
+            case 0 -> endX-startX;
+            case 1 -> -startX+endX;
+            case 2 -> -(endX-startX);
+            case 3 -> -Math.abs(endX-startX);
+            default -> 0;
+        };
     }
 
     private void startBackgroundListener(){
@@ -99,7 +114,7 @@ public class TableController implements Initializable {
 
                             if(Objects.equals(response.get("type").getAsString(), "move") && !Objects.equals(response.get("clientAKA").getAsString(), SharedData.getInstance().getPlayerName())){
                                 String clientAKA = response.get("clientAKA").getAsString();
-                                int cardIndexInHand = response.get("cardIndexInHand").getAsInt();
+                                int cardIndexInHand = response.get("cardIndexInHand").getAsInt()-1;
 
                                 System.out.println(clientAKA);
                                 System.out.println(handsWithGridPane);
@@ -163,7 +178,7 @@ public class TableController implements Initializable {
 
                                         },
                                                 new KeyValue(translate2.xProperty(),calculateX(SharedData.getInstance().getLobbyPlayers().indexOf(clientAKA),startX, endX)),
-                                                new KeyValue(translate2.yProperty(), calculateY(startY, endY))
+                                                new KeyValue(translate2.yProperty(), calculateY(SharedData.getInstance().getLobbyPlayers().indexOf(clientAKA),startY, endY))
                                         )
 
 
@@ -228,7 +243,7 @@ public class TableController implements Initializable {
             ArrayList<Card> frontCards = new ArrayList<>(SharedData.getInstance().getPlayerCards());
             ArrayList<GridPane> hands = new ArrayList<>();
 
-            if(SharedData.getInstance().getLobbyPlayers().size()==2){
+            if(SharedData.getInstance().getLobbyPlayers().size()<=2){
                 hands.add(hand);            //mano giocatore principale
                 hands.add(handPlayer2);     //mano giocatore difronte
             }else{
@@ -410,7 +425,7 @@ public class TableController implements Initializable {
 
                                     },
                                             new KeyValue(translate.xProperty(), calculateX(0,startX,endX)),
-                                            new KeyValue(translate.yProperty(), calculateY(startY,endY))
+                                            new KeyValue(translate.yProperty(), calculateY(0,startY,endY))
                                     )
                             );
 
