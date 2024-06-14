@@ -42,7 +42,7 @@ public class GameManagerBriscola {
 
         boolean isWinnerBriscola = false;
         int indexWinner = 0;
-        Character seed = table.getCards().getFirst().getSeed();
+        char seed = table.getCards().getFirst().getSeed();
 
         for(Card card : table.getCards()) {
             if(isWinnerBriscola) { //Se la carta che vince è una briscola e se trovo un'altra briscola di punteggio maggiore aggiorno il vincitore

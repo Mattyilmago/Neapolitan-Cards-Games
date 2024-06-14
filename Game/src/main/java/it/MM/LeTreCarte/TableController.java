@@ -69,7 +69,7 @@ public class TableController implements Initializable {
     @FXML
     private GridPane handPlayer3;
 
-    private Table table;
+    final Table table = new Table();
 
     //contiene i giocatori sortati per inserirli a schermo
     static ObservableList<String> playersSorted = SharedData.getInstance().getLobbyPlayers();
@@ -86,7 +86,7 @@ public class TableController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         startBackgroundListener();
-        sortplayersSorted();
+        sortPlayersSorted();
 
         configureTableGridPane(tableGridPane);
         configureTable(table);
@@ -118,26 +118,32 @@ public class TableController implements Initializable {
 
     }
 
-    /**
-     * Return a new card given by the URL of the card's image
-     * @param url url of the image
-     * @return Card associated to the imageview
-     */
-    private Card cardFromUrl(String url){
-        int value = 0;
-        Character seed;
-        if(url.charAt(109) == '0'){
-            value = 10;
-            seed = url.charAt(111);
-            return new Card(value, seed);
-        }
-        else{
-            value = Character.getNumericValue(url.charAt(108));
-            seed = url.charAt(110);
-            return new Card(value, seed);
-        }
-    }
+//    /**
+//     * Return a new card given by the URL of the card's image
+//     * @param url url of the image
+//     * @return Card associated to the imageview
+//     */
+//    private Card cardFromUrl(String url){
+//        int value = 0;
+//        Character seed;
+//        if(url.charAt(109) == '0'){
+//            value = 10;
+//            seed = url.charAt(111);
+//            return new Card(value, seed);
+//        }
+//        else{
+//            value = Character.getNumericValue(url.charAt(108));
+//            seed = url.charAt(110);
+//            return new Card(value, seed);
+//        }
+//    }
 
+    /** Starts the processes that handles responses of server
+        type of responses:
+        - type:move when a player put a card on the table
+        - type:cardsOnTable when the server needs to refresh current cards on table
+        - type:yourTurn when the server notify that is the turn of a player
+     * */
     private void startBackgroundListener() {
         SharedData.getInstance().getMoves().addListener(new ListChangeListener<JsonObject>() {
             @Override
@@ -157,7 +163,7 @@ public class TableController implements Initializable {
                         //#
                         ImageView cardToMove = handsWithCardsImView.get(clientAKA).get(cardIndexInHand);
 
-                        Card card = cardFromUrl(handsWithCardsImView.get(clientAKA).get(cardIndexInHand).getImage().getUrl());
+                        //Card card = cardFromUrl(handsWithCardsImView.get(clientAKA).get(cardIndexInHand).getImage().getUrl());
                         handsWithCardsImView.get(clientAKA).remove(cardIndexInHand);
 
 
@@ -205,7 +211,7 @@ public class TableController implements Initializable {
                                     gridviewAKA.getColumnConstraints().removeLast();
 
 
-                                }, new KeyValue(translate2.xProperty(), endX - startX), new KeyValue(translate2.yProperty(), -(endY - startY)))
+                                }, new KeyValue(translate2.xProperty(), calculateX(playersSorted.indexOf(clientAKA), startX, endX)), new KeyValue(translate2.yProperty(), calculateY(playersSorted.indexOf(clientAKA), startY, endY)))
 
 
                         );
@@ -213,8 +219,13 @@ public class TableController implements Initializable {
                         cardToTableAnimationENEMY.play();
 
                         //vedo se posso calcolare la presa e aggiorno variabile indexPayerTurn
-                        if(!currGame.equals("Scopa"))
-                            calculateWinForScopa(card);
+                        if(!currGame.equals("Scopa")){
+
+
+                            //calculateWinForScopa(card);
+                        }
+
+
                         else {
                             //Se l'ultimo del turno ha giocato la carta vedo la presa del turno se gioco a Tressette o Briscola
                             if (indexPlayerInTurn == playersTurn.size() - 1) {
@@ -249,11 +260,13 @@ public class TableController implements Initializable {
     public void generatePlayersCards(GridPane gridview, ArrayList<Card> cards, boolean back, int playerIndex) {
 
         System.out.println("players: " + playersSorted.toString() + " - " + playersSorted.get(playerIndex).toString());
-        int cardToGenerate = currGame.equals("Tressette") ? 10 : 3;
+        int cardToGenerate = 10; //TODO remove
+        //int cardToGenerate = currGame.equals("Tressette") ? 10 : 3;
 
         for (int cardIndex = 0; cardIndex < cardToGenerate; cardIndex++) {
-            Card card = cards.get(cardIndex);
-            Image image = new Image(getClass().getResource(back ? "Cards_png/back.png" : card.getImage()).toExternalForm());
+            Card card = back ? new Card(true) : cards.get(cardIndex);
+
+            Image image = new Image(getClass().getResource(card.getImage()).toExternalForm());
             ImageView iv = new ImageView(image);
             iv.setPreserveRatio(true);
 
@@ -266,7 +279,7 @@ public class TableController implements Initializable {
 
             Pane pane = new Pane(iv);
 
-            iv.setFitWidth(gridview.getPrefWidth() / 11);
+            iv.setFitWidth(gridview.getPrefWidth() / (cardToGenerate+1));
             iv.setFitHeight(gridview.getPrefHeight());
             gridview.addColumn(cardIndex, pane);
             gridview.setAlignment(Pos.CENTER);
@@ -368,7 +381,7 @@ public class TableController implements Initializable {
                                             waitUntilAnimation = false;
 
 
-                                        }, new KeyValue(translate.xProperty(), calculateX(0, startX, endX)), new KeyValue(translate.yProperty(), calculateY(startY, endY))));
+                                        }, new KeyValue(translate.xProperty(), calculateX(0, startX, endX)), new KeyValue(translate.yProperty(), calculateY(0, startY, endY))));
 
                                 cardToTableAnimation.play();
 
@@ -379,18 +392,18 @@ public class TableController implements Initializable {
 
                     });
                     //TODO dovrebbe stare dentro setOnMouseClicked
-                    if(!currGame.equals("Scopa"))
-                        calculateWinForScopa(card);
-                    else {
-                        //Se l'ultimo del turno ha giocato la carta vedo la presa del turno se gioco a Tressette o Briscola
-                        if (indexPlayerInTurn == playersTurn.size() - 1) {
-                            calculateEndTurnWinner();
-                        }
-                    }
-                    if(indexPlayerInTurn == playersTurn.size() - 1)
-                        indexPlayerInTurn = 0;
-                    else
-                        indexPlayerInTurn++;
+//                    if(!currGame.equals("Scopa"))
+//                        calculateWinForScopa(card);
+//                    else {
+//                        //Se l'ultimo del turno ha giocato la carta vedo la presa del turno se gioco a Tressette o Briscola
+//                        if (indexPlayerInTurn == playersTurn.size() - 1) {
+//                            calculateEndTurnWinner();
+//                        }
+//                    }
+//                    if(indexPlayerInTurn == playersTurn.size() - 1)
+//                        indexPlayerInTurn = 0;
+//                    else
+//                        indexPlayerInTurn++;
 
 
                 }
@@ -509,7 +522,8 @@ public class TableController implements Initializable {
 
     }
 
-    private void sortplayersSorted() {
+    ///TODO rifalla in modo intelligente
+    private void sortPlayersSorted() {
         String me = SharedData.getInstance().getPlayerName();
 
         ObservableList<String> tmp = FXCollections.observableArrayList();
@@ -558,6 +572,7 @@ public class TableController implements Initializable {
      * @param table
      */
     public void configureTable(Table table) {
+        //table = new Table(new ArrayList<Player>(2), new ArrayList<Player>());
         table.setTeams(new ArrayList<>(2));
         table.getTeams().add(new Player(playersTurn.get(0)));
         table.getTeams().add(new Player(playersTurn.get(1)));
@@ -572,7 +587,7 @@ public class TableController implements Initializable {
      */
     public void generateHands() {
         try {
-            ArrayList<Card> frontCards = new ArrayList<>(SharedData.getInstance().getPlayerCards());
+
             ArrayList<GridPane> hands = new ArrayList<>();
 
             if (twoPlayers) {
@@ -598,7 +613,7 @@ public class TableController implements Initializable {
                 handsWithCardsImView.put(clientName, new ArrayList<>());
 
                 if (tmp == 0) {
-                    generatePlayersCards(hand, frontCards, false, 0);
+                    generatePlayersCards(hand, new ArrayList<>(SharedData.getInstance().getPlayerCards()), false, 0);
                 } else {
                     generatePlayersCards(hands.get(tmp), new ArrayList<Card>(), true, tmp);
                 }
@@ -614,20 +629,37 @@ public class TableController implements Initializable {
 
     }
 
-    Number calculateY(double startY, double endY) {
-        if (startY < endY) {
-            return Math.abs(endY - startY);
-        } else {
-            return -Math.abs(endY - startY);
-        }
+    Number calculateY(int position,double startY, double endY) {
+        return switch (position){
+            case 0 -> endY-startY;
+            case 1 -> (endY-startY);
+            case 2 -> -(endY-startY);
+            default -> {
+
+                System.out.println("def");
+                yield 5;
+            }
+        };
     }
 
     Number calculateX(int position, double startX, double endX) {
-        if (startX < endX) {
-            return Math.abs(endX - startX);
-        } else {
-            return -Math.abs(endX);
-        }
+        return switch (position){
+            case 0 -> endX-startX;
+            case 1 -> (endX-startX);
+            case 2 -> -(endX-startX);
+            default -> {
+
+                System.out.println("def");
+                yield 5;
+            }
+        };
+
+
+        //        if (startX < endX) {
+//            return Math.abs(endX - startX);
+//        } else {
+//            return -Math.abs(endX);
+//        }
 
 
     }

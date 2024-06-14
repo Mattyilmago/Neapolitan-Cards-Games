@@ -34,6 +34,15 @@ public class Card {
 //            throw new RuntimeException(e);
 //        }
     }
+
+    public Card(boolean back){
+        if(back){
+            this.image = "Cards_png/back.png";
+        }else{
+            throw new RuntimeException("Illegal use of the constructor");
+        }
+    }
+
     //private Image convertToFxImage(BufferedImage bufferedImage) {
 //        return SwingFXUtils.toFXImage(bufferedImage, null);
 //    }

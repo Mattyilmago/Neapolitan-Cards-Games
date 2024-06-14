@@ -95,8 +95,7 @@ public class GameManagerScopa {
 
                 boolean hasMostDenari = player.getDeckPlayer().cardsNumberWithSameSeed('D') > 5;
 
-                ArrayList<Card> tableCards = new ArrayList<>();
-                tableCards.addAll(table.getCards());
+                ArrayList<Card> tableCards = new ArrayList<>(table.getCards());
 
                 vbest = null;
                 calculateWonCardsRec(card, 0, table.getCards().size(), 0, hasMostDenari, tableCards);

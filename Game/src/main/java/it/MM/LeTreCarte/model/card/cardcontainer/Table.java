@@ -9,11 +9,13 @@ public class Table extends CardContainer {
     ArrayList<Player> teams = new ArrayList<Player>();
     ArrayList<Player> players = new ArrayList<Player>();
 
-    public Table(ArrayList<Player> team, ArrayList<Player> players) {
+    public Table(ArrayList<Player> teams, ArrayList<Player> players) {
         this.cards = new ArrayList<Card>();
-        this.teams = team;
+        this.teams = teams;
         this.players = players;
     }
+
+    public Table() {this.cards = new ArrayList<Card>();}
 
     public void setTeams(ArrayList<Player> teams) {
         this.teams = teams;
