@@ -128,13 +128,15 @@ public class LobbyController implements Initializable {
     @FXML
     public void switchToTable(ActionEvent event) throws IOException, EncodeException {
         SharedData.getGSCInstance().requestCards();
+
         startGame.setDisable(true);
 
         Task<Void> waitForCards = new Task<Void>() {
 
             @Override
             protected Void call() throws Exception {
-                while (SharedData.getInstance().getPlayerCards().size() != 10) {
+                //TODO modificare il while creando un hashmap <String, int> con nome_gioco e numero_carte
+                while (SharedData.getInstance().getPlayerCards().size() != 10 && SharedData.getInstance().getCardsOnTable().size() != 4) {
                     System.out.println("cards: " + SharedData.getInstance().getPlayerCards().size());
                     Thread.sleep(500);
                 }

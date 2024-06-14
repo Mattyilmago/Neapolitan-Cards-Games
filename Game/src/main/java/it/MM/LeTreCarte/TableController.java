@@ -102,6 +102,8 @@ public class TableController implements Initializable {
 
     private Table table = new Table();
 
+
+
     //contiene i giocatori sortati per inserirli a schermo
     static ArrayList<String> playersSorted = new ArrayList<>(){{
         addAll(SharedData.getInstance().getLobbyPlayers());
@@ -137,29 +139,37 @@ public class TableController implements Initializable {
 
         generateHands();
 
+        putCardsOnTable();
+
         //TODO deck1 = SharedData.getDeck();
-        Deck deck1 = new Deck();
+        //Deck deck1 = new Deck();
 
 
-        //Butta 4 carte a terra se si gioca a scopa
-        if (currGame.equals("Scopa")) {
-            for (int i = 0; i < 4; i++) {
-                Card card = deck1.getFirst();
-                ImageView iv = new ImageView(new Image(getClass().getResource(card.getImage()).toExternalForm()));
-                iv.setFitWidth(hand.getPrefWidth() / 11.5);
-                iv.setFitHeight(hand.getPrefHeight() * 0.9);
 
-                tableGridPane.getChildren().remove(i);
-                tableGridPane.add(iv, i, 0);
-                tableSupport.set(i, true);
-            }
-        }
+
+//        //Butta 4 carte a terra se si gioca a scopa
+//        if (currGame.equals("Scopa")) {
+//
+//        }
 
         //Salva il seme della briscola
         if(currGame.equals("Briscola")){
-            briscola = deck1.getCards().getLast().getSeed(); //il seme dell'ultima carta del mazzo
+            briscola = SharedData.getInstance().getCardsOnTable().getLast().getSeed(); //il seme dell'ultima carta del mazzo
         }
 
+    }
+
+    private void putCardsOnTable() {
+        for (int i = 0; i < SharedData.getInstance().getCardsOnTable().size(); i++) {
+            Card card = SharedData.getInstance().getCardsOnTable().get(i);
+            ImageView iv = new ImageView(new Image(getClass().getResource(card.getImage()).toExternalForm()));
+            iv.setFitWidth(hand.getPrefWidth() / 11.5);
+            iv.setFitHeight(hand.getPrefHeight() * 0.9);
+
+            tableGridPane.getChildren().remove(i);
+            tableGridPane.add(iv, i, 0);
+            tableSupport.set(i, true);
+        }
     }
 
     /**
@@ -317,16 +327,21 @@ public class TableController implements Initializable {
             GridPane.setMargin(iv, new Insets(0));
 
             Pane pane = new Pane(iv);
+            pane.setStyle("-fx-background-color: red");
 
-            iv.setFitWidth(gridview.getPrefWidth() / (cardToGenerate+1));
+            //iv.setFitWidth(gridview.getPrefWidth() / (cardToGenerate+1));
             iv.setFitHeight(gridview.getPrefHeight());
             gridview.addColumn(cardIndex, pane);
             gridview.setAlignment(Pos.CENTER);
+            System.out.println("ok");
+
+
 
             if (!back) {
                 pane.setOnMouseEntered(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent mouseEvent) {
+                        System.out.println("entrato");
                         iv.setTranslateY(iv.getTranslateY() - 50);
                     }
                 });
@@ -334,6 +349,7 @@ public class TableController implements Initializable {
                 pane.setOnMouseExited(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent mouseEvent) {
+                        System.out.println("uscito");
                         iv.setTranslateY(iv.getTranslateY() + 50);
                     }
                 });
@@ -342,14 +358,15 @@ public class TableController implements Initializable {
                 int finalCardIndex = cardIndex;
 
                 //Se è il turno del giocatore può scegliere le carte
-                if (playersTurn.indexOf(SharedData.getInstance().getPlayerName()) == indexPlayerInTurn) {
+                if (true/*playersTurn.indexOf(SharedData.getInstance().getPlayerName()) == indexPlayerInTurn*/) {
                     pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
                         boolean waitUntilAnimation = false;
 
 
                         @Override
                         public void handle(MouseEvent mouseEvent) {
-
+                            System.out.println("click");
                             if (!waitUntilAnimation) {
                                 waitUntilAnimation = true;
 

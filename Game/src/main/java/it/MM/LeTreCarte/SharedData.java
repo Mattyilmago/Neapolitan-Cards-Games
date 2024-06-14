@@ -29,6 +29,7 @@ public class SharedData {
     private String playerName;
     private String clientID;
     private ObservableList<JsonObject> moves = FXCollections.observableArrayList();
+    private ObservableList<Card> cardsOnTable = FXCollections.observableArrayList();
 
 
 
@@ -118,4 +119,13 @@ public class SharedData {
     public ObservableList<JsonObject> getMoves() {
         return moves;
     }
+
+    public void addCardToTable(Card card) {
+        this.cardsOnTable.add(card);
+    }
+
+    public ObservableList<Card> getCardsOnTable() {
+        return cardsOnTable;
+    }
+
 }

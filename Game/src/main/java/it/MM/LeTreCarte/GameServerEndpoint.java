@@ -83,9 +83,6 @@ public class GameServerEndpoint extends Endpoint {
 
                             SharedData.getInstance().getPlayerCards().clear();
 
-//                            Hand hand = new Hand();
-//                            hand.addCard();
-
                             new Thread(()->{
                                 for (int i = 0; i < carte.size(); i++) {
                                     JsonArray carta = carte.get(i).getAsJsonArray();
@@ -93,9 +90,18 @@ public class GameServerEndpoint extends Endpoint {
                                 }
                             }).start();
 
+                            String cardsOnTable = response.get("cardsOnTable").getAsString();
+                            JsonArray cardsOnTableJSON = JsonParser.parseString(cardsOnTable).getAsJsonArray();
+                            SharedData.getInstance().getCardsOnTable().clear();
+                            new Thread(()->{
+                                for (int i = 0; i < cardsOnTableJSON.size(); i++) {
+                                    JsonArray carta = cardsOnTableJSON.get(i).getAsJsonArray();
+                                    SharedData.getInstance().addCardToTable(new Card(carta.get(0).getAsInt()+1,carta.get(1).getAsString().toCharArray()[0]));
+                                }
+                            }).start();
+
                         }break;
                         case "move":{
-                            System.out.println("ricevuto1");
                             new Thread(()->{
                                 SharedData.getInstance().addMove(response);
                             }).start();
