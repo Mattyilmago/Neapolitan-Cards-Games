@@ -26,24 +26,24 @@
                   <Font size="16.0" />
                </font>
             </Button>
-            <Button fx:id="playersButton" alignment="BASELINE_LEFT" contentDisplay="CENTER" layoutX="105.0" layoutY="195.0" mnemonicParsing="false" onAction="#changePlayers" prefHeight="100.0" prefWidth="200.0" text="Button" AnchorPane.topAnchor="195.0">
+            <Button fx:id="playersButton" alignment="BASELINE_LEFT" contentDisplay="CENTER" layoutX="120.2" layoutY="168.0" mnemonicParsing="false" onAction="#changePlayers" prefHeight="78.0" prefWidth="170.0" text="Button" AnchorPane.leftAnchor="120.2" AnchorPane.rightAnchor="119.0">
                <font>
                   <Font size="21.0" />
                </font>
             </Button>
-            <ImageView fx:id="createImageView" fitHeight="150.0" fitWidth="91.0" layoutX="76.0" layoutY="427.0" onMouseClicked="#createLobby" pickOnBounds="true" preserveRatio="true" />
-            <ImageView fx:id="entryImageView" fitHeight="150.0" fitWidth="91.0" layoutX="242.0" layoutY="427.0" onMouseClicked="#joinLobby" pickOnBounds="true" preserveRatio="true" />
-            <Text fx:id="labelCrea" layoutX="76.0" layoutY="379.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Crea stanza" textAlignment="CENTER" wrappingWidth="90.767822265625">
+            <ImageView fx:id="playersIcon" fitHeight="45.0" fitWidth="45.0" layoutX="234.0" layoutY="185.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="createImageView" fitHeight="150.0" fitWidth="91.0" layoutX="79.0" layoutY="381.0" onMouseClicked="#createLobby" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="entryImageView" fitHeight="150.0" fitWidth="91.0" layoutX="245.0" layoutY="381.0" onMouseClicked="#joinLobby" pickOnBounds="true" preserveRatio="true" />
+            <Text layoutX="79.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Crea stanza" textAlignment="CENTER" wrappingWidth="90.767822265625">
                <font>
                   <Font size="18.0" />
                </font>
             </Text>
-            <Text fx:id="labelEntra" layoutX="242.0" layoutY="379.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Entra stanza" textAlignment="CENTER" wrappingWidth="90.767822265625">
+            <Text layoutX="245.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Entra stanza" textAlignment="CENTER" wrappingWidth="90.767822265625">
                <font>
                   <Font size="18.0" />
                </font>
             </Text>
-            <ImageView fx:id="playersIcon" fitHeight="60.0" fitWidth="60.0" layoutX="242.0" layoutY="215.0" pickOnBounds="true" preserveRatio="true" />
          </children>
       </AnchorPane>
    </children>

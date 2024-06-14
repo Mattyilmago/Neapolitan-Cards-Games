@@ -28,7 +28,7 @@ import java.util.ResourceBundle;
 
 public class GamesController implements Initializable {
 
-    private String[] games = {"Scopa", "Briscola", "Tressette", "Somma"};
+    private String[] games = {"Scopa", "Briscola", "Tressette"};
     private String[] cards = {"1-B", "10-D", "1-S", "10-C", "1-C", "10-B", "1-D", "10-S"};
     private int curGame = 0;
     private boolean isTwoPlayers = true;

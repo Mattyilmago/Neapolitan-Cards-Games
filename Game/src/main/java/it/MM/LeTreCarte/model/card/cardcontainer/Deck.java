@@ -34,7 +34,10 @@ public class Deck extends CardContainer {
 
     public ArrayList<Card> getCards() {return cards;}
 
-
+    /**
+     * Get the first card of the deck and remove from it
+     * @return Fisrt card
+     */
     public Card getFirst(){
         Card tmp = this.cards.getFirst();
         this.cards.removeFirst();

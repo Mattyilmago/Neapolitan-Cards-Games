@@ -9,6 +9,9 @@ public class DeckPlayer extends CardContainer {
     public DeckPlayer() {
         this.cards=new ArrayList<Card>();
     }
+    public void addAll(ArrayList<Card> cards){
+        cards.addAll(cards);
+    }
 
     @Override
     public String toString() {
