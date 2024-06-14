@@ -1,0 +1,34 @@
+#teamMaradona{
+    -fx-background-color: #521a6a;
+}
+#teamVesuvio{
+    -fx-background-color: #6a1a32;
+}
+
+#MaradonaPoints{
+    -fx-font-size: 20px;
+    -fx-text-fill: #0c0c0c;
+    -fx-font-family: "Retroma Vibes";
+}
+#VesuvioPoints{
+    -fx-font-size: 20px;
+    -fx-text-fill: #0c0c0c;
+    -fx-font-family: "Retroma Vibes";
+}
+
+#namePlayer{
+    -fx-font-size: 25px;
+    -fx-font-family: "Super Monday";
+}
+#namePlayer1{
+    -fx-font-size: 25px;
+    -fx-font-family: "Super Monday";
+}
+#namePlayer2{
+     -fx-font-size: 25px;
+     -fx-font-family: "Super Monday";
+}
+#namePlayer3{
+      -fx-font-size: 25px;
+      -fx-font-family: "Super Monday";
+}

@@ -151,7 +151,7 @@ public class LobbyController implements Initializable {
                         root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Table.fxml")));
                         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
                         Scene scene = new Scene(root);
-                        //scene.getStylesheets().addCard(getClass().getResource("Table.css").toExternalForm());
+                        scene.getStylesheets().add(getClass().getResource("Table.css").toExternalForm());
                         stage.setScene(scene);
                         stage.show();
                     } catch (IOException e) {

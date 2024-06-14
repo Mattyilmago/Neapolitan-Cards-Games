@@ -24,6 +24,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -68,20 +69,60 @@ public class TableController implements Initializable {
     private GridPane handPlayer2;
     @FXML
     private GridPane handPlayer3;
+    @FXML
+    private Label namePlayer;
 
-    final Table table = new Table();
+    @FXML
+    private Label namePlayer1;
+
+    @FXML
+    private Label namePlayer2;
+
+    @FXML
+    private Label namePlayer3;
+
+    private ArrayList<Label> names = new ArrayList<Label>(){{
+        add(namePlayer);
+        add(namePlayer1);
+        add(namePlayer2);
+        add(namePlayer3);
+    }};
+
+    @FXML
+    private Label MaradonaPoints;
+
+    @FXML
+    private Label VesuvioPoints;
+
+    @FXML
+    private AnchorPane teamMaradona;
+
+    @FXML
+    private AnchorPane teamVesuvio;
+
+    private Table table = new Table();
 
     //contiene i giocatori sortati per inserirli a schermo
-    static ObservableList<String> playersSorted = SharedData.getInstance().getLobbyPlayers();
+    static ArrayList<String> playersSorted = new ArrayList<>(){{
+        addAll(SharedData.getInstance().getLobbyPlayers());
+    }};
 
     //contiene i giocatori in ordine di turno
-    private ObservableList<String> playersTurn = SharedData.getInstance().getLobbyPlayers();
+    private ArrayList<String> playersTurn = new ArrayList<>(){{
+        addAll(SharedData.getInstance().getLobbyPlayers());
+    }};
 
     boolean twoPlayers = playersSorted.size() == 2;
 
     Character briscola;
 
-    Player winnerPlayerTurn; //The player that wins the turn
+    Player winnerPlayerTurn; //Il giocatore che vince il turno
+
+
+    public void updatePointsLabel(){
+        MaradonaPoints.setText(String.valueOf(table.getTeam(0).getPoints()));
+        VesuvioPoints.setText(String.valueOf(table.getTeam(1).getPoints()));
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -90,6 +131,9 @@ public class TableController implements Initializable {
 
         configureTableGridPane(tableGridPane);
         configureTable(table);
+        table.getTeam(0).setPoints(12);
+        table.getTeam(1).setPoints(7);
+        updatePointsLabel();
 
         generateHands();
 
@@ -107,7 +151,7 @@ public class TableController implements Initializable {
 
                 tableGridPane.getChildren().remove(i);
                 tableGridPane.add(iv, i, 0);
-                tableSupport.set(1, true);
+                tableSupport.set(i, true);
             }
         }
 
@@ -118,25 +162,25 @@ public class TableController implements Initializable {
 
     }
 
-//    /**
-//     * Return a new card given by the URL of the card's image
-//     * @param url url of the image
-//     * @return Card associated to the imageview
-//     */
-//    private Card cardFromUrl(String url){
-//        int value = 0;
-//        Character seed;
-//        if(url.charAt(109) == '0'){
-//            value = 10;
-//            seed = url.charAt(111);
-//            return new Card(value, seed);
-//        }
-//        else{
-//            value = Character.getNumericValue(url.charAt(108));
-//            seed = url.charAt(110);
-//            return new Card(value, seed);
-//        }
-//    }
+    /**
+     * Return a new card given by the URL of the card's image
+     * @param url url of the image
+     * @return Card associated to the imageview
+     */
+    private Card cardFromUrl(String url){
+        int value = 0;
+        Character seed;
+        if(url.charAt(109) == '0'){
+            value = 10;
+            seed = url.charAt(111);
+            return new Card(value, seed);
+        }
+        else{
+            value = Character.getNumericValue(url.charAt(108));
+            seed = url.charAt(110);
+            return new Card(value, seed);
+        }
+    }
 
     /** Starts the processes that handles responses of server
         type of responses:
@@ -163,7 +207,7 @@ public class TableController implements Initializable {
                         //#
                         ImageView cardToMove = handsWithCardsImView.get(clientAKA).get(cardIndexInHand);
 
-                        //Card card = cardFromUrl(handsWithCardsImView.get(clientAKA).get(cardIndexInHand).getImage().getUrl());
+                        Card card = cardFromUrl(handsWithCardsImView.get(clientAKA).get(cardIndexInHand).getImage().getUrl());
                         handsWithCardsImView.get(clientAKA).remove(cardIndexInHand);
 
 
@@ -219,13 +263,8 @@ public class TableController implements Initializable {
                         cardToTableAnimationENEMY.play();
 
                         //vedo se posso calcolare la presa e aggiorno variabile indexPayerTurn
-                        if(!currGame.equals("Scopa")){
-
-
-                            //calculateWinForScopa(card);
-                        }
-
-
+                        if(currGame.equals("Scopa"))
+                            calculateWinForScopa(card);
                         else {
                             //Se l'ultimo del turno ha giocato la carta vedo la presa del turno se gioco a Tressette o Briscola
                             if (indexPlayerInTurn == playersTurn.size() - 1) {
@@ -314,6 +353,7 @@ public class TableController implements Initializable {
                             if (!waitUntilAnimation) {
                                 waitUntilAnimation = true;
 
+                                //se non gioco a scopa aggiungo al table per poter usare la funzione riscorsiva per calcolare la presa migliore per scopa
                                 if(!currGame.equals("Scopa"))
                                     table.addCard(card);
 
@@ -392,7 +432,7 @@ public class TableController implements Initializable {
 
                     });
                     //TODO dovrebbe stare dentro setOnMouseClicked
-//                    if(!currGame.equals("Scopa"))
+//                    if(currGame.equals("Scopa"))
 //                        calculateWinForScopa(card);
 //                    else {
 //                        //Se l'ultimo del turno ha giocato la carta vedo la presa del turno se gioco a Tressette o Briscola
@@ -583,6 +623,36 @@ public class TableController implements Initializable {
     }
 
     /**
+     * Set the color of the label
+     */
+    public void setNamesLabelColor(){
+        if (twoPlayers) {
+            if(SharedData.getInstance().getLobbyPlayers().indexOf(playersSorted.getFirst()) % 2 == 0){
+                System.out.println(playersSorted.getFirst() + " dentro l'if--viola");
+                namePlayer.setStyle("-fx-text-fill: #521a6a");
+                namePlayer2.setStyle("-fx-text-fill: #6a1a32");
+            }
+            else {
+                System.out.println(playersSorted.getFirst() + " dentro l'else--magenta");
+                namePlayer.setStyle("-fx-text-fill: #6a1a32");
+                namePlayer2.setStyle("-fx-text-fill: #521a6a");
+            }
+        }
+        else {
+            if (SharedData.getInstance().getLobbyPlayers().indexOf(playersSorted.getFirst()) % 2 == 0) {
+                namePlayer.setStyle("-fx-text-fill: #521a6a");
+                namePlayer2.setStyle("-fx-text-fill: #521a6a");
+                namePlayer1.setStyle("-fx-text-fill: #6a1a32");
+                namePlayer3.setStyle("-fx-text-fill: #6a1a32");
+            } else {
+                namePlayer1.setStyle("-fx-text-fill: #521a6a");
+                namePlayer3.setStyle("-fx-text-fill: #521a6a");
+                namePlayer.setStyle("-fx-text-fill: #6a1a32");
+                namePlayer2.setStyle("-fx-text-fill: #6a1a32");
+            }
+        }
+    }
+    /**
      * Generate the hands of the players
      */
     public void generateHands() {
@@ -593,13 +663,24 @@ public class TableController implements Initializable {
             if (twoPlayers) {
                 hands.add(hand);            //mano giocatore principale
                 hands.add(handPlayer2);     //mano giocatore difronte
+                namePlayer.setText(playersSorted.getFirst());
+                namePlayer2.setText(playersSorted.getLast());
+                namePlayer1.setVisible(false);
+                namePlayer3.setVisible(false);
+
             } else {
                 //4 giocatori
                 hands.add(hand);            //mano giocatore principale
                 hands.add(handPlayer1);     //mano giocatore a sx
                 hands.add(handPlayer2);     //mano giocatore difronte
                 hands.add(handPlayer3);     //mano giocatore a dx
+                namePlayer.setText(playersSorted.getFirst());
+                namePlayer1.setText((playersSorted.get(1)));
+                namePlayer2.setText((playersSorted.get(2)));
+                namePlayer3.setText(playersSorted.getLast());
             }
+
+            setNamesLabelColor();
 
             for (GridPane g : hands) {
                 g.setGridLinesVisible(true);
@@ -667,6 +748,7 @@ public class TableController implements Initializable {
     private void setupGridPaneCols(GridPane gridPane) {
         // Rimuovi eventuali RowConstraints esistenti
         gridPane.getColumnConstraints().clear();
+//        int numberOfCards = currGame.equals("Tressette") ? 10 : 3;
 
         for (int i = 0; i < 10; i++) {
             ColumnConstraints cols = new ColumnConstraints();

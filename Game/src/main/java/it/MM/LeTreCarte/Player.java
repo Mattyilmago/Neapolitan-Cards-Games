@@ -64,6 +64,8 @@ public class Player {
         this.points = points;
     }
 
+    public void addPoints(int points){this.points += points; }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

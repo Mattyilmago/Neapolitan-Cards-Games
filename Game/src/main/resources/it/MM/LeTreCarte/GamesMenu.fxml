@@ -31,15 +31,15 @@
                   <Font size="21.0" />
                </font>
             </Button>
-            <ImageView fx:id="playersIcon" fitHeight="45.0" fitWidth="45.0" layoutX="234.0" layoutY="185.0" pickOnBounds="true" preserveRatio="true" />
-            <ImageView fx:id="createImageView" fitHeight="150.0" fitWidth="91.0" layoutX="79.0" layoutY="381.0" onMouseClicked="#createLobby" pickOnBounds="true" preserveRatio="true" />
-            <ImageView fx:id="entryImageView" fitHeight="150.0" fitWidth="91.0" layoutX="245.0" layoutY="381.0" onMouseClicked="#joinLobby" pickOnBounds="true" preserveRatio="true" />
-            <Text layoutX="79.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Crea stanza" textAlignment="CENTER" wrappingWidth="90.767822265625">
+            <ImageView fx:id="playersIcon" fitHeight="45.0" fitWidth="45.0" layoutX="242.0" layoutY="185.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="createImageView" fitHeight="150.0" fitWidth="91.0" layoutX="79.0" layoutY="391.0" onMouseClicked="#createLobby" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="entryImageView" fitHeight="150.0" fitWidth="91.0" layoutX="245.0" layoutY="391.0" onMouseClicked="#joinLobby" pickOnBounds="true" preserveRatio="true" />
+            <Text fx:id="labelCrea" layoutX="79.0" layoutY="345.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Crea stanza" textAlignment="CENTER" wrappingWidth="90.767822265625">
                <font>
                   <Font size="18.0" />
                </font>
             </Text>
-            <Text layoutX="245.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Entra stanza" textAlignment="CENTER" wrappingWidth="90.767822265625">
+            <Text fx:id="labelEntra" layoutX="245.0" layoutY="345.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Entra stanza" textAlignment="CENTER" wrappingWidth="90.767822265625">
                <font>
                   <Font size="18.0" />
                </font>
