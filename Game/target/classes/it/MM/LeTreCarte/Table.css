@@ -5,30 +5,12 @@
     -fx-background-color: #6a1a32;
 }
 
-#MaradonaPoints{
+#MaradonaPoints, #VesuvioPoints{
     -fx-font-size: 20px;
     -fx-text-fill: #0c0c0c;
     -fx-font-family: "Retroma Vibes";
 }
-#VesuvioPoints{
-    -fx-font-size: 20px;
-    -fx-text-fill: #0c0c0c;
-    -fx-font-family: "Retroma Vibes";
-}
-
-#namePlayer{
+#namePlayer, #namePlayer1, #namePlayer2, #namePlayer3{
     -fx-font-size: 25px;
     -fx-font-family: "Super Monday";
-}
-#namePlayer1{
-    -fx-font-size: 25px;
-    -fx-font-family: "Super Monday";
-}
-#namePlayer2{
-     -fx-font-size: 25px;
-     -fx-font-family: "Super Monday";
-}
-#namePlayer3{
-      -fx-font-size: 25px;
-      -fx-font-family: "Super Monday";
 }

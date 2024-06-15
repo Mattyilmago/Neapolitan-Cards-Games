@@ -11,8 +11,8 @@ import java.util.HashMap;
 
 
 public class GameManagerScopa {
-    private static CardContainer vcurr;
-    private static CardContainer vbest;
+    private static CardContainer vcurr = new CardContainer() {};
+    private static CardContainer vbest = new CardContainer() {};;
     private static Integer[] scope = {0,0};
 
     //hashmap per i punti della primiera
@@ -97,9 +97,8 @@ public class GameManagerScopa {
 
                 ArrayList<Card> tableCards = new ArrayList<>(table.getCards());
 
-                vbest = null;
                 calculateWonCardsRec(card, 0, table.getCards().size(), 0, hasMostDenari, tableCards);
-                if(vbest != null) {
+                if(vbest.size() != 0) {
                     cardsWon.addAll(vbest.getCards());
                     cardsWon.add(card);
                 }
