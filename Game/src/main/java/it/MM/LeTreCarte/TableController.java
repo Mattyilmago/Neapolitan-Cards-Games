@@ -172,25 +172,25 @@ public class TableController implements Initializable {
         }
     }
 
-    /**
-     * Return a new card given by the URL of the card's image
-     * @param url url of the image
-     * @return Card associated to the imageview
-     */
-    private Card cardFromUrl(String url){
-        int value = 0;
-        Character seed;
-        if(url.charAt(109) == '0'){
-            value = 10;
-            seed = url.charAt(111);
-            return new Card(value, seed);
-        }
-        else{
-            value = Character.getNumericValue(url.charAt(108));
-            seed = url.charAt(110);
-            return new Card(value, seed);
-        }
-    }
+//    /**
+//     * Return a new card given by the URL of the card's image
+//     * @param url url of the image
+//     * @return Card associated to the imageview
+//     */
+//    private Card cardFromUrl(String url){
+//        int value = 0;
+//        Character seed;
+//        if(url.charAt(109) == '0'){
+//            value = 10;
+//            seed = url.charAt(111);
+//            return new Card(value, seed);
+//        }
+//        else{
+//            value = Character.getNumericValue(url.charAt(108));
+//            seed = url.charAt(110);
+//            return new Card(value, seed);
+//        }
+//    }
 
     /** Starts the processes that handles responses of server
         type of responses:
@@ -217,7 +217,7 @@ public class TableController implements Initializable {
                         //#
                         ImageView cardToMove = handsWithCardsImView.get(clientAKA).get(cardIndexInHand);
 
-                        Card card = cardFromUrl(handsWithCardsImView.get(clientAKA).get(cardIndexInHand).getImage().getUrl());
+                        //Card card = cardFromUrl(handsWithCardsImView.get(clientAKA).get(cardIndexInHand).getImage().getUrl());
                         handsWithCardsImView.get(clientAKA).remove(cardIndexInHand);
 
 
@@ -273,8 +273,8 @@ public class TableController implements Initializable {
                         cardToTableAnimationENEMY.play();
 
                         //vedo se posso calcolare la presa e aggiorno variabile indexPayerTurn
-                        if(currGame.equals("Scopa"))
-                            calculateWinForScopa(card);
+                        if(currGame.equals("Scopa")){}
+                            //calculateWinForScopa(card);
                         else {
                             //Se l'ultimo del turno ha giocato la carta vedo la presa del turno se gioco a Tressette o Briscola
                             if (indexPlayerInTurn == playersTurn.size() - 1) {
