@@ -36,10 +36,6 @@ public class GameManagerBriscola {
      * @param briscola
      */
     public static Player calculateWinnerTurn(Table table, Character briscola) {
-        if (table.getCards().size() != 4) {
-            throw new IllegalArgumentException();
-        }
-
         boolean isWinnerBriscola = false;
         int indexWinner = 0;
         char seed = table.getCards().getFirst().getSeed();
