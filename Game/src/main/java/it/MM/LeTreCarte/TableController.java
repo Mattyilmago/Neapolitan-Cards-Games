@@ -5,7 +5,6 @@ import it.MM.LeTreCarte.model.GameManagers.GameManagerBriscola;
 import it.MM.LeTreCarte.model.GameManagers.GameManagerScopa;
 import it.MM.LeTreCarte.model.GameManagers.GameManagerTressette;
 import it.MM.LeTreCarte.model.card.Card;
-import it.MM.LeTreCarte.model.card.cardcontainer.Deck;
 import it.MM.LeTreCarte.model.card.cardcontainer.Table;
 import jakarta.websocket.EncodeException;
 import javafx.animation.KeyFrame;
@@ -15,8 +14,6 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
-import javafx.css.Size;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -33,8 +30,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.transform.Translate;
 import javafx.util.Duration;
-import javafx.util.Pair;
-import javafx.util.converter.NumberStringConverter;
 
 import java.io.IOException;
 import java.net.URL;
@@ -42,8 +37,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
 
 
 public class TableController implements Initializable {
@@ -110,7 +103,7 @@ public class TableController implements Initializable {
 
     private Table table = new Table();
 
-
+    private ArrayList<GridPane> hands = new ArrayList<>();
 
     //contiene i giocatori sortati per inserirli a schermo
     static ArrayList<String> playersSorted = new ArrayList<>(){{
@@ -152,7 +145,7 @@ public class TableController implements Initializable {
         //Salva il seme della briscola
         if(currGame.equals("Briscola")){
             //TODO deve prendere l'ultima carta del mazzo
-            briscola = SharedData.getInstance().getPlayerCards().getLast().getSeed(); //il seme dell'ultima carta del mazzo
+            briscola = 'C'; //il seme dell'ultima carta del mazzo
         }
 
     }
@@ -248,7 +241,7 @@ public class TableController implements Initializable {
                                             GridPane.setColumnIndex(node, currCol - 1);
                                         }
                                     }
-                                    gridviewAKA.getColumnConstraints().removeLast();
+                                    gridviewAKA.getColumnConstraints().removeFirst();
 
 
                                 }, new KeyValue(translate2.xProperty(), calculateX(playersSorted.indexOf(clientAKA), startX, endX)), new KeyValue(translate2.yProperty(), calculateY(playersSorted.indexOf(clientAKA), startY, endY)))
@@ -262,7 +255,10 @@ public class TableController implements Initializable {
 
                            @Override
                            public void handle(ActionEvent event) {
-                               updateAndCalculateTurn(new Card(cardVal, cardSeed));
+                               Platform.runLater(()->{
+                                   updateAndCalculateTurn(new Card(cardVal, cardSeed));
+                               });
+
                            }
                        });
 
@@ -276,7 +272,6 @@ public class TableController implements Initializable {
 
             }
         });
-
     }
 
     /**
@@ -290,7 +285,7 @@ public class TableController implements Initializable {
 
         System.out.println("players: " + playersSorted.toString() + " - " + playersSorted.get(playerIndex).toString());
         //int cardToGenerate = 10; //TODO remove
-        int cardToGenerate = currGame.equals("Tressette") ? 10 : 3;
+        int cardToGenerate = cards.size();
 
         for (int cardIndex = 0; cardIndex < cardToGenerate; cardIndex++) {
             Card card = back ? new Card(true) : cards.get(cardIndex);
@@ -311,7 +306,13 @@ public class TableController implements Initializable {
 
             //iv.setFitWidth(gridview.getPrefWidth() / (cardToGenerate+1));
             iv.setFitHeight(gridview.getPrefHeight());
-            gridview.addColumn(cardIndex, pane);
+
+            if(cardToGenerate == 1){
+                gridview.addColumn(gridview.getChildren().size(), pane);
+            }else{
+                gridview.addColumn(cardIndex, pane);
+            }
+
             gridview.setAlignment(Pos.CENTER);
             System.out.println("ok");
 
@@ -351,6 +352,7 @@ public class TableController implements Initializable {
                         System.out.println("click");
                         if (playersTurn.indexOf(SharedData.getInstance().getPlayerName()) == indexPlayerInTurn && !waitUntilAnimation) {
                             waitUntilAnimation = true;
+                            handsWithCardsImView.get(playersSorted.get(playerIndex)).remove(iv);
 
                             //se non gioco a scopa aggiungo al table per poter usare la funzione riscorsiva per calcolare la presa migliore per scopa
                             if(!currGame.equals("Scopa"))
@@ -463,6 +465,56 @@ public class TableController implements Initializable {
         }
 
         if(indexPlayerInTurn == playersTurn.size() - 1){
+            switch (currGame){
+                case "Scopa": {
+                    if(hand.getChildren().isEmpty()){
+                        try{
+                            SharedData.getGSCInstance().requestCards(3);
+                            SharedData.getInstance().getPlayerCards().addListener(new ListChangeListener<it.MM.LeTreCarte.model.card.Card>() {
+                                @Override
+                                public void onChanged(Change<? extends it.MM.LeTreCarte.model.card.Card> change) {
+                                    if(SharedData.getInstance().getPlayerCards().size() == 3){
+                                        hand.getChildren().clear();
+                                        generatePlayersCards(hand, new ArrayList<Card>(SharedData.getInstance().getPlayerCards()), false, 0);
+
+                                        for(int i=1; i<hands.size();i++){
+                                            generatePlayersCards(hands.get(i), new ArrayList<>(SharedData.getInstance().getPlayerCards()), true, i);
+                                        }
+                                    }
+                                }
+                            });
+
+                        }catch (Exception _){
+                            System.out.println("RequestCards Error");
+                        }
+                    }
+                };
+                default: {
+                    try{
+                        SharedData.getGSCInstance().requestCards(1);
+                        SharedData.getInstance().getPlayerCards().addListener(new ListChangeListener<it.MM.LeTreCarte.model.card.Card>() {
+                            @Override
+                            public void onChanged(Change<? extends it.MM.LeTreCarte.model.card.Card> change) {
+                                System.out.println("default - "+SharedData.getInstance().getPlayerCards());
+                                if(SharedData.getInstance().getPlayerCards().size() == 1){
+                                    System.out.println("if");
+                                    //hand.getChildren().clear();
+                                    Platform.runLater(()->{
+                                        generatePlayersCards(hand, new ArrayList<Card>(SharedData.getInstance().getPlayerCards()), false, 0);
+                                        for(int i=1; i<hands.size();i++){
+                                            generatePlayersCards(hands.get(i), new ArrayList<>(SharedData.getInstance().getPlayerCards()), true, i);
+                                        }
+                                    });
+
+                                }
+                            }
+                        });
+
+                    }catch (Exception _){
+                        System.out.println("RequestCards Error");
+                    }
+                }
+            }
             indexPlayerInTurn = 0;
         }
         else {
@@ -682,8 +734,6 @@ public class TableController implements Initializable {
     public void generateHands() {
         try {
 
-            ArrayList<GridPane> hands = new ArrayList<>();
-
             if (twoPlayers) {
                 hands.add(hand);            //mano giocatore principale
                 hands.add(handPlayer2);     //mano giocatore difronte
@@ -720,7 +770,7 @@ public class TableController implements Initializable {
                 if (tmp == 0) {
                     generatePlayersCards(hand, new ArrayList<>(SharedData.getInstance().getPlayerCards()), false, 0);
                 } else {
-                    generatePlayersCards(hands.get(tmp), new ArrayList<Card>(), true, tmp);
+                    generatePlayersCards(hands.get(tmp), new ArrayList<>(SharedData.getInstance().getPlayerCards()), true, tmp);
                 }
                 tmp++;
             }

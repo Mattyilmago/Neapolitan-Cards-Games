@@ -125,11 +125,11 @@ public class GameServerClient {
         this.endpoint.sendJSON(dataToSend);
     }
 
-    public void requestCards() throws EncodeException, IOException {
+    public void requestCards(int numberOfCards) throws EncodeException, IOException {
         JsonObject dataToSend = new JsonObject();
         dataToSend.addProperty("type", "getPlayerCards");
         dataToSend.addProperty("roomCode", SharedData.getInstance().getRoomCode());
-        System.out.println(SharedData.getInstance().getClientID());
+        dataToSend.addProperty("number", numberOfCards);
         dataToSend.addProperty("clientID", SharedData.getInstance().getClientID());
 
         this.endpoint.sendJSON(dataToSend);
