@@ -30,6 +30,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.transform.Translate;
 import javafx.util.Duration;
+import javafx.util.Pair;
 
 import java.io.IOException;
 import java.net.URL;
@@ -544,18 +545,24 @@ public class TableController implements Initializable {
         {
             Platform.runLater(()->{
             Player currPlayer = new Player(playersTurn.get(indexPlayerInTurn));
-            ArrayList<Card> cardsWon = GameManagerScopa.calculateWinTurn(card, currPlayer, table);
+            ArrayList<Card> cardsWon = GameManagerScopa.calculateWinTurn(card, table.getTeam(indexPlayerInTurn % 2), table);
             if(!cardsWon.isEmpty()) {
                 System.out.println("carte vinte:" + cardsWon + " " + cardsWon.size());
                 //se ho vinto qualche carta le levo dal tavolo e le aggiungo al mazzetto delle carte vinte
 
-                clearCardsFromTable(cardsWon);
+                try {
+                    clearCardsFromTable(cardsWon);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
 
                 table.getTeam(playersTurn.indexOf(currPlayer.getId()) % 2).getDeckPlayer().addAll(cardsWon);
             }
             else{
                 table.addCard(card);
             }
+
+                System.out.println("MARADONA " + GameManagerScopa.scope[0] + " " + "VESUVIO" + GameManagerScopa.scope[1]);
             });
         }
     }
@@ -590,27 +597,41 @@ public class TableController implements Initializable {
      * Remove the cards of the cardsToRemove from the table, its gridpane and the tablesupport
      * @param cardsToRemove
      */
-    private void clearCardsFromTable(ArrayList<Card> cardsToRemove){
+    private void clearCardsFromTable(ArrayList<Card> cardsToRemove) throws InterruptedException {
         table.addCard(cardsToRemove.getLast());
         System.out.println("table:::" + table.getCards().toString());
 
         for(int i = 0; i < cardsToRemove.size(); i++){
             System.out.println(i + " card " + cardsToRemove.get(i));
+            System.out.println("TableSupport:: " + tableSupport);
             if(table.contains(cardsToRemove.get(i))){
                 table.removeCard(cardsToRemove.get(i));
                 System.out.println("card to remove" + cardsToRemove.get(i));
                 //int index = table.getCards().indexOf(c);
                 //TODO animazioni carte che si spostano verso il player che le ha vinte
 
-                int index = findIndexOfCardInGridPane(cardsToRemove.get(i), tableGridPane);
-                System.out.println("carte " + cardsToRemove + " " + index);
+                //Pair(TargetCol, TargetRow)
+                Pair<Integer, Integer> coordinates = findRowColumnOfCardInGridPane(cardsToRemove.get(i), tableGridPane);
+                removeNodeByRowColumnIndex(coordinates.getValue() ,coordinates.getKey(), tableGridPane);
 
-                tableGridPane.getChildren().remove(index);
+                int index = coordinates.getValue() * tableCols + coordinates.getKey();
                 int targetRow = index / tableCols;
                 int targetCol = targetRow == 0 ? index : index % tableCols;
                 System.out.println("New table "+ table.getCards());
                 tableGridPane.add(new Pane(), targetCol, targetRow);
                 tableSupport.set(index, false);
+            }
+        }
+    }
+
+    public void removeNodeByRowColumnIndex(final int row,final int column,GridPane gridPane) {
+
+        ObservableList<Node> childrens = gridPane.getChildren();
+        for (Node node : childrens) {
+            if (node instanceof ImageView && gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
+                ImageView imageView = (ImageView) (node); // use what you want to remove
+                gridPane.getChildren().remove(imageView);
+                break;
             }
         }
     }
@@ -680,34 +701,50 @@ public class TableController implements Initializable {
         }
         return -1;
     }
-    private int findIndexOfCardInGridPane(Card card, GridPane gridPane){
-        for(Node node : gridPane.getChildren()){
-            try{
-                Pane pane = (Pane) node;
-                if(!pane.getChildren().isEmpty()){
-                    if(getCardfromURL(((ImageView) pane.getChildren().getFirst()).getImage().getUrl()).getImage().equals(card.getImage())){
-                        return gridPane.getChildren().indexOf(pane);
-                    }
-                }
-            }catch (ClassCastException e){
-                try{
-                    ImageView iv = (ImageView) node;
-                    if(getCardfromURL(iv.getImage().getUrl()).getImage().equals(card.getImage())){
-                        return gridPane.getChildren().indexOf(iv);
-                    }
 
-                }catch (ClassCastException eb){
-                    System.out.println("cazzo");
+
+    private Pair<Integer, Integer> findRowColumnOfCardInGridPane(Card card, GridPane gridPane) throws InterruptedException {
+//        for (Node node : gridPane.getChildren()) {
+//            try {
+//                if (node instanceof Pane) {
+//                    if (getCardfromURL(((ImageView) ((Pane)node).getChildren()).getImage().getUrl()).getImage().equals(card.getImage())) {
+//                        System.out.println("è un pane");
+//                        return new Pair<>(GridPane.getColumnIndex(node), GridPane.getRowIndex(node));
+//                    }
+//                } else if (node instanceof ImageView) {
+//                    if (getCardfromURL(((ImageView) node).getImage().getUrl()).getImage().equals(card.getImage())) {
+//                        System.out.println("è un IV");
+//                        return new Pair<>(GridPane.getColumnIndex(node), GridPane.getRowIndex(node));
+//                    }
+//                }
+        for (Node node : gridPane.getChildren()) {
+            try {
+                // Controllo se il nodo è un Pane
+                if (node instanceof Pane) {
+                    Pane pane = (Pane) node;
+                    if (pane.getChildren().size() > 0 && pane.getChildren().get(0) instanceof ImageView) {
+                        ImageView imageView = (ImageView) pane.getChildren().get(0);
+                        if (getCardfromURL(imageView.getImage().getUrl()).getImage().equals(card.getImage())) {
+                            System.out.println("è un pane");
+                            return new Pair<>(GridPane.getColumnIndex(node), GridPane.getRowIndex(node));
+                        }
+                    }
                 }
+                // Controllo se il nodo è un ImageView
+                else if (node instanceof ImageView) {
+                    ImageView imageView = (ImageView) node;
+                    if (getCardfromURL(imageView.getImage().getUrl()).getImage().equals(card.getImage())) {
+                        System.out.println("è un IV");
+                        return new Pair<>(GridPane.getColumnIndex(node), GridPane.getRowIndex(node));
+                    }
+                    }
+            } catch (ClassCastException e) {
+                throw new InterruptedException("Node not found") ;
             }
-
-//            if(!((Pane)node).getChildren().isEmpty() && getCardfromURL(((ImageView)((Pane)node).getChildren().getFirst()).getImage().getUrl()).equals(card)){
-//                System.out.println("Iv trovato");
-//                return gridPane.getChildren().indexOf(node);
-//            }
         }
-        return -1;
+        return null;
     }
+
 
 
     public void configureTableGridPane(GridPane table) {

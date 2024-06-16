@@ -13,7 +13,7 @@ import java.util.HashMap;
 public class GameManagerScopa {
     private static CardContainer vcurr = new CardContainer() {};
     private static CardContainer vbest = new CardContainer() {};;
-    private static Integer[] scope = {0,0};
+    public static Integer[] scope = {0,0};
 
     //hashmap per i punti della primiera
     private static final HashMap<Integer, Integer> conversionTablePrimiera = new HashMap<>(){{
@@ -27,6 +27,8 @@ public class GameManagerScopa {
         put(8, 10);
         put(9, 10);
         put(10, 10);
+        scope[0] = 0;
+        scope[1] = 0;
     }};
 
 
@@ -110,6 +112,8 @@ public class GameManagerScopa {
         }
 
         System.out.println("Winned card gms "+ cardsWon);
+        vcurr.clear();
+        vbest.clear();
         return cardsWon;
     }
 
