@@ -293,8 +293,11 @@ public class TableController implements Initializable {
                         Timeline cardToTableAnimationENEMY = new Timeline(new KeyFrame(Duration.ZERO, new KeyValue(translate2.xProperty(), 0), new KeyValue(translate2.yProperty(), 0)),
 
                                 new KeyFrame(new Duration(300), e -> {
+                                    System.out.println(gridviewAKA.getChildren().size() + " - " + gridviewAKA.getColumnConstraints().size());
                                     cardInTable.setVisible(true);
                                     cardToMove.setVisible(false);
+
+                                    //gridviewAKA.getChildren().removeLast();
                                     gridviewAKA.getChildren().remove(cardToMove);
                                     System.out.println(STR."rimosso - \{gridviewAKA.getChildren().size()}");
 
@@ -302,7 +305,7 @@ public class TableController implements Initializable {
                                     // Sposta i nodi rimanenti (si potrebbe fare animato ehh)
                                     for (Node node : gridviewAKA.getChildren()) {
                                         System.out.println("sono nel for");
-                                        Integer currCol = gridviewAKA.getChildren().indexOf(node);
+                                        Integer currCol = GridPane.getColumnIndex(node);
                                         System.out.println(currCol + " - " + cardIndexInHand);
                                         if (currCol != null && currCol > (cardIndexInHand)) {
                                             System.out.println("sono nell'if del for"+ currCol);
@@ -310,6 +313,7 @@ public class TableController implements Initializable {
                                         }
                                     }
                                     gridviewAKA.getColumnConstraints().removeLast();
+                                    System.out.println(gridviewAKA.getChildren().size() + " - " + gridviewAKA.getColumnConstraints().size());
 
 
 
@@ -361,6 +365,11 @@ public class TableController implements Initializable {
         for (int cardIndex = 0; cardIndex < cardToGenerate; cardIndex++) {
             cardGenerated++;
             System.out.println("cardGenerated: " + cardGenerated);
+
+            //pulizia gridpane
+            gridview.getChildren().removeIf(node -> !(node instanceof ImageView || node instanceof Pane));
+
+
             Card card = back ? new Card(true) : cards.get(cardIndex);
             if (!back) handPlayer.addCard(card);
 
@@ -378,10 +387,21 @@ public class TableController implements Initializable {
             //iv.setFitWidth(gridview.getPrefWidth() / (cardToGenerate+1));
             iv.setFitHeight(gridview.getPrefHeight());
 
+            gridview.getColumnConstraints().add(new ColumnConstraints());
             if (cardToGenerate == 1) {
-                gridview.add(pane, gridview.getChildren().size()-1, 0);
+                if(!back){
+                    gridview.addColumn(gridview.getChildren().size(), pane);
+                }else{
+                    gridview.addColumn(gridview.getChildren().size(), iv);
+                }
+
             } else {
-                gridview.add(pane, cardIndex, 0);
+                if(!back){
+                    gridview.addColumn(cardIndex, pane);
+                }else{
+                    gridview.addColumn(cardIndex, iv);
+                }
+
             }
 
 
@@ -558,7 +578,7 @@ public class TableController implements Initializable {
             } else {
                 drawCards();
                 if (cardGenerated == 40) {
-                    deckStackPane.getChildren().removeLast();
+                    deckStackPane.getChildren().clear();
                 }
                 System.out.println("cardGen: "+ cardGenerated);
             }
@@ -590,7 +610,7 @@ public class TableController implements Initializable {
                             public void onChanged(Change<? extends it.MM.LeTreCarte.model.card.Card> change) {
                                 if (SharedData.getInstance().getPlayerCards().size() == 3) {
                                     Platform.runLater(() -> {
-                                        restoreGridPaneConstraints(false);
+                                        //restoreGridPaneConstraints(false);
                                         hand.getChildren().clear();
 
                                         generatePlayersCards(hand, new ArrayList<Card>(SharedData.getInstance().getPlayerCards()), false, 0);
@@ -616,7 +636,7 @@ public class TableController implements Initializable {
                         @Override
                         public void onChanged(Change<? extends it.MM.LeTreCarte.model.card.Card> change) {
                             Platform.runLater(() -> {
-                                restoreGridPaneConstraints(true);
+                                //restoreGridPaneConstraints(false);
                                 System.out.println("default - " + SharedData.getInstance().getPlayerCards());
 
                                 System.out.println("THIS IS MY HAND: " + handPlayer);
@@ -633,7 +653,9 @@ public class TableController implements Initializable {
                                         System.out.println("CArds to generate " + cardsToGenerate);
                                         generatePlayersCards(hand, cardsToGenerate, false, 0);
                                         for (int i = 1; i < handsGridPanes.size(); i++) {
+                                            System.out.println("before: "+handsGridPanes.get(i).getColumnConstraints().size());
                                             generatePlayersCards(handsGridPanes.get(i), cardsToGenerate, true, i);
+                                            System.out.println("after: "+handsGridPanes.get(i).getColumnConstraints().size());
                                         }
                                     }
                                 }
@@ -1092,6 +1114,7 @@ public class TableController implements Initializable {
 
     private void setupGridPaneCols(GridPane gridPane) {
         // Rimuovi eventuali RowConstraints esistenti
+
         gridPane.getColumnConstraints().clear();
         int numberOfCards = currGame.equals("Tressette") ? 10 : 3;
 
