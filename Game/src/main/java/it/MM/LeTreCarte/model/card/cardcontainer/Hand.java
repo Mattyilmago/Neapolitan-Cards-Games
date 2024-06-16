@@ -8,6 +8,10 @@ public class Hand extends CardContainer {
     public Hand() {
         this.cards = new ArrayList<Card>();
     }
+    public Hand(int length) {
+        this.cards = new ArrayList<Card>(length);
+    }
+
 
     @Override
     public String toString() {

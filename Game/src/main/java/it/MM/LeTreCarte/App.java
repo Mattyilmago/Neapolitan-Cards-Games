@@ -12,11 +12,6 @@ import javafx.stage.Stage;
 
 public class App extends Application {
     public static void main(String[] args) {
-       Card c= new Card(7,'d');
-       ImageView iv = new ImageView(new Image(App.class.getResource(c.getImage()).toExternalForm()));
-        String[] strings = iv.getImage().getUrl().split("/");
-        System.out.println(strings[strings.length - 2] + "/" + (strings[strings.length - 1]));
-        System.out.println(iv.getImage().getUrl());
         launch(args);
     }
 

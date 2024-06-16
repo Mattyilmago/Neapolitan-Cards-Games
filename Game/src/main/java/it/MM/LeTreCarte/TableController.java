@@ -5,6 +5,7 @@ import it.MM.LeTreCarte.model.GameManagers.GameManagerBriscola;
 import it.MM.LeTreCarte.model.GameManagers.GameManagerScopa;
 import it.MM.LeTreCarte.model.GameManagers.GameManagerTressette;
 import it.MM.LeTreCarte.model.card.Card;
+import it.MM.LeTreCarte.model.card.cardcontainer.Hand;
 import it.MM.LeTreCarte.model.card.cardcontainer.Table;
 import jakarta.websocket.EncodeException;
 import javafx.animation.KeyFrame;
@@ -41,22 +42,26 @@ import java.util.ResourceBundle;
 
 
 public class TableController implements Initializable {
+    //contiene i giocatori sortati per inserirli a schermo
+    static ArrayList<String> playersSorted = new ArrayList<>() {{
+        addAll(SharedData.getInstance().getLobbyPlayers());
+    }};
     //fixed dimensioni della grid Table
     final int tableRows = 3;
     final int tableCols = 5;
-
     final HashMap<String, Double> sizeOfCardsInTable = new HashMap<>();
-
     // { nomeGiocatore1: [imgvw1, imgvw2], nomeGiocatore2: [...] }
     private final HashMap<String, ArrayList<ImageView>> handsWithCardsImView = new HashMap<>();
     private final HashMap<String, GridPane> handsWithGridPane = new HashMap<>();
-
     //indice del giocatore che deve giocare
     public int indexPlayerInTurn = 0;
     String currGame = SharedData.getInstance().getSelectedGame();
-
     //contiene false se non è presente nessuna carta, true viceversa
     ArrayList<Boolean> tableSupport = new ArrayList<>(tableCols * tableRows);
+    boolean twoPlayers = playersSorted.size() == 2;
+    int cardGenerated = 0;
+    Character briscola;
+    Player winnerPlayerTurn; //Il giocatore che vince il turno
     @FXML
     private AnchorPane Card;
     @FXML
@@ -73,57 +78,36 @@ public class TableController implements Initializable {
     private GridPane handPlayer3;
     @FXML
     private Label namePlayer;
-
     @FXML
     private Label namePlayer1;
-
     @FXML
     private Label namePlayer2;
-
     @FXML
     private Label namePlayer3;
-
-    private ArrayList<Label> names = new ArrayList<Label>(){{
+    private ArrayList<Label> names = new ArrayList<Label>() {{
         add(namePlayer);
         add(namePlayer1);
         add(namePlayer2);
         add(namePlayer3);
     }};
-
     @FXML
     private Label MaradonaPoints;
-
     @FXML
     private Label VesuvioPoints;
-
     @FXML
     private AnchorPane teamMaradona;
-
     @FXML
     private AnchorPane teamVesuvio;
-
     private Table table = new Table();
+    private Hand handPlayer = new Hand(currGame.equals("Tressette") ? 10 : 3);
 
     private ArrayList<GridPane> hands = new ArrayList<>();
-
-    //contiene i giocatori sortati per inserirli a schermo
-    static ArrayList<String> playersSorted = new ArrayList<>(){{
-        addAll(SharedData.getInstance().getLobbyPlayers());
-    }};
-
     //contiene i giocatori in ordine di turno
-    private ArrayList<String> playersTurn = new ArrayList<>(){{
+    private ArrayList<String> playersTurn = new ArrayList<>() {{
         addAll(SharedData.getInstance().getLobbyPlayers());
     }};
 
-    boolean twoPlayers = playersSorted.size() == 2;
-
-    Character briscola;
-
-    Player winnerPlayerTurn; //Il giocatore che vince il turno
-
-
-    public void updatePointsLabel(){
+    public void updatePointsLabel() {
         MaradonaPoints.setText(String.valueOf(table.getTeam(0).getPoints()));
         VesuvioPoints.setText(String.valueOf(table.getTeam(1).getPoints()));
     }
@@ -144,7 +128,7 @@ public class TableController implements Initializable {
         putCardsOnTable();
 
         //Salva il seme della briscola
-        if(currGame.equals("Briscola")){
+        if (currGame.equals("Briscola")) {
             //TODO deve prendere l'ultima carta del mazzo
             briscola = 'C'; //il seme dell'ultima carta del mazzo
         }
@@ -164,15 +148,17 @@ public class TableController implements Initializable {
             tableGridPane.add(iv, i, 0);
             tableSupport.set(i, true);
             table.addCard(card);
+            cardGenerated++;
         }
     }
 
-    /** Starts the processes that handles responses of server
-        type of responses:
-        - type:move when a player put a card on the table
-        - type:cardsOnTable when the server needs to refresh current cards on table
-        - type:yourTurn when the server notify that is the turn of a player
-     * */
+    /**
+     * Starts the processes that handles responses of server
+     * type of responses:
+     * - type:move when a player put a card on the table
+     * - type:cardsOnTable when the server needs to refresh current cards on table
+     * - type:yourTurn when the server notify that is the turn of a player
+     */
     private void startBackgroundListener() {
         SharedData.getInstance().getMoves().addListener(new ListChangeListener<JsonObject>() {
             @Override
@@ -185,7 +171,7 @@ public class TableController implements Initializable {
                     int cardVal = response.get("card-val").getAsInt();
                     Character cardSeed = response.get("card-seed").getAsString().toCharArray()[0];
 
-                    Platform.runLater(()->{
+                    Platform.runLater(() -> {
                         String clientAKA = response.get("clientAKA").getAsString();
                         int cardIndexInHand = response.get("cardIndexInHand").getAsInt() - 1;
 
@@ -224,10 +210,10 @@ public class TableController implements Initializable {
 //                        cardInTable.setFitHeight(hand.getPrefHeight() * 0.9);
                         cardInTable.setVisible(false);
 
-                        tableGridPane.getChildren().remove(targetRow*tableCols + targetCol);
+                        tableGridPane.getChildren().remove(targetRow * tableCols + targetCol);
                         tableGridPane.add(cardInTable, targetCol, targetRow);
                         tableSupport.set(targetRow * tableCols + targetCol, true);
-                        if(!currGame.equals("Scopa")){
+                        if (!currGame.equals("Scopa")) {
                             table.addCard(new Card(cardVal, cardSeed));
                         }
 
@@ -248,7 +234,7 @@ public class TableController implements Initializable {
                                             GridPane.setColumnIndex(node, currCol - 1);
                                         }
                                     }
-                                    gridviewAKA.getColumnConstraints().removeFirst();
+                                    gridviewAKA.getColumnConstraints().removeLast();
 
 
                                 }, new KeyValue(translate2.xProperty(), calculateX(playersSorted.indexOf(clientAKA), startX, endX)), new KeyValue(translate2.yProperty(), calculateY(playersSorted.indexOf(clientAKA), startY, endY)))
@@ -258,22 +244,21 @@ public class TableController implements Initializable {
 
                         cardToTableAnimationENEMY.play();
 
-                       cardToTableAnimationENEMY.setOnFinished(new EventHandler<ActionEvent>() {
+                        cardToTableAnimationENEMY.setOnFinished(new EventHandler<ActionEvent>() {
 
-                           @Override
-                           public void handle(ActionEvent event) {
-                               Platform.runLater(()->{
-                                   System.out.println("Ricevuto: " + cardVal + cardSeed);
-                                   Card card = new Card(cardVal, cardSeed);
-                                   updateAndCalculateTurn(card);
-                               });
+                            @Override
+                            public void handle(ActionEvent event) {
+                                Platform.runLater(() -> {
+                                    System.out.println("Ricevuto: " + cardVal + cardSeed);
+                                    Card card = new Card(cardVal, cardSeed);
+                                    updateAndCalculateTurn(card);
+                                });
 
-                           }
-                       });
+                            }
+                        });
 
 
                     });
-
 
 
                 }
@@ -293,11 +278,13 @@ public class TableController implements Initializable {
     public void generatePlayersCards(GridPane gridview, ArrayList<Card> cards, boolean back, int playerIndex) {
 
         System.out.println("players: " + playersSorted.toString() + " - " + playersSorted.get(playerIndex).toString());
-        //int cardToGenerate = 10; //TODO remove
         int cardToGenerate = cards.size();
 
         for (int cardIndex = 0; cardIndex < cardToGenerate; cardIndex++) {
+            cardGenerated++;
             Card card = back ? new Card(true) : cards.get(cardIndex);
+            if(!back)
+                handPlayer.addCard(card);
 
             Image image = new Image(getClass().getResource(card.getImage()).toExternalForm());
             ImageView iv = new ImageView(image);
@@ -310,22 +297,20 @@ public class TableController implements Initializable {
             GridPane.setValignment(pane, VPos.CENTER);
             GridPane.setMargin(pane, new Insets(0));
 
-
-            pane.setStyle("-fx-background-color: red");
-
             //iv.setFitWidth(gridview.getPrefWidth() / (cardToGenerate+1));
             iv.setFitHeight(gridview.getPrefHeight());
 
-            if(cardToGenerate == 1){
+            if (cardToGenerate == 1) {
                 gridview.addColumn(gridview.getChildren().size(), pane);
-            }else{
+            } else {
                 gridview.addColumn(cardIndex, pane);
             }
+
 
             gridview.setAlignment(Pos.CENTER);
             System.out.println("ok");
 
-            if(sizeOfCardsInTable.isEmpty()){
+            if (sizeOfCardsInTable.isEmpty()) {
                 sizeOfCardsInTable.put("width", gridview.getPrefWidth() / 11.5);
                 sizeOfCardsInTable.put("height", gridview.getPrefHeight() * 0.9);
             }
@@ -359,9 +344,10 @@ public class TableController implements Initializable {
                         if (playersTurn.indexOf(SharedData.getInstance().getPlayerName()) == indexPlayerInTurn && !waitUntilAnimation) {
                             waitUntilAnimation = true;
                             handsWithCardsImView.get(playersSorted.get(playerIndex)).remove(iv);
+                            handPlayer.removeCard(card);
 
                             //se non gioco a scopa aggiungo al table per poter usare la funzione riscorsiva per calcolare la presa migliore per scopa
-                            if(!currGame.equals("Scopa")) {
+                            if (!currGame.equals("Scopa")) {
                                 table.addCard(card);
                             }
 
@@ -389,7 +375,6 @@ public class TableController implements Initializable {
 
                             //creo una copia di iv
                             ImageView tmpIV = new ImageView(iv.getImage());
-                            tmpIV.setStyle("-fx-background-color: red");
 
                             tmpIV.setFitWidth(sizeOfCardsInTable.get("width"));
                             tmpIV.setFitHeight(sizeOfCardsInTable.get("height"));
@@ -399,7 +384,7 @@ public class TableController implements Initializable {
                             System.out.println("Row: " + targetRow + "| col: " + targetCol);
 
                             //t
-                            tableGridPane.getChildren().remove(targetRow*tableCols + targetCol);
+                            tableGridPane.getChildren().remove(targetRow * tableCols + targetCol);
                             tableGridPane.add(tmpIV, targetCol, targetRow);
                             tableSupport.set(index, true);
 
@@ -442,16 +427,12 @@ public class TableController implements Initializable {
                             cardToTableAnimation.setOnFinished(new EventHandler<>() {
                                 @Override
                                 public void handle(ActionEvent event) {
-                                    Platform.runLater(()->{
-                                        hand.getChildren().remove(pane);
+                                    Platform.runLater(() -> {
                                         updateAndCalculateTurn(card);
 
                                     });
                                 }
                             });
-
-
-
 
 
                         }
@@ -461,12 +442,10 @@ public class TableController implements Initializable {
                 });
             }
         }
-
-
     }
-    public void updateAndCalculateTurn(Card card){
-        if(currGame.equals("Scopa"))
-            calculateWinForScopa(card);
+
+    public void updateAndCalculateTurn(Card card) {
+        if (currGame.equals("Scopa")) calculateWinForScopa(card);
         else {
             //Se l'ultimo del turno ha giocato la carta vedo la presa del turno se gioco a Tressette o Briscola
             if (indexPlayerInTurn == playersTurn.size() - 1) {
@@ -474,93 +453,133 @@ public class TableController implements Initializable {
             }
         }
 
-        if(indexPlayerInTurn == playersTurn.size() - 1){
-            switch (currGame){
-                case "Scopa": {
-                    if(hand.getChildren().size() == 1){
-                        try{
-                            System.out.println("ENTRATO");
-                            SharedData.getGSCInstance().requestCards(3);
-                            SharedData.getInstance().getPlayerCards().addListener(new ListChangeListener<it.MM.LeTreCarte.model.card.Card>() {
-                                @Override
-                                public void onChanged(Change<? extends it.MM.LeTreCarte.model.card.Card> change) {
-                                    if(SharedData.getInstance().getPlayerCards().size() == 3){
-                                        Platform.runLater(()->{
-                                            hand.getChildren().clear();
-
-                                            generatePlayersCards(hand, new ArrayList<Card>(SharedData.getInstance().getPlayerCards()), false, 0);
-
-                                            for(int i=1; i<hands.size();i++){
-                                                generatePlayersCards(hands.get(i), new ArrayList<>(SharedData.getInstance().getPlayerCards()), true, i);
-                                            }
-                                        });
-                                    }
-                                }
-                            });
-
-                        }catch (Exception _){
-                            System.out.println("RequestCards Error");
-                        }
-                    }
-                }break;
-                default: {
-                    try{
-                        SharedData.getGSCInstance().requestCards(1);
-                        SharedData.getInstance().getPlayerCards().addListener(new ListChangeListener<it.MM.LeTreCarte.model.card.Card>() {
-                            @Override
-                            public void onChanged(Change<? extends it.MM.LeTreCarte.model.card.Card> change) {
-                                System.out.println("default - "+SharedData.getInstance().getPlayerCards());
-                                if(SharedData.getInstance().getPlayerCards().size() == 1){
-                                    System.out.println("if");
-                                    //hand.getChildren().clear();
-                                    Platform.runLater(()->{
-                                        generatePlayersCards(hand, new ArrayList<Card>(SharedData.getInstance().getPlayerCards()), false, 0);
-                                        for(int i=1; i<hands.size();i++){
-                                            generatePlayersCards(hands.get(i), new ArrayList<>(SharedData.getInstance().getPlayerCards()), true, i);
-                                        }
-                                    });
-
-                                }
-                            }
-                        });
-
-                    }catch (Exception _){
-                        System.out.println("RequestCards Error");
-                    }
-                }
+        if (indexPlayerInTurn == playersTurn.size() - 1) {
+            if (cardGenerated == 40) {
+                calculatePoints();
+            } else {
+                drawCards();
             }
+
             indexPlayerInTurn = 0;
-        }
-        else {
+        } else {
             System.out.println("aggiornato");
             indexPlayerInTurn++;
         }
     }
 
-    /**
-     * calculate Scopa's cards won, remove the cards from the table and move in player's deckplayer
-     * @param card
-     */
-    public void calculateWinForScopa(Card card){
-        {
-            Platform.runLater(()->{
-            Player currPlayer = new Player(playersTurn.get(indexPlayerInTurn));
-            ArrayList<Card> cardsWon = GameManagerScopa.calculateWinTurn(card, table.getTeam(indexPlayerInTurn % 2), table);
-            if(!cardsWon.isEmpty()) {
-                System.out.println("carte vinte:" + cardsWon + " " + cardsWon.size());
-                //se ho vinto qualche carta le levo dal tavolo e le aggiungo al mazzetto delle carte vinte
 
+    public void drawCards() {
+        switch (currGame) {
+            case "Scopa": {
+                if (hand.getChildren().size() == 1) {
+                    try {
+                        System.out.println("ENTRATO");
+                        SharedData.getGSCInstance().requestCards(3);
+                        SharedData.getInstance().getPlayerCards().addListener(new ListChangeListener<it.MM.LeTreCarte.model.card.Card>() {
+                            @Override
+                            public void onChanged(Change<? extends it.MM.LeTreCarte.model.card.Card> change) {
+                                if (SharedData.getInstance().getPlayerCards().size() == 3) {
+                                    Platform.runLater(() -> {
+                                        hand.getChildren().clear();
+
+                                        generatePlayersCards(hand, new ArrayList<Card>(SharedData.getInstance().getPlayerCards()), false, 0);
+
+                                        for (int i = 1; i < hands.size(); i++) {
+                                            generatePlayersCards(hands.get(i), new ArrayList<>(SharedData.getInstance().getPlayerCards()), true, i);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+
+                    } catch (Exception _) {
+                        System.out.println("RequestCards Error");
+                    }
+                }
+            }
+            break;
+            default: {
                 try {
-                    clearCardsFromTable(cardsWon);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    SharedData.getGSCInstance().requestCards(1);
+                    SharedData.getInstance().getPlayerCards().addListener(new ListChangeListener<it.MM.LeTreCarte.model.card.Card>() {
+                        @Override
+                        public void onChanged(Change<? extends it.MM.LeTreCarte.model.card.Card> change) {
+                            Platform.runLater(() -> {
+                                System.out.println("default - " + SharedData.getInstance().getPlayerCards());
+
+                                System.out.println("THIS IS MY HAND: " + handPlayer);
+                                if (SharedData.getInstance().getPlayerCards().size() == 1) {
+                                    ArrayList<Card> cardsToGenerate = new ArrayList<>();
+                                    cardsToGenerate.add(SharedData.getInstance().getPlayerCards().getFirst());
+
+                                    if(!handPlayer.getLast().equals(cardsToGenerate.getFirst())){
+
+                                        System.out.println("if");
+                                        //hand.getChildren().clear();
+
+
+                                        System.out.println("CArds to generate " + cardsToGenerate);
+                                        generatePlayersCards(hand, cardsToGenerate, false, 0);
+                                        for (int i = 1; i < hands.size(); i++) {
+                                            generatePlayersCards(hands.get(i), cardsToGenerate, true, i);
+                                        }
+                                    }
+                                }
+
+                            });
+
+                        }
+                    });
+
+                } catch (Exception _) {
+                    System.out.println("RequestCards Error");
                 }
 
-                table.getTeam(playersTurn.indexOf(currPlayer.getId()) % 2).getDeckPlayer().addAll(cardsWon);
             }
-            else{
-                table.addCard(card);
-            }
+        }
+    }
+
+    private void calculatePoints() {
+        switch (currGame) {
+            case "Scopa":
+                GameManagerScopa.calculatePointsScopa(table);
+                break;
+            case "Briscola":
+                GameManagerBriscola.calculatePoints(table);
+                break;
+            case "Tressette":
+                GameManagerTressette.calculatePoints(table);
+                break;
+        }
+        table.getTeam(0).getDeckPlayer().clear();
+        table.getTeam(1).getDeckPlayer().clear();
+
+    }
+
+    /**
+     * calculate Scopa's cards won, remove the cards from the table and move in player's deckplayer
+     *
+     * @param card
+     */
+    public void calculateWinForScopa(Card card) {
+        {
+            Platform.runLater(() -> {
+                Player currPlayer = new Player(playersTurn.get(indexPlayerInTurn));
+                ArrayList<Card> cardsWon = GameManagerScopa.calculateWinTurn(card, table.getTeam(indexPlayerInTurn % 2), table);
+                if (!cardsWon.isEmpty()) {
+                    System.out.println("carte vinte:" + cardsWon + " " + cardsWon.size());
+                    //se ho vinto qualche carta le levo dal tavolo e le aggiungo al mazzetto delle carte vinte
+
+                    try {
+                        clearCardsFromTable(cardsWon);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    table.getTeam(SharedData.getInstance().getLobbyPlayers().indexOf(currPlayer.getId()) % 2).getDeckPlayer().addAll(cardsWon);
+                } else {
+                    table.addCard(card);
+                }
 
                 System.out.println("MARADONA " + GameManagerScopa.scope[0] + " " + "VESUVIO" + GameManagerScopa.scope[1]);
             });
@@ -570,7 +589,7 @@ public class TableController implements Initializable {
     /**
      * Calculate who wins the turn for Briscola and Tressette and clear the table
      */
-    private void calculateEndTurnWinner(){
+    private void calculateEndTurnWinner() {
         switch (currGame) {
             case "Briscola":
                 winnerPlayerTurn = GameManagerBriscola.calculateWinnerTurn(table, briscola);
@@ -595,16 +614,17 @@ public class TableController implements Initializable {
 
     /**
      * Remove the cards of the cardsToRemove from the table, its gridpane and the tablesupport
+     *
      * @param cardsToRemove
      */
     private void clearCardsFromTable(ArrayList<Card> cardsToRemove) throws InterruptedException {
         table.addCard(cardsToRemove.getLast());
         System.out.println("table:::" + table.getCards().toString());
 
-        for(int i = 0; i < cardsToRemove.size(); i++){
+        for (int i = 0; i < cardsToRemove.size(); i++) {
             System.out.println(i + " card " + cardsToRemove.get(i));
             System.out.println("TableSupport:: " + tableSupport);
-            if(table.contains(cardsToRemove.get(i))){
+            if (table.contains(cardsToRemove.get(i))) {
                 table.removeCard(cardsToRemove.get(i));
                 System.out.println("card to remove" + cardsToRemove.get(i));
                 //int index = table.getCards().indexOf(c);
@@ -612,19 +632,19 @@ public class TableController implements Initializable {
 
                 //Pair(TargetCol, TargetRow)
                 Pair<Integer, Integer> coordinates = findRowColumnOfCardInGridPane(cardsToRemove.get(i), tableGridPane);
-                removeNodeByRowColumnIndex(coordinates.getValue() ,coordinates.getKey(), tableGridPane);
+                removeNodeByRowColumnIndex(coordinates.getValue(), coordinates.getKey(), tableGridPane);
 
                 int index = coordinates.getValue() * tableCols + coordinates.getKey();
                 int targetRow = index / tableCols;
                 int targetCol = targetRow == 0 ? index : index % tableCols;
-                System.out.println("New table "+ table.getCards());
+                System.out.println("New table " + table.getCards());
                 tableGridPane.add(new Pane(), targetCol, targetRow);
                 tableSupport.set(index, false);
             }
         }
     }
 
-    public void removeNodeByRowColumnIndex(final int row,final int column,GridPane gridPane) {
+    public void removeNodeByRowColumnIndex(final int row, final int column, GridPane gridPane) {
 
         ObservableList<Node> childrens = gridPane.getChildren();
         for (Node node : childrens) {
@@ -638,13 +658,14 @@ public class TableController implements Initializable {
 
     /**
      * Return the String of cards'image from the url of the image
+     *
      * @param url
      * @return the String of cards'image from the url of the image
      */
-    private Card getCardfromURL(String url){
+    private Card getCardfromURL(String url) {
         String[] strings = url.split("/");
         String res = strings[strings.length - 2] + "/" + (strings[strings.length - 1]);
-        if(strings[strings.length - 1].charAt(1) == '0'){
+        if (strings[strings.length - 1].charAt(1) == '0') {
             return new Card(10, strings[strings.length - 1].charAt(3));
         }
         return new Card(Character.getNumericValue(strings[strings.length - 1].charAt(0)), strings[strings.length - 1].charAt(2));
@@ -654,14 +675,14 @@ public class TableController implements Initializable {
     /**
      * Clear the table, its gridpane and tableSupport
      */
-    private void clearTable(){
+    private void clearTable() {
         System.out.println(table.getCards());
-        System.out.println(tableGridPane.getChildren().size()+"-"+tableGridPane.getChildren());
+        System.out.println(tableGridPane.getChildren().size() + "-" + tableGridPane.getChildren());
         table.getCards().clear();
         tableGridPane.getChildren().clear();
         //tableGridPane.getChildren().removeAll();
 
-        for(int i = 0; i < tableCols * tableRows; i++){
+        for (int i = 0; i < tableCols * tableRows; i++) {
 
             int targetRow = i / tableCols;
             int targetCol = targetRow == 0 ? i : i % tableCols;
@@ -737,14 +758,13 @@ public class TableController implements Initializable {
                         System.out.println("è un IV");
                         return new Pair<>(GridPane.getColumnIndex(node), GridPane.getRowIndex(node));
                     }
-                    }
+                }
             } catch (ClassCastException e) {
-                throw new InterruptedException("Node not found") ;
+                throw new InterruptedException("Node not found");
             }
         }
         return null;
     }
-
 
 
     public void configureTableGridPane(GridPane table) {
@@ -761,6 +781,7 @@ public class TableController implements Initializable {
 
     /**
      * Configure the teams and the players in the table
+     *
      * @param table
      */
     public void configureTable(Table table) {
@@ -769,7 +790,7 @@ public class TableController implements Initializable {
         table.getTeams().add(new Player(playersTurn.get(0)));
         table.getTeams().add(new Player(playersTurn.get(1)));
 
-        for(String Id : playersTurn){
+        for (String Id : playersTurn) {
             table.getPlayers().add(new Player(Id));
         }
     }
@@ -777,20 +798,18 @@ public class TableController implements Initializable {
     /**
      * Set the color of the label
      */
-    public void setNamesLabelColor(){
+    public void setNamesLabelColor() {
         if (twoPlayers) {
-            if(SharedData.getInstance().getLobbyPlayers().indexOf(playersSorted.getFirst()) % 2 == 0){
+            if (SharedData.getInstance().getLobbyPlayers().indexOf(playersSorted.getFirst()) % 2 == 0) {
                 System.out.println(playersSorted.getFirst() + " dentro l'if--viola");
                 namePlayer.setStyle("-fx-text-fill: #521a6a");
                 namePlayer2.setStyle("-fx-text-fill: #6a1a32");
-            }
-            else {
+            } else {
                 System.out.println(playersSorted.getFirst() + " dentro l'else--magenta");
                 namePlayer.setStyle("-fx-text-fill: #6a1a32");
                 namePlayer2.setStyle("-fx-text-fill: #521a6a");
             }
-        }
-        else {
+        } else {
             if (SharedData.getInstance().getLobbyPlayers().indexOf(playersSorted.getFirst()) % 2 == 0) {
                 namePlayer.setStyle("-fx-text-fill: #521a6a");
                 namePlayer2.setStyle("-fx-text-fill: #521a6a");
@@ -804,6 +823,7 @@ public class TableController implements Initializable {
             }
         }
     }
+
     /**
      * Generate the hands of the players
      */
@@ -860,11 +880,11 @@ public class TableController implements Initializable {
 
     }
 
-    Number calculateY(int position,double startY, double endY) {
-        return switch (position){
-            case 0 -> endY-startY;
-            case 1 -> (endY-startY);
-            case 2 -> -(endY-startY);
+    Number calculateY(int position, double startY, double endY) {
+        return switch (position) {
+            case 0 -> endY - startY;
+            case 1 -> (endY - startY);
+            case 2 -> -(endY - startY);
             default -> {
 
                 System.out.println("def");
@@ -874,10 +894,10 @@ public class TableController implements Initializable {
     }
 
     Number calculateX(int position, double startX, double endX) {
-        return switch (position){
-            case 0 -> endX-startX;
-            case 1 -> (endX-startX);
-            case 2 -> -(endX-startX);
+        return switch (position) {
+            case 0 -> endX - startX;
+            case 1 -> (endX - startX);
+            case 2 -> -(endX - startX);
             default -> {
 
                 System.out.println("def");

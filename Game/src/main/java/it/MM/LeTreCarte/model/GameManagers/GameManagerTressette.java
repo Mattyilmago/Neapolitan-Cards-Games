@@ -28,6 +28,7 @@ public class GameManagerTressette {
         put(5, 2);
         put(4, 1);
     }}; //hashmap per i gradi delle carte di Briscola
+    public static Boolean[] lastCardArray = {false, false};
 
     /**
      * Calculate who wins this turn and move table's cards to winner's deckplayer
@@ -46,10 +47,13 @@ public class GameManagerTressette {
         return table.getPlayers().get(indexWinner);
     }
 
-    public static void calculatePoints(ArrayList<Player> players, boolean[] lastCard) {
-        for (Player p : players) {
-            calculatePointsForPlayer(p, lastCard[players.indexOf(p)]);
+    public static void calculatePoints(Table table) {
+        for (Player p : table.getTeams()) {
+            calculatePointsForPlayer(p, lastCardArray[table.getTeams().indexOf(p)]);
         }
+
+        lastCardArray[0] = false;
+        lastCardArray[1] = false;
     }
 
     /**

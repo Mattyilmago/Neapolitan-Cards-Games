@@ -144,7 +144,7 @@ public class GameManagerScopa {
      * Calculates points for all the players
      */
     public static void calculatePointsScopa(Table table) {
-        for (Player p : table.getPlayers()) {
+        for (Player p : table.getTeams()) {
             calculatePointsForPlayer(p, table);
         }
     }

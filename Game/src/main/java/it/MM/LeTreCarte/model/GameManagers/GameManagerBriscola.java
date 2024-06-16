@@ -65,8 +65,8 @@ public class GameManagerBriscola {
         return table.getPlayers().get((indexWinner));
     }
 
-    public static void calculatePoints(ArrayList<Player> players) {
-        for(Player p : players){
+    public static void calculatePoints(Table table) {
+        for(Player p : table.getTeams()){
             calculatePointsForPlayer(p);
         }
     }
