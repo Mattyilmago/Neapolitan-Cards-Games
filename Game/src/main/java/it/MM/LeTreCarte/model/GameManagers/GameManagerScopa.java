@@ -14,6 +14,9 @@ public class GameManagerScopa {
     private static CardContainer vcurr = new CardContainer() {};
     private static CardContainer vbest = new CardContainer() {};;
     public static Integer[] scope = {0,0};
+    public static int[] pointsVesuvio = {0,0,0,0};
+    public static int[] pointsMaradona = {0,0,0,0};
+    public static int[][] pointsForTeam = {pointsMaradona, pointsVesuvio};
 
     //hashmap per i punti della primiera
     private static final HashMap<Integer, Integer> conversionTablePrimiera = new HashMap<>(){{
@@ -108,7 +111,7 @@ public class GameManagerScopa {
             }
         }
         if(table.getCards().equals(cardsWon)){ //se erano le ultime carte il giocatore ha fatto scopa
-            scope[table.getPlayers().indexOf(player)] += 1;
+            scope[table.getTeams().indexOf(player)] += 1;
         }
 
         System.out.println("Winned card gms "+ cardsWon);
@@ -144,6 +147,10 @@ public class GameManagerScopa {
      * Calculates points for all the players
      */
     public static void calculatePointsScopa(Table table) {
+        pointsForTeam[0] = new int[]{0, 0, 0, 0};
+        pointsForTeam[1] = new int[]{0, 0, 0, 0};
+        scope = new Integer[]{0,0};
+
         for (Player p : table.getTeams()) {
             calculatePointsForPlayer(p, table);
         }
@@ -159,24 +166,28 @@ public class GameManagerScopa {
         //Un punto per chi ha il maggior numero delle carte
         if (player.getDeckPlayer().size() > 20) {
             System.out.println(player.getId() + " wins carte");
+            pointsForTeam[table.getTeams().indexOf(player)][0] = 1;
             points++;
         }
 
         //Un punto per chi ha il maggior numero di carte di denari
         if (player.getDeckPlayer().cardsNumberWithSameSeed('D') > 5) {
             System.out.println(player.getId() + " wins denari");
+            pointsForTeam[table.getTeams().indexOf(player)][1] = 1;
             points++;
         }
 
         //un punto per chi ha il settebello
         if (player.getDeckPlayer().contains(new Card(7, 'D'))) {
             System.out.println(player.getId() + " wins settebbello");
+            pointsForTeam[table.getTeams().indexOf(player)][2] = 1;
             points++;
         }
 
         //un punto per chi vince la primiera
         if (player.equals(playerWinsPrimiera(table))) {
             System.out.println(player.getId() + " wins primiera");
+            pointsForTeam[table.getTeams().indexOf(player)][3] = 1;
             points++;
         }
 

@@ -30,7 +30,7 @@
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
          </rowConstraints>
       </GridPane>
-      <StackPane fx:id="deck" layoutX="938.0" layoutY="276.8" prefHeight="165.0" prefWidth="104.0" style="-fx-border-radius: 5px; -fx-border-color: #000000;" AnchorPane.rightAnchor="205.0" AnchorPane.topAnchor="276.8" />
+      <StackPane fx:id="deckStackPane" layoutX="938.0" layoutY="276.8" prefHeight="165.0" prefWidth="104.0" style="-fx-border-radius: 5px; -fx-border-color: #000000;" AnchorPane.rightAnchor="205.0" AnchorPane.topAnchor="276.8" />
       <GridPane fx:id="handPlayer3" alignment="CENTER" layoutX="941.0" layoutY="310.0" prefHeight="100.0" prefWidth="550.0" rotate="-90.0" AnchorPane.bottomAnchor="310.0" AnchorPane.rightAnchor="-211.0" AnchorPane.topAnchor="310.0">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
@@ -91,15 +91,112 @@
       <Label fx:id="namePlayer2" layoutX="626.0" layoutY="141.0" text="Label" />
       <Label fx:id="namePlayer3" layoutX="1101.0" layoutY="351.0" rotate="270.0" text="Label" AnchorPane.rightAnchor="147.0" />
       <Label fx:id="namePlayer" alignment="CENTER" contentDisplay="CENTER" layoutX="938.0" layoutY="442.0" prefHeight="100.0" prefWidth="185.0" text="Label" textAlignment="CENTER" />
-      <AnchorPane fx:id="teamsWin" layoutX="540.0" layoutY="85.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffffff;" visible="false" AnchorPane.bottomAnchor="250.0" AnchorPane.topAnchor="250.0">
+      <AnchorPane fx:id="teamsWin" layoutX="388.6" layoutY="110.4" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: #ffffff;" visible="false" AnchorPane.bottomAnchor="109.60000000000002" AnchorPane.leftAnchor="388.6" AnchorPane.rightAnchor="391.4" AnchorPane.topAnchor="110.4">
          <children>
-            <ImageView fx:id="winnerTeamImage" fitHeight="130.0" fitWidth="130.0" layoutX="64.0" layoutY="75.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="14.0" />
-            <Text layoutX="3.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="IL TEAM VINCITORE È" textAlignment="CENTER" wrappingWidth="254.13671875" AnchorPane.topAnchor="5.0">
+            <ImageView fx:id="winnerTeamImage" fitHeight="300.0" fitWidth="300.0" layoutX="100.0" layoutY="186.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="14.0" />
+            <Text layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="IL TEAM VINCITORE È:" textAlignment="CENTER" wrappingWidth="500.0000000000001" AnchorPane.topAnchor="30.0">
                <font>
-                  <Font name="Looks Sketchy" size="25.0" />
+                  <Font name="Looks Sketchy" size="45.0" />
                </font>
             </Text>
-            <Label fx:id="winnerTeamLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="30.0" layoutY="38.0" prefHeight="24.0" prefWidth="200.0" text="Label" textAlignment="CENTER" AnchorPane.topAnchor="38.0" />
+            <Label fx:id="winnerTeamLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="3.0" layoutY="106.0" prefHeight="85.0" prefWidth="494.0" text="Team MAradona" textAlignment="CENTER" AnchorPane.topAnchor="106.0">
+               <font>
+                  <Font name="Super Monday" size="40.0" />
+               </font></Label>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="pointsEndTurnScopaAnchorPane" layoutX="390.6" layoutY="109.6" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: #ffffff;" visible="false" AnchorPane.bottomAnchor="110.39999999999998" AnchorPane.leftAnchor="390.6" AnchorPane.rightAnchor="389.4" AnchorPane.topAnchor="109.6">
+         <children>
+            <ImageView fitHeight="125.0" fitWidth="128.0" layoutX="14.0" layoutY="361.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="14.0">
+               <image>
+                  <Image url="@MaradonaIcon.png" />
+               </image>
+            </ImageView>
+            <Text layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PUNTI VINTI:" textAlignment="CENTER" wrappingWidth="500.0000000000001" AnchorPane.topAnchor="30.0">
+               <font>
+                  <Font name="Looks Sketchy" size="45.0" />
+               </font>
+            </Text>
+            <Text layoutX="174.2" layoutY="130.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Carte" textAlignment="CENTER" wrappingWidth="160.76416015625" AnchorPane.leftAnchor="174.2">
+               <font>
+                  <Font name="Super Monday" size="35.0" />
+               </font>
+            </Text>
+            <Text layoutX="174.2" layoutY="349.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Settebello" textAlignment="CENTER" AnchorPane.leftAnchor="174.2">
+               <font>
+                  <Font name="Super Monday" size="35.0" />
+               </font>
+            </Text>
+            <Text layoutX="174.2" layoutY="267.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Primiera" textAlignment="CENTER" wrappingWidth="160.76416015625" AnchorPane.leftAnchor="174.2">
+               <font>
+                  <Font name="Super Monday" size="35.0" />
+               </font>
+            </Text>
+            <Text layoutX="174.2" layoutY="194.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Denari" textAlignment="CENTER" wrappingWidth="160.76416015625" AnchorPane.leftAnchor="174.2">
+               <font>
+                  <Font name="Super Monday" size="35.0" />
+               </font>
+            </Text>
+            <ImageView fitHeight="125.0" fitWidth="128.0" layoutX="358.0" layoutY="360.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@vesuvioIcon.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="pointsCarteMaradona" layoutX="50.0" layoutY="100.0" text="Label" textAlignment="CENTER">
+               <font>
+                  <Font name="Retroma Vibes Regular" size="27.0" />
+               </font>
+            </Label>
+            <Label fx:id="pointsSettebelloVesuvio" layoutX="394.0" layoutY="319.0" text="Label" textAlignment="CENTER">
+               <font>
+                  <Font name="Retroma Vibes Regular" size="27.0" />
+               </font>
+            </Label>
+            <Label fx:id="pointsPrimieraVesuvio" layoutX="393.0" layoutY="237.0" text="Label" textAlignment="CENTER">
+               <font>
+                  <Font name="Retroma Vibes Regular" size="27.0" />
+               </font>
+            </Label>
+            <Label fx:id="pointsDenariVesuvio" layoutX="393.0" layoutY="164.0" text="Label" textAlignment="CENTER">
+               <font>
+                  <Font name="Retroma Vibes Regular" size="27.0" />
+               </font>
+            </Label>
+            <Label fx:id="pointsCarteVesuvio" layoutX="394.0" layoutY="100.0" text="Label" textAlignment="CENTER">
+               <font>
+                  <Font name="Retroma Vibes Regular" size="27.0" />
+               </font>
+            </Label>
+            <Label fx:id="pointsSettebelloMaradona" layoutX="50.0" layoutY="319.0" text="Label" textAlignment="CENTER">
+               <font>
+                  <Font name="Retroma Vibes Regular" size="27.0" />
+               </font>
+            </Label>
+            <Label fx:id="pointsPrimieraMaradona" layoutX="50.0" layoutY="237.0" text="Label" textAlignment="CENTER">
+               <font>
+                  <Font name="Retroma Vibes Regular" size="27.0" />
+               </font>
+            </Label>
+            <Label fx:id="pointsDenariMaradona" layoutX="50.0" layoutY="164.0" text="Label" textAlignment="CENTER">
+               <font>
+                  <Font name="Retroma Vibes Regular" size="27.0" />
+               </font>
+            </Label>
+            <Text layoutX="174.0" layoutY="434.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Scopa" textAlignment="CENTER" wrappingWidth="160.76416015625">
+               <font>
+                  <Font name="Super Monday" size="35.0" />
+               </font>
+            </Text>
+            <Label fx:id="pointsScopaMaradona" layoutX="139.0" layoutY="404.0" text="Label" textAlignment="CENTER">
+               <font>
+                  <Font name="Retroma Vibes Regular" size="27.0" />
+               </font>
+            </Label>
+            <Label fx:id="pointsScopaVesuvio" layoutX="308.0" layoutY="404.0" text="Label" textAlignment="CENTER">
+               <font>
+                  <Font name="Retroma Vibes Regular" size="27.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
    </children>

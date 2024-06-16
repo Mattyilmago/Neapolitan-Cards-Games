@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.concurrent.Semaphore;
 
 
 public class TableController implements Initializable {
@@ -63,45 +64,102 @@ public class TableController implements Initializable {
     Character briscola;
     Player winnerPlayerTurn; //Il giocatore che vince il turno
     @FXML
-    private AnchorPane Card;
+    private Label MaradonaPoints;
+
     @FXML
-    private GridPane tableGridPane;
+    private Label VesuvioPoints;
+
     @FXML
-    private StackPane deck;
+    private StackPane deckStackPane;
+
     @FXML
     private GridPane hand;
+
     @FXML
     private GridPane handPlayer1;
+
     @FXML
     private GridPane handPlayer2;
+
     @FXML
     private GridPane handPlayer3;
+
     @FXML
     private Label namePlayer;
+
     @FXML
     private Label namePlayer1;
+
     @FXML
     private Label namePlayer2;
+
     @FXML
     private Label namePlayer3;
+
+    @FXML
+    private AnchorPane root;
+
+    @FXML
+    private GridPane tableGridPane;
+
+    @FXML
+    private AnchorPane teamMaradona;
+
+    @FXML
+    private AnchorPane teamVesuvio;
+
+    @FXML
+    private AnchorPane teamsWin;
+
+    @FXML
+    private ImageView winnerTeamImage;
+
+    @FXML
+    private Label winnerTeamLabel;
+    @FXML
+    private Label pointsCarteMaradona;
+
+    @FXML
+    private Label pointsCarteVesuvio;
+
+    @FXML
+    private Label pointsDenariMaradona;
+
+    @FXML
+    private Label pointsDenariVesuvio;
+
+    @FXML
+    private AnchorPane pointsEndTurnScopaAnchorPane;
+
+    @FXML
+    private Label pointsPrimieraMaradona;
+
+    @FXML
+    private Label pointsPrimieraVesuvio;
+
+    @FXML
+    private Label pointsSettebelloMaradona;
+
+    @FXML
+    private Label pointsSettebelloVesuvio;
+    @FXML
+    private Label pointsScopaMaradona;
+
+    @FXML
+    private Label pointsScopaVesuvio;
+
+
     private ArrayList<Label> names = new ArrayList<Label>() {{
         add(namePlayer);
         add(namePlayer1);
         add(namePlayer2);
         add(namePlayer3);
     }};
-    @FXML
-    private Label MaradonaPoints;
-    @FXML
-    private Label VesuvioPoints;
-    @FXML
-    private AnchorPane teamMaradona;
-    @FXML
-    private AnchorPane teamVesuvio;
+
     private Table table = new Table();
     private Hand handPlayer = new Hand(currGame.equals("Tressette") ? 10 : 3);
 
-    private ArrayList<GridPane> hands = new ArrayList<>();
+    private ArrayList<GridPane> handsGridPanes = new ArrayList<>();
     //contiene i giocatori in ordine di turno
     private ArrayList<String> playersTurn = new ArrayList<>() {{
         addAll(SharedData.getInstance().getLobbyPlayers());
@@ -126,6 +184,10 @@ public class TableController implements Initializable {
         generateHands();
 
         putCardsOnTable();
+        if(cardGenerated != 40){
+            ImageView back = new ImageView(new Image(getClass().getResource("Cards_png/back.png").toExternalForm()));
+            deckStackPane.getChildren().add(back);
+        }
 
         //Salva il seme della briscola
         if (currGame.equals("Briscola")) {
@@ -251,21 +313,37 @@ public class TableController implements Initializable {
                                 Platform.runLater(() -> {
                                     System.out.println("Ricevuto: " + cardVal + cardSeed);
                                     Card card = new Card(cardVal, cardSeed);
-                                    updateAndCalculateTurn(card);
+                                    try {
+                                        updateAndCalculateTurn(card);
+                                    } catch (InterruptedException e) {
+                                        throw new RuntimeException(e);
+                                    }
                                 });
-
                             }
                         });
 
 
                     });
-
-
+                    try {
+                        waitForRunLater();
+                        wait(5000);
+                        teamsWin.setVisible(false);
+                        pointsEndTurnScopaAnchorPane.setVisible(false);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
 
 
             }
         });
+    }
+
+    public static void waitForRunLater() throws InterruptedException {
+        Semaphore semaphore = new Semaphore(0);
+        Platform.runLater(() -> semaphore.release());
+        semaphore.acquire();
+
     }
 
     /**
@@ -428,23 +506,37 @@ public class TableController implements Initializable {
                                 @Override
                                 public void handle(ActionEvent event) {
                                     Platform.runLater(() -> {
-                                        updateAndCalculateTurn(card);
+                                        try {
+                                            updateAndCalculateTurn(card);
+                                        } catch (InterruptedException e) {
+                                            throw new RuntimeException(e);
+                                        }
 
                                     });
                                 }
-                            });
 
+
+
+
+                            });
+                            try {
+                                wait(5000);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+                            teamsWin.setVisible(false);
+                            pointsEndTurnScopaAnchorPane.setVisible(false);
+                        }
 
                         }
 
-                    }
+                    });
 
-                });
             }
         }
     }
 
-    public void updateAndCalculateTurn(Card card) {
+    public void updateAndCalculateTurn(Card card) throws InterruptedException {
         if (currGame.equals("Scopa")) calculateWinForScopa(card);
         else {
             //Se l'ultimo del turno ha giocato la carta vedo la presa del turno se gioco a Tressette o Briscola
@@ -484,8 +576,8 @@ public class TableController implements Initializable {
 
                                         generatePlayersCards(hand, new ArrayList<Card>(SharedData.getInstance().getPlayerCards()), false, 0);
 
-                                        for (int i = 1; i < hands.size(); i++) {
-                                            generatePlayersCards(hands.get(i), new ArrayList<>(SharedData.getInstance().getPlayerCards()), true, i);
+                                        for (int i = 1; i < handsGridPanes.size(); i++) {
+                                            generatePlayersCards(handsGridPanes.get(i), new ArrayList<>(SharedData.getInstance().getPlayerCards()), true, i);
                                         }
                                     });
                                 }
@@ -520,8 +612,8 @@ public class TableController implements Initializable {
 
                                         System.out.println("CArds to generate " + cardsToGenerate);
                                         generatePlayersCards(hand, cardsToGenerate, false, 0);
-                                        for (int i = 1; i < hands.size(); i++) {
-                                            generatePlayersCards(hands.get(i), cardsToGenerate, true, i);
+                                        for (int i = 1; i < handsGridPanes.size(); i++) {
+                                            generatePlayersCards(handsGridPanes.get(i), cardsToGenerate, true, i);
                                         }
                                     }
                                 }
@@ -537,23 +629,78 @@ public class TableController implements Initializable {
 
             }
         }
+
+        if(cardGenerated == 40){
+            deckStackPane.getChildren().removeLast();
+        }
+    }
+    private void showAndFillScopaEndTurnAnchorPane(){
+        pointsEndTurnScopaAnchorPane.setVisible(true);
+        pointsCarteMaradona.setText(String.valueOf(GameManagerScopa.pointsForTeam[0][0]));
+        pointsDenariMaradona.setText(String.valueOf(GameManagerScopa.pointsForTeam[0][1]));
+        pointsSettebelloMaradona.setText(String.valueOf(GameManagerScopa.pointsForTeam[0][2]));
+        pointsPrimieraMaradona.setText(String.valueOf(GameManagerScopa.pointsForTeam[0][3]));
+        pointsCarteVesuvio.setText(String.valueOf(GameManagerScopa.pointsForTeam[1][0]));
+        pointsDenariVesuvio.setText(String.valueOf(GameManagerScopa.pointsForTeam[1][1]));
+        pointsSettebelloVesuvio.setText(String.valueOf(GameManagerScopa.pointsForTeam[1][2]));
+        pointsPrimieraVesuvio.setText(String.valueOf(GameManagerScopa.pointsForTeam[1][3]));
+        pointsScopaVesuvio.setText(String.valueOf(GameManagerScopa.scope[1]));
+        pointsScopaMaradona.setText(String.valueOf(GameManagerScopa.scope[0]));
     }
 
-    private void calculatePoints() {
+    private void calculatePoints() throws InterruptedException {
         switch (currGame) {
             case "Scopa":
                 GameManagerScopa.calculatePointsScopa(table);
+                showAndFillScopaEndTurnAnchorPane();
+                updatePointsLabel();
+
+                if(table.getTeam(0).getPoints() >= 21 && table.getTeam(0).getPoints() > table.getTeam(1).getPoints()){
+                    showAndFIllTeamsWinAnchorPane(table.getTeam(0));
+                } else if (table.getTeam(1).getPoints() >= 21) {
+                    showAndFIllTeamsWinAnchorPane(table.getTeam(1));
+                }
+
                 break;
             case "Briscola":
                 GameManagerBriscola.calculatePoints(table);
+                if(table.getTeam(0).getPoints() >= 120 && table.getTeam(0).getPoints() > table.getTeam(1).getPoints()){
+                    showAndFIllTeamsWinAnchorPane(table.getTeam(0));
+                } else if (table.getTeam(1).getPoints() >= 120) {
+                    showAndFIllTeamsWinAnchorPane(table.getTeam(1));
+                }
                 break;
             case "Tressette":
                 GameManagerTressette.calculatePoints(table);
+                if(table.getTeam(0).getPoints() >= 21 && table.getTeam(0).getPoints() > table.getTeam(1).getPoints()){
+                    showAndFIllTeamsWinAnchorPane(table.getTeam(0));
+                } else if (table.getTeam(1).getPoints() >= 21) {
+                    showAndFIllTeamsWinAnchorPane(table.getTeam(1));
+                }
                 break;
         }
         table.getTeam(0).getDeckPlayer().clear();
         table.getTeam(1).getDeckPlayer().clear();
 
+    }
+
+    /**
+     * Show and update the anchorpane of the winner
+     * @param team winnerTeam
+     */
+    private void showAndFIllTeamsWinAnchorPane(Player team){
+        if(SharedData.getInstance().getLobbyPlayers().indexOf(team.getId()) == 0){
+            winnerTeamImage.setImage(new Image(getClass().getResource("MaradonaIcon.png").toExternalForm()));
+            winnerTeamLabel.setText("TEAM MARADONA");
+            teamsWin.setStyle("-fx-background-color: #521a6a");
+        }
+        else{
+            winnerTeamImage.setImage(new Image(getClass().getResource("VesuvioIcon.png").toExternalForm()));
+            winnerTeamLabel.setText("TEAM VESUVIO");
+            teamsWin.setStyle("-fx-background-color: #6a1a32");
+        }
+
+        teamsWin.setVisible(true);
     }
 
     /**
@@ -831,8 +978,8 @@ public class TableController implements Initializable {
         try {
 
             if (twoPlayers) {
-                hands.add(hand);            //mano giocatore principale
-                hands.add(handPlayer2);     //mano giocatore difronte
+                handsGridPanes.add(hand);            //mano giocatore principale
+                handsGridPanes.add(handPlayer2);     //mano giocatore difronte
                 namePlayer.setText(playersSorted.getFirst());
                 namePlayer2.setText(playersSorted.getLast());
                 namePlayer1.setVisible(false);
@@ -840,10 +987,10 @@ public class TableController implements Initializable {
 
             } else {
                 //4 giocatori
-                hands.add(hand);            //mano giocatore principale
-                hands.add(handPlayer1);     //mano giocatore a sx
-                hands.add(handPlayer2);     //mano giocatore difronte
-                hands.add(handPlayer3);     //mano giocatore a dx
+                handsGridPanes.add(hand);            //mano giocatore principale
+                handsGridPanes.add(handPlayer1);     //mano giocatore a sx
+                handsGridPanes.add(handPlayer2);     //mano giocatore difronte
+                handsGridPanes.add(handPlayer3);     //mano giocatore a dx
                 namePlayer.setText(playersSorted.getFirst());
                 namePlayer1.setText((playersSorted.get(1)));
                 namePlayer2.setText((playersSorted.get(2)));
@@ -852,7 +999,7 @@ public class TableController implements Initializable {
 
             setNamesLabelColor();
 
-            for (GridPane g : hands) {
+            for (GridPane g : handsGridPanes) {
                 g.setGridLinesVisible(true);
                 g.setAlignment(Pos.CENTER);
                 setupGridPaneCols(g);
@@ -860,13 +1007,13 @@ public class TableController implements Initializable {
 
             int tmp = 0;
             for (String clientName : playersSorted) {
-                handsWithGridPane.put(clientName, hands.get(tmp));
+                handsWithGridPane.put(clientName, handsGridPanes.get(tmp));
                 handsWithCardsImView.put(clientName, new ArrayList<>());
 
                 if (tmp == 0) {
                     generatePlayersCards(hand, new ArrayList<>(SharedData.getInstance().getPlayerCards()), false, 0);
                 } else {
-                    generatePlayersCards(hands.get(tmp), new ArrayList<>(SharedData.getInstance().getPlayerCards()), true, tmp);
+                    generatePlayersCards(handsGridPanes.get(tmp), new ArrayList<>(SharedData.getInstance().getPlayerCards()), true, tmp);
                 }
                 tmp++;
             }
