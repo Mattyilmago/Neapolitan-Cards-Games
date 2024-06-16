@@ -1,22 +1,16 @@
-#gameName{
-    -fx-font-family: "Super Monday";
-    -fx-font-size: 80px;
-}
-#playersButton{
-    -fx-font-family: "Looks Sketchy";
-    -fx-font-size: 19px;
-    -fx-text-fill: #0c0c0c;
+#joinLobby{
+    -fx-background-color:
+            rgba(0,0,0,0)
+            linear-gradient(#D5D3EB, #000000),
+            linear-gradient(#488b2c 0%, #2e7212 20%, #1a3f0a 80%, #0f2606 100%),
+            linear-gradient(#347f15, #1f4c0c);
+    -fx-background-insets: 0,9 9 8 9,9,10,11;
     -fx-background-radius: 40;
+    -fx-padding: 15 30 15 30;
+    -fx-text-fill: #e5e5f2;
+    -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.1) , 2, 0.0, 0, 1);
 }
-#labelCrea{
-    -fx-font-family: "Looks Sketchy";
-    -fx-font-size: 25px;
-}
-#labelEntra{
-    -fx-font-family: "Looks Sketchy";
-    -fx-font-size: 25px;
-}
-#previousGameButton, #nextGameButton{
+#backToMenu{
     -fx-background-color:
             rgba(0,0,0,0)
             linear-gradient(#D5D3EB, #000000),

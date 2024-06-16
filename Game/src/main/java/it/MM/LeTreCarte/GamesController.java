@@ -62,6 +62,10 @@ public class GamesController implements Initializable {
 
     @FXML
     private Text labelEntra;
+    @FXML
+    private ImageView rightArrow;
+    @FXML
+    private ImageView leftArrow;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -107,7 +111,7 @@ public class GamesController implements Initializable {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Lobby.fxml")));
         stage = (Stage)((Node)mouseEvent.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
-        //scene.getStylesheets().addCard(getClass().getResource("Table.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("Lobby.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
@@ -119,7 +123,7 @@ public class GamesController implements Initializable {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("joinLobby.fxml")));
         stage = (Stage)((Node)mouseEvent.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
-        //scene.getStylesheets().addCard(getClass().getResource("Table.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("joinLobby.css").toExternalForm());
 
         stage.setScene(scene);
         stage.show();
@@ -130,11 +134,24 @@ public class GamesController implements Initializable {
         refreshPlayersButton();
         refreshCardsImage();
 
-        if (curGame == 0) previousGameButton.setVisible(false);
-        else previousGameButton.setVisible(true);
+        if (curGame == 0){
 
-        if (curGame == games.length - 1) nextGameButton.setVisible(false);
-        else nextGameButton.setVisible(true);
+            previousGameButton.setVisible(false);
+            leftArrow.setVisible(false);
+        }
+        else {
+            previousGameButton.setVisible(true);
+            leftArrow.setVisible(true);
+        }
+
+        if (curGame == games.length - 1) {
+            nextGameButton.setVisible(false);
+            rightArrow.setVisible(false);
+        }
+        else {
+            nextGameButton.setVisible(true);
+            rightArrow.setVisible(true);
+        }
     }
     public void refreshPlayersButton() {
         if (isTwoPlayers) {

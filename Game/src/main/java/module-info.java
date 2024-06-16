@@ -9,6 +9,7 @@ module it.MM.LeTreCarte {
     requires grizzly.http.server;
     requires jakarta.websocket.client;
     requires org.glassfish.tyrus.core;
+    requires javafx.graphics;
 
 
     opens it.MM.LeTreCarte to javafx.fxml;

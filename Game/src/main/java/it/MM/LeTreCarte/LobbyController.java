@@ -18,6 +18,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -43,6 +45,8 @@ public class LobbyController implements Initializable {
 
     @FXML
     private Label gameName;
+    @FXML
+    private ImageView leftArrow;
 
     @FXML
     private Label roomCode;
@@ -58,6 +62,7 @@ public class LobbyController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        leftArrow.setImage(new Image(getClass().getResource("left_arrow.png").toExternalForm()));
 
         gameName.setText(SharedData.getInstance().getSelectedGame());
 

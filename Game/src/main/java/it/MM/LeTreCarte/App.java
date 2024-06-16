@@ -9,6 +9,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
+import java.util.Objects;
+
 
 public class App extends Application {
     public static void main(String[] args) {
@@ -19,7 +21,7 @@ public class App extends Application {
     public void start(Stage stage) throws Exception {
         Parent root = null;
         try {
-            root = FXMLLoader.load(getClass().getResource("StartPage.fxml"));
+            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("StartPage.fxml")));
         }
         catch (Exception e) { throw new RuntimeException(e); }
 

@@ -184,8 +184,7 @@ public class TableController implements Initializable {
 
         configureTableGridPane(tableGridPane);
         configureTable(table);
-        table.getTeam(0).setPoints(12);
-        table.getTeam(1).setPoints(7);
+
         updatePointsLabel();
 
         generateHands();
@@ -572,8 +571,7 @@ public class TableController implements Initializable {
         }
 
         if (indexPlayerInTurn == playersTurn.size() - 1) {
-            if (cardGenerated == 40) {
-
+            if (cardGenerated == 40 && handPlayer.getCards().isEmpty()) {
                 calculatePoints();
             } else {
                 drawCards();
@@ -720,6 +718,7 @@ public class TableController implements Initializable {
                 }
                 break;
         }
+        updatePointsLabel();
         table.getTeam(0).getDeckPlayer().clear();
         table.getTeam(1).getDeckPlayer().clear();
 
@@ -794,8 +793,9 @@ public class TableController implements Initializable {
                 winnerPlayerTurn = GameManagerTressette.calculateWinnerTurn(table);
 
                 //Aggiungo le carte vinte del turno al deckplayer della squadra che si è aggiudicata la mano
-                table.getTeam(playersTurn.indexOf(winnerPlayerTurn.getId()) % 2).getDeckPlayer().addAll(table.getCards());
+                table.getTeam(SharedData.getInstance().getLobbyPlayers().indexOf(winnerPlayerTurn.getId()) % 2).getDeckPlayer().getCards().addAll(table.getCards());
                 //TODO aggiungere animazione delle carte dal tavolo al giocatore che ha vinto
+                System.out.println("carte vinte " + table.getCards() + " carte totali "+  table.getTeam(SharedData.getInstance().getLobbyPlayers().indexOf(winnerPlayerTurn.getId()) % 2).getDeckPlayer().getCards());
                 clearTable();
         }
     }

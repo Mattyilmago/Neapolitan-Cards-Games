@@ -14,6 +14,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
@@ -33,6 +35,8 @@ public class JoinLobbyController implements Initializable {
 
     @FXML
     private Button backToMenu;
+    @FXML
+    private ImageView leftArrow;
 
     @FXML
     private Button joinLobby;
@@ -42,6 +46,7 @@ public class JoinLobbyController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        leftArrow.setImage(new Image(getClass().getResource("left_arrow.png").toExternalForm()));
         roomCode.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {

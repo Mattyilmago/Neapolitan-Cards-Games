@@ -44,7 +44,7 @@ public class GameManagerTressette {
         }
 
         System.out.println("Winner is " + table.getPlayers().get(indexWinner).getId() + " with " + table.getCards().get(indexWinner));
-        return table.getPlayers().get(indexWinner);
+        return table.getTeams().get(indexWinner % 2);
     }
 
     public static void calculatePoints(Table table) {
@@ -71,10 +71,12 @@ public class GameManagerTressette {
         }
 
         points /= 3;
+
         if (lastCard) {
             points++;
         }
         player.setPoints(player.getPoints() + points);
+
         System.out.println(player.getId() + " got " + points + " points");
         System.out.println("Now he has " + player.getPoints() + " points");
     }

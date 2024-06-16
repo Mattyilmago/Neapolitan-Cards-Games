@@ -16,3 +16,15 @@
     -fx-font-family: "Looks Sketchy";
     -fx-font-size: 25px;
 }
+#previousGameButton, #nextGameButton{
+    -fx-background-color:
+            rgba(0,0,0,0)
+            linear-gradient(#D5D3EB, #000000),
+            linear-gradient(#efefef 0%, #e5e5e5 20%, #b7b7b7 80%, #a0a0a0 100%),
+            linear-gradient(#efefef, #b7b7b7);
+    -fx-background-insets: 0,9 9 8 9,9,10,11;
+    -fx-background-radius: 40;
+    -fx-padding: 15 30 15 30;
+    -fx-text-fill: #161618;
+    -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.1) , 2, 0.0, 0, 1);
+}
