@@ -190,7 +190,7 @@ public class TableController implements Initializable {
 
         generateHands();
 
-        putCardsOnTable();
+        putCardsOnTable(new ArrayList<>(SharedData.getInstance().getCardsOnTable()));
         if (cardGenerated != 40) {
             ImageView back = new ImageView(new Image(getClass().getResource("Cards_png/back.png").toExternalForm()));
             deckStackPane.getChildren().add(back);
@@ -204,9 +204,9 @@ public class TableController implements Initializable {
 
     }
 
-    private void putCardsOnTable() {
-        for (int i = 0; i < SharedData.getInstance().getCardsOnTable().size(); i++) {
-            Card card = SharedData.getInstance().getCardsOnTable().get(i);
+    private void putCardsOnTable(ArrayList<Card> cardsToPut) {
+        for (int i = 0; i < cardsToPut.size(); i++) {
+            Card card = cardsToPut.get(i);
             ImageView iv = new ImageView(new Image(getClass().getResource(card.getImage()).toExternalForm()));
             iv.setPreserveRatio(true);
 
@@ -387,7 +387,12 @@ public class TableController implements Initializable {
             //iv.setFitWidth(gridview.getPrefWidth() / (cardToGenerate+1));
             iv.setFitHeight(gridview.getPrefHeight());
 
-            gridview.getColumnConstraints().add(new ColumnConstraints());
+            ColumnConstraints c = new ColumnConstraints();
+            c.setPercentWidth(10);
+            c.setHalignment(HPos.CENTER);
+            gridview.getColumnConstraints().add(c);
+            gridview.setAlignment(Pos.CENTER);
+            setupGridPaneCols(gridview);
             if (cardToGenerate == 1) {
                 if(!back){
                     gridview.addColumn(gridview.getChildren().size(), pane);
@@ -489,7 +494,7 @@ public class TableController implements Initializable {
                             System.out.println("Row: " + targetRow + "| col: " + targetCol);
 
                             //t
-                            tableGridPane.getChildren().remove(targetRow * tableCols + targetCol);
+                            tableGridPane.getChildren().remove(iv);
                             tableGridPane.add(tmpIV, targetCol, targetRow);
                             tableSupport.set(index, true);
 
@@ -601,23 +606,28 @@ public class TableController implements Initializable {
 
         switch (currGame) {
             case "Scopa": {
+                System.out.println("AAA");
                 if (handPlayer.getCards().isEmpty()) {
+                    System.out.println("AAAAAAAAAAAAAA");
                     try {
                         System.out.println("ENTRATO");
                         SharedData.getGSCInstance().requestCards(3);
                         SharedData.getInstance().getPlayerCards().addListener(new ListChangeListener<it.MM.LeTreCarte.model.card.Card>() {
+                            boolean done = false;
                             @Override
                             public void onChanged(Change<? extends it.MM.LeTreCarte.model.card.Card> change) {
-                                if (SharedData.getInstance().getPlayerCards().size() == 3) {
+                                if (!done && SharedData.getInstance().getPlayerCards().size() == 3) {
                                     Platform.runLater(() -> {
-                                        //restoreGridPaneConstraints(false);
+                                        restoreGridPaneConstraints(false);
                                         hand.getChildren().clear();
 
                                         generatePlayersCards(hand, new ArrayList<Card>(SharedData.getInstance().getPlayerCards()), false, 0);
-
+                                        System.out.println("carte mie");
                                         for (int i = 1; i < handsGridPanes.size(); i++) {
                                             generatePlayersCards(handsGridPanes.get(i), new ArrayList<>(SharedData.getInstance().getPlayerCards()), true, i);
+                                            System.out.println("carte altri - "+i);
                                         }
+                                        done=true;
                                     });
                                 }
                             }
@@ -652,9 +662,11 @@ public class TableController implements Initializable {
 
                                         System.out.println("CArds to generate " + cardsToGenerate);
                                         generatePlayersCards(hand, cardsToGenerate, false, 0);
+                                        System.out.println("carte mie 2");
                                         for (int i = 1; i < handsGridPanes.size(); i++) {
                                             System.out.println("before: "+handsGridPanes.get(i).getColumnConstraints().size());
                                             generatePlayersCards(handsGridPanes.get(i), cardsToGenerate, true, i);
+                                            System.out.println("carte altri 2 - "+i);
                                             System.out.println("after: "+handsGridPanes.get(i).getColumnConstraints().size());
                                         }
                                     }
@@ -759,6 +771,7 @@ public class TableController implements Initializable {
                     //se ho vinto qualche carta le levo dal tavolo e le aggiungo al mazzetto delle carte vinte
 
                     try {
+                        Thread.sleep(800);
                         clearCardsFromTable(cardsWon);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
@@ -808,6 +821,31 @@ public class TableController implements Initializable {
     private void clearCardsFromTable(ArrayList<Card> cardsToRemove) throws InterruptedException {
         table.addCard(cardsToRemove.getLast());
         System.out.println("table:::" + table.getCards().toString());
+
+//        cardsToRemove.forEach(card -> table.removeCard(card));
+//
+//        tableGridPane.getChildren().clear();
+//
+//        for (int i = 0; i < tableCols * tableRows; i++) {
+//
+//            int targetRow = i / tableCols;
+//            int targetCol = targetRow == 0 ? i : i % tableCols;
+//            tableGridPane.add(new Pane(), targetCol, targetRow);
+//            tableSupport.set(i, false);
+//        }
+//
+//        for (int i = 0; i < table.getCards().size(); i++) {
+//            Card card = table.getCards().get(i);
+//            ImageView iv = new ImageView(new Image(getClass().getResource(card.getImage()).toExternalForm()));
+//            iv.setPreserveRatio(true);
+//
+//            iv.setFitWidth(sizeOfCardsInTable.get("width"));
+//            iv.setFitHeight(sizeOfCardsInTable.get("height"));
+//
+//            tableGridPane.getChildren().remove(0, table.getCards().size());
+//            tableGridPane.add(iv, i, 0);
+//            tableSupport.set(i, true);
+//        }
 
         for (int i = 0; i < cardsToRemove.size(); i++) {
             System.out.println(i + " card " + cardsToRemove.get(i));
@@ -960,6 +998,7 @@ public class TableController implements Initializable {
                 throw new InterruptedException("Node not found");
             }
         }
+        System.out.println("non ho trovato un cazzo");
         return null;
     }
 
@@ -1052,7 +1091,7 @@ public class TableController implements Initializable {
             for (GridPane g : handsGridPanes) {
                 g.setGridLinesVisible(true);
                 g.setAlignment(Pos.CENTER);
-                setupGridPaneCols(g);
+                //setupGridPaneCols(g);
             }
 
             int tmp = 0;
