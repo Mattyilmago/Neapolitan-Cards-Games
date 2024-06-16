@@ -232,17 +232,18 @@ public class TableController implements Initializable {
         SharedData.getInstance().getMoves().addListener(new ListChangeListener<JsonObject>() {
             @Override
             public void onChanged(Change<? extends JsonObject> c) {
-                JsonObject response = SharedData.getInstance().getMoves().getLast();
 
-                if (Objects.equals(response.get("type").getAsString(), "move") && !Objects.equals(response.get("clientAKA").getAsString(), SharedData.getInstance().getPlayerName())) {
-                    System.out.println("sono entrato nell'if");
+                Platform.runLater(()->{
+                    JsonObject response = SharedData.getInstance().getMoves().getLast();
 
-                    int cardVal = response.get("card-val").getAsInt();
-                    Character cardSeed = response.get("card-seed").getAsString().toCharArray()[0];
+                    if (Objects.equals(response.get("type").getAsString(), "move") && !Objects.equals(response.get("clientAKA").getAsString(), SharedData.getInstance().getPlayerName())) {
+                        System.out.println("sono entrato nell'if");
 
-                    Platform.runLater(() -> {
+                        int cardVal = response.get("card-val").getAsInt();
+                        Character cardSeed = response.get("card-seed").getAsString().toCharArray()[0];
+
                         String clientAKA = response.get("clientAKA").getAsString();
-                        int cardIndexInHand = response.get("cardIndexInHand").getAsInt() - 1;
+                        int cardIndexInHand = response.get("cardIndexInHand").getAsInt();
 
                         System.out.println(clientAKA);
                         System.out.println(handsWithGridPane);
@@ -271,7 +272,8 @@ public class TableController implements Initializable {
                         double endY = tableGridPane.localToScene(tableGridPane.getBoundsInLocal()).getMinY() + targetRow * tableGridPane.getPrefHeight() / tableRows;
 
                         //creo una copia di iv
-                        ImageView cardInTable = new ImageView(new Image(getClass().getResource(new Card(cardVal, cardSeed).getImage()).toExternalForm()));
+                        Card card = new Card(cardVal, cardSeed);
+                        ImageView cardInTable = new ImageView(new Image(getClass().getResource(card.getImage()).toExternalForm()));
                         cardInTable.setPreserveRatio(true);
                         cardInTable.setFitWidth(sizeOfCardsInTable.get("width"));
                         cardInTable.setFitHeight(sizeOfCardsInTable.get("height"));
@@ -283,7 +285,7 @@ public class TableController implements Initializable {
                         tableGridPane.add(cardInTable, targetCol, targetRow);
                         tableSupport.set(targetRow * tableCols + targetCol, true);
                         if (!currGame.equals("Scopa")) {
-                            table.addCard(new Card(cardVal, cardSeed));
+                            table.addCard(card);
                         }
 
 
@@ -294,16 +296,21 @@ public class TableController implements Initializable {
                                     cardInTable.setVisible(true);
                                     cardToMove.setVisible(false);
                                     gridviewAKA.getChildren().remove(cardToMove);
+                                    System.out.println(STR."rimosso - \{gridviewAKA.getChildren().size()}");
 
 
                                     // Sposta i nodi rimanenti (si potrebbe fare animato ehh)
                                     for (Node node : gridviewAKA.getChildren()) {
-                                        Integer currCol = GridPane.getColumnIndex(node);
+                                        System.out.println("sono nel for");
+                                        Integer currCol = gridviewAKA.getChildren().indexOf(node);
+                                        System.out.println(currCol + " - " + cardIndexInHand);
                                         if (currCol != null && currCol > (cardIndexInHand)) {
+                                            System.out.println("sono nell'if del for"+ currCol);
                                             GridPane.setColumnIndex(node, currCol - 1);
                                         }
                                     }
                                     gridviewAKA.getColumnConstraints().removeLast();
+
 
 
                                 }, new KeyValue(translate2.xProperty(), calculateX(playersSorted.indexOf(clientAKA), startX, endX)), new KeyValue(translate2.yProperty(), calculateY(playersSorted.indexOf(clientAKA), startY, endY)))
@@ -317,29 +324,22 @@ public class TableController implements Initializable {
 
                             @Override
                             public void handle(ActionEvent event) {
-                                Platform.runLater(() -> {
-                                    System.out.println("Ricevuto: " + cardVal + cardSeed);
-                                    Card card = new Card(cardVal, cardSeed);
-                                    try {
-                                        updateAndCalculateTurn(card);
-                                    } catch (InterruptedException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                });
+                                System.out.println("Ricevuto: " + cardVal + cardSeed);
+                                Card card = new Card(cardVal, cardSeed);
+                                try {
+                                    updateAndCalculateTurn(card);
+                                } catch (InterruptedException e) {
+                                    throw new RuntimeException(e);
+                                }
                             }
                         });
+                    }
+
+                });
 
 
-                    });
-//                    try {
-//                        waitForRunLater();
-//                        wait(5000);
-//                        teamsWin.setVisible(false);
-//                        pointsEndTurnScopaAnchorPane.setVisible(false);
-//                    } catch (InterruptedException e) {
-//                        throw new RuntimeException(e);
-//                    }
-                }
+
+
 
 
             }
@@ -360,6 +360,7 @@ public class TableController implements Initializable {
 
         for (int cardIndex = 0; cardIndex < cardToGenerate; cardIndex++) {
             cardGenerated++;
+            System.out.println("cardGenerated: " + cardGenerated);
             Card card = back ? new Card(true) : cards.get(cardIndex);
             if (!back) handPlayer.addCard(card);
 
@@ -378,9 +379,9 @@ public class TableController implements Initializable {
             iv.setFitHeight(gridview.getPrefHeight());
 
             if (cardToGenerate == 1) {
-                gridview.addColumn(gridview.getChildren().size(), pane);
+                gridview.add(pane, gridview.getChildren().size()-1, 0);
             } else {
-                gridview.addColumn(cardIndex, pane);
+                gridview.add(pane, cardIndex, 0);
             }
 
 
@@ -429,7 +430,14 @@ public class TableController implements Initializable {
                             }
 
                             //trova cardIndex aggiornato, per risolvere il problema delle carte in mano che diminuiscono
-                            int currentCardIndex = (int) gridview.getChildren().stream().takeWhile(node -> !node.equals(pane)).count();
+                            int currentCardIndex = 0;
+                            try {
+                                currentCardIndex = Objects.requireNonNull(findRowColumnOfCardInGridPane(card, gridview)).getKey();
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+
+                            //int currentCardIndex = (int) gridview.getChildren().stream().takeWhile(node -> !node.equals(pane)).count();
                             System.out.println("currentCardIndex: " + currentCardIndex);
 
                             //recupera la posizione globale della carta
@@ -478,6 +486,7 @@ public class TableController implements Initializable {
                             System.out.println("endX: " + endX + "| endY: " + endY);
 
                             //Animazione aggiunta carta al Gridpane del tavolo
+                            int finalCurrentCardIndex = currentCardIndex;
                             Timeline cardToTableAnimation = new Timeline(new KeyFrame(Duration.ZERO, new KeyValue(translate.xProperty(), 0), new KeyValue(translate.yProperty(), 0)),
 
                                     new KeyFrame(new Duration(300), e -> {
@@ -488,7 +497,7 @@ public class TableController implements Initializable {
                                         // Sposta i nodi rimanenti (si potrebbe fare animato ehh)
                                         for (Node node : gridview.getChildren()) {
                                             Integer currCol = GridPane.getColumnIndex(node);
-                                            if (currCol != null && currCol > (currentCardIndex - 1)) {
+                                            if (currCol != null && currCol > (finalCurrentCardIndex - 1)) {
                                                 GridPane.setColumnIndex(node, currCol - 1);
                                             }
                                         }
@@ -544,9 +553,14 @@ public class TableController implements Initializable {
 
         if (indexPlayerInTurn == playersTurn.size() - 1) {
             if (cardGenerated == 40) {
+
                 calculatePoints();
             } else {
                 drawCards();
+                if (cardGenerated == 40) {
+                    deckStackPane.getChildren().removeLast();
+                }
+                System.out.println("cardGen: "+ cardGenerated);
             }
 
             indexPlayerInTurn = 0;
@@ -557,10 +571,17 @@ public class TableController implements Initializable {
     }
 
 
+    private void restoreGridPaneConstraints(boolean withoutMyHand){
+        for(int i=(withoutMyHand ? 1 : 0);i<handsWithGridPane.size();i++){
+            setupGridPaneCols(handsWithGridPane.get(playersSorted.get(i)));
+        }
+    }
+
     public void drawCards() {
+
         switch (currGame) {
             case "Scopa": {
-                if (hand.getChildren().size() == 1) {
+                if (handPlayer.getCards().isEmpty()) {
                     try {
                         System.out.println("ENTRATO");
                         SharedData.getGSCInstance().requestCards(3);
@@ -569,6 +590,7 @@ public class TableController implements Initializable {
                             public void onChanged(Change<? extends it.MM.LeTreCarte.model.card.Card> change) {
                                 if (SharedData.getInstance().getPlayerCards().size() == 3) {
                                     Platform.runLater(() -> {
+                                        restoreGridPaneConstraints(false);
                                         hand.getChildren().clear();
 
                                         generatePlayersCards(hand, new ArrayList<Card>(SharedData.getInstance().getPlayerCards()), false, 0);
@@ -594,6 +616,7 @@ public class TableController implements Initializable {
                         @Override
                         public void onChanged(Change<? extends it.MM.LeTreCarte.model.card.Card> change) {
                             Platform.runLater(() -> {
+                                restoreGridPaneConstraints(true);
                                 System.out.println("default - " + SharedData.getInstance().getPlayerCards());
 
                                 System.out.println("THIS IS MY HAND: " + handPlayer);
@@ -627,9 +650,7 @@ public class TableController implements Initializable {
             }
         }
 
-        if (cardGenerated == 40) {
-            deckStackPane.getChildren().removeLast();
-        }
+
     }
 
     private void showAndFillScopaEndTurnAnchorPane() {
@@ -777,6 +798,7 @@ public class TableController implements Initializable {
 
                 //Pair(TargetCol, TargetRow)
                 Pair<Integer, Integer> coordinates = findRowColumnOfCardInGridPane(cardsToRemove.get(i), tableGridPane);
+                assert coordinates != null;
                 removeNodeByRowColumnIndex(coordinates.getValue(), coordinates.getKey(), tableGridPane);
 
                 int index = coordinates.getValue() * tableCols + coordinates.getKey();
@@ -793,7 +815,7 @@ public class TableController implements Initializable {
 
         ObservableList<Node> childrens = gridPane.getChildren();
         for (Node node : childrens) {
-            if (node instanceof ImageView && gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
+            if (node instanceof ImageView && GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column) {
                 ImageView imageView = (ImageView) (node); // use what you want to remove
                 gridPane.getChildren().remove(imageView);
                 break;
@@ -869,6 +891,13 @@ public class TableController implements Initializable {
     }
 
 
+    /**
+     * Returns a Pair containing ( colIndex, rowIndex )
+     * @param card
+     * @param gridPane
+     * @return
+     * @throws InterruptedException
+     */
     private Pair<Integer, Integer> findRowColumnOfCardInGridPane(Card card, GridPane gridPane) throws InterruptedException {
 //        for (Node node : gridPane.getChildren()) {
 //            try {
@@ -884,12 +913,13 @@ public class TableController implements Initializable {
 //                    }
 //                }
         for (Node node : gridPane.getChildren()) {
+            System.out.println("bbb");
             try {
                 // Controllo se il nodo è un Pane
                 if (node instanceof Pane) {
                     Pane pane = (Pane) node;
-                    if (pane.getChildren().size() > 0 && pane.getChildren().get(0) instanceof ImageView) {
-                        ImageView imageView = (ImageView) pane.getChildren().get(0);
+                    if (!pane.getChildren().isEmpty() && pane.getChildren().getFirst() instanceof ImageView) {
+                        ImageView imageView = (ImageView) pane.getChildren().getFirst();
                         if (getCardfromURL(imageView.getImage().getUrl()).getImage().equals(card.getImage())) {
                             System.out.println("è un pane");
                             return new Pair<>(GridPane.getColumnIndex(node), GridPane.getRowIndex(node));
