@@ -165,6 +165,13 @@ public class TableController implements Initializable {
         addAll(SharedData.getInstance().getLobbyPlayers());
     }};
 
+    public static void waitForRunLater() throws InterruptedException {
+        Semaphore semaphore = new Semaphore(0);
+        Platform.runLater(() -> semaphore.release());
+        semaphore.acquire();
+
+    }
+
     public void updatePointsLabel() {
         MaradonaPoints.setText(String.valueOf(table.getTeam(0).getPoints()));
         VesuvioPoints.setText(String.valueOf(table.getTeam(1).getPoints()));
@@ -184,7 +191,7 @@ public class TableController implements Initializable {
         generateHands();
 
         putCardsOnTable();
-        if(cardGenerated != 40){
+        if (cardGenerated != 40) {
             ImageView back = new ImageView(new Image(getClass().getResource("Cards_png/back.png").toExternalForm()));
             deckStackPane.getChildren().add(back);
         }
@@ -324,26 +331,19 @@ public class TableController implements Initializable {
 
 
                     });
-                    try {
-                        waitForRunLater();
-                        wait(5000);
-                        teamsWin.setVisible(false);
-                        pointsEndTurnScopaAnchorPane.setVisible(false);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+//                    try {
+//                        waitForRunLater();
+//                        wait(5000);
+//                        teamsWin.setVisible(false);
+//                        pointsEndTurnScopaAnchorPane.setVisible(false);
+//                    } catch (InterruptedException e) {
+//                        throw new RuntimeException(e);
+//                    }
                 }
 
 
             }
         });
-    }
-
-    public static void waitForRunLater() throws InterruptedException {
-        Semaphore semaphore = new Semaphore(0);
-        Platform.runLater(() -> semaphore.release());
-        semaphore.acquire();
-
     }
 
     /**
@@ -361,8 +361,7 @@ public class TableController implements Initializable {
         for (int cardIndex = 0; cardIndex < cardToGenerate; cardIndex++) {
             cardGenerated++;
             Card card = back ? new Card(true) : cards.get(cardIndex);
-            if(!back)
-                handPlayer.addCard(card);
+            if (!back) handPlayer.addCard(card);
 
             Image image = new Image(getClass().getResource(card.getImage()).toExternalForm());
             ImageView iv = new ImageView(image);
@@ -516,21 +515,19 @@ public class TableController implements Initializable {
                                 }
 
 
-
-
                             });
-                            try {
-                                wait(5000);
-                            } catch (InterruptedException e) {
-                                throw new RuntimeException(e);
-                            }
-                            teamsWin.setVisible(false);
-                            pointsEndTurnScopaAnchorPane.setVisible(false);
+//                            try {
+//                                wait(5000);
+//                            } catch (InterruptedException e) {
+//                                throw new RuntimeException(e);
+//                            }
+//                            teamsWin.setVisible(false);
+//                            pointsEndTurnScopaAnchorPane.setVisible(false);
                         }
 
-                        }
+                    }
 
-                    });
+                });
 
             }
         }
@@ -604,7 +601,7 @@ public class TableController implements Initializable {
                                     ArrayList<Card> cardsToGenerate = new ArrayList<>();
                                     cardsToGenerate.add(SharedData.getInstance().getPlayerCards().getFirst());
 
-                                    if(!handPlayer.getLast().equals(cardsToGenerate.getFirst())){
+                                    if (!handPlayer.getLast().equals(cardsToGenerate.getFirst())) {
 
                                         System.out.println("if");
                                         //hand.getChildren().clear();
@@ -630,11 +627,12 @@ public class TableController implements Initializable {
             }
         }
 
-        if(cardGenerated == 40){
+        if (cardGenerated == 40) {
             deckStackPane.getChildren().removeLast();
         }
     }
-    private void showAndFillScopaEndTurnAnchorPane(){
+
+    private void showAndFillScopaEndTurnAnchorPane() {
         pointsEndTurnScopaAnchorPane.setVisible(true);
         pointsCarteMaradona.setText(String.valueOf(GameManagerScopa.pointsForTeam[0][0]));
         pointsDenariMaradona.setText(String.valueOf(GameManagerScopa.pointsForTeam[0][1]));
@@ -655,7 +653,7 @@ public class TableController implements Initializable {
                 showAndFillScopaEndTurnAnchorPane();
                 updatePointsLabel();
 
-                if(table.getTeam(0).getPoints() >= 21 && table.getTeam(0).getPoints() > table.getTeam(1).getPoints()){
+                if (table.getTeam(0).getPoints() >= 21 && table.getTeam(0).getPoints() > table.getTeam(1).getPoints()) {
                     showAndFIllTeamsWinAnchorPane(table.getTeam(0));
                 } else if (table.getTeam(1).getPoints() >= 21) {
                     showAndFIllTeamsWinAnchorPane(table.getTeam(1));
@@ -664,7 +662,7 @@ public class TableController implements Initializable {
                 break;
             case "Briscola":
                 GameManagerBriscola.calculatePoints(table);
-                if(table.getTeam(0).getPoints() >= 120 && table.getTeam(0).getPoints() > table.getTeam(1).getPoints()){
+                if (table.getTeam(0).getPoints() >= 120 && table.getTeam(0).getPoints() > table.getTeam(1).getPoints()) {
                     showAndFIllTeamsWinAnchorPane(table.getTeam(0));
                 } else if (table.getTeam(1).getPoints() >= 120) {
                     showAndFIllTeamsWinAnchorPane(table.getTeam(1));
@@ -672,7 +670,7 @@ public class TableController implements Initializable {
                 break;
             case "Tressette":
                 GameManagerTressette.calculatePoints(table);
-                if(table.getTeam(0).getPoints() >= 21 && table.getTeam(0).getPoints() > table.getTeam(1).getPoints()){
+                if (table.getTeam(0).getPoints() >= 21 && table.getTeam(0).getPoints() > table.getTeam(1).getPoints()) {
                     showAndFIllTeamsWinAnchorPane(table.getTeam(0));
                 } else if (table.getTeam(1).getPoints() >= 21) {
                     showAndFIllTeamsWinAnchorPane(table.getTeam(1));
@@ -686,15 +684,15 @@ public class TableController implements Initializable {
 
     /**
      * Show and update the anchorpane of the winner
+     *
      * @param team winnerTeam
      */
-    private void showAndFIllTeamsWinAnchorPane(Player team){
-        if(SharedData.getInstance().getLobbyPlayers().indexOf(team.getId()) == 0){
+    private void showAndFIllTeamsWinAnchorPane(Player team) {
+        if (SharedData.getInstance().getLobbyPlayers().indexOf(team.getId()) == 0) {
             winnerTeamImage.setImage(new Image(getClass().getResource("MaradonaIcon.png").toExternalForm()));
             winnerTeamLabel.setText("TEAM MARADONA");
             teamsWin.setStyle("-fx-background-color: #521a6a");
-        }
-        else{
+        } else {
             winnerTeamImage.setImage(new Image(getClass().getResource("VesuvioIcon.png").toExternalForm()));
             winnerTeamLabel.setText("TEAM VESUVIO");
             teamsWin.setStyle("-fx-background-color: #6a1a32");
