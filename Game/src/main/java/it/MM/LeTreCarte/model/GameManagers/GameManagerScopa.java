@@ -98,6 +98,7 @@ public class GameManagerScopa {
                 ArrayList<Card> tableCards = new ArrayList<>(table.getCards());
 
                 calculateWonCardsRec(card, 0, table.getCards().size(), 0, hasMostDenari, tableCards);
+                System.out.println("VBEST " + vbest.size());
                 if(vbest.size() != 0) {
                     cardsWon.addAll(vbest.getCards());
                     cardsWon.add(card);
@@ -108,6 +109,7 @@ public class GameManagerScopa {
             scope[table.getPlayers().indexOf(player)] += 1;
         }
 
+        System.out.println("Winned card gms "+ cardsWon);
         return cardsWon;
     }
 

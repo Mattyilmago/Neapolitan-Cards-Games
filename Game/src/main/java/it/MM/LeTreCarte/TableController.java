@@ -55,7 +55,7 @@ public class TableController implements Initializable {
     String currGame = SharedData.getInstance().getSelectedGame();
 
     //contiene false se non è presente nessuna carta, true viceversa
-    ArrayList<Boolean> tableSupport = new ArrayList<>();
+    ArrayList<Boolean> tableSupport = new ArrayList<>(tableCols * tableRows);
     @FXML
     private AnchorPane Card;
     @FXML
@@ -154,12 +154,15 @@ public class TableController implements Initializable {
         for (int i = 0; i < SharedData.getInstance().getCardsOnTable().size(); i++) {
             Card card = SharedData.getInstance().getCardsOnTable().get(i);
             ImageView iv = new ImageView(new Image(getClass().getResource(card.getImage()).toExternalForm()));
-            iv.setFitWidth(hand.getPrefWidth() / 11.5);
-            iv.setFitHeight(hand.getPrefHeight() * 0.9);
+            iv.setPreserveRatio(true);
+
+            iv.setFitWidth(sizeOfCardsInTable.get("width"));
+            iv.setFitHeight(sizeOfCardsInTable.get("height"));
 
             tableGridPane.getChildren().remove(i);
             tableGridPane.add(iv, i, 0);
             tableSupport.set(i, true);
+            table.addCard(card);
         }
     }
 
@@ -220,9 +223,12 @@ public class TableController implements Initializable {
 //                        cardInTable.setFitHeight(hand.getPrefHeight() * 0.9);
                         cardInTable.setVisible(false);
 
-                        tableGridPane.getChildren().remove(targetRow + targetCol);
+                        tableGridPane.getChildren().remove(targetRow*tableCols + targetCol);
                         tableGridPane.add(cardInTable, targetCol, targetRow);
                         tableSupport.set(targetRow * tableCols + targetCol, true);
+                        if(!currGame.equals("Scopa")){
+                            table.addCard(new Card(cardVal, cardSeed));
+                        }
 
 
                         //create animation
@@ -256,7 +262,9 @@ public class TableController implements Initializable {
                            @Override
                            public void handle(ActionEvent event) {
                                Platform.runLater(()->{
-                                   updateAndCalculateTurn(new Card(cardVal, cardSeed));
+                                   System.out.println("Ricevuto: " + cardVal + cardSeed);
+                                   Card card = new Card(cardVal, cardSeed);
+                                   updateAndCalculateTurn(card);
                                });
 
                            }
@@ -342,10 +350,7 @@ public class TableController implements Initializable {
 
                 //Se è il turno del giocatore può scegliere le carte
                 pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-
                     boolean waitUntilAnimation = false;
-
 
                     @Override
                     public void handle(MouseEvent mouseEvent) {
@@ -355,8 +360,9 @@ public class TableController implements Initializable {
                             handsWithCardsImView.get(playersSorted.get(playerIndex)).remove(iv);
 
                             //se non gioco a scopa aggiungo al table per poter usare la funzione riscorsiva per calcolare la presa migliore per scopa
-                            if(!currGame.equals("Scopa"))
+                            if(!currGame.equals("Scopa")) {
                                 table.addCard(card);
+                            }
 
                             //trova cardIndex aggiornato, per risolvere il problema delle carte in mano che diminuiscono
                             int currentCardIndex = (int) gridview.getChildren().stream().takeWhile(node -> !node.equals(pane)).count();
@@ -392,9 +398,11 @@ public class TableController implements Initializable {
                             System.out.println("Row: " + targetRow + "| col: " + targetCol);
 
                             //t
-                            tableGridPane.getChildren().remove(targetRow + targetCol);
+                            tableGridPane.getChildren().remove(targetRow*tableCols + targetCol);
                             tableGridPane.add(tmpIV, targetCol, targetRow);
                             tableSupport.set(index, true);
+
+
                             //updateAndCalculateTurn(card);
 
 
@@ -434,6 +442,7 @@ public class TableController implements Initializable {
                                 @Override
                                 public void handle(ActionEvent event) {
                                     Platform.runLater(()->{
+                                        hand.getChildren().remove(pane);
                                         updateAndCalculateTurn(card);
 
                                     });
@@ -467,19 +476,23 @@ public class TableController implements Initializable {
         if(indexPlayerInTurn == playersTurn.size() - 1){
             switch (currGame){
                 case "Scopa": {
-                    if(hand.getChildren().isEmpty()){
+                    if(hand.getChildren().size() == 1){
                         try{
+                            System.out.println("ENTRATO");
                             SharedData.getGSCInstance().requestCards(3);
                             SharedData.getInstance().getPlayerCards().addListener(new ListChangeListener<it.MM.LeTreCarte.model.card.Card>() {
                                 @Override
                                 public void onChanged(Change<? extends it.MM.LeTreCarte.model.card.Card> change) {
                                     if(SharedData.getInstance().getPlayerCards().size() == 3){
-                                        hand.getChildren().clear();
-                                        generatePlayersCards(hand, new ArrayList<Card>(SharedData.getInstance().getPlayerCards()), false, 0);
+                                        Platform.runLater(()->{
+                                            hand.getChildren().clear();
 
-                                        for(int i=1; i<hands.size();i++){
-                                            generatePlayersCards(hands.get(i), new ArrayList<>(SharedData.getInstance().getPlayerCards()), true, i);
-                                        }
+                                            generatePlayersCards(hand, new ArrayList<Card>(SharedData.getInstance().getPlayerCards()), false, 0);
+
+                                            for(int i=1; i<hands.size();i++){
+                                                generatePlayersCards(hands.get(i), new ArrayList<>(SharedData.getInstance().getPlayerCards()), true, i);
+                                            }
+                                        });
                                     }
                                 }
                             });
@@ -488,7 +501,7 @@ public class TableController implements Initializable {
                             System.out.println("RequestCards Error");
                         }
                     }
-                };
+                }break;
                 default: {
                     try{
                         SharedData.getGSCInstance().requestCards(1);
@@ -529,21 +542,21 @@ public class TableController implements Initializable {
      */
     public void calculateWinForScopa(Card card){
         {
+            Platform.runLater(()->{
             Player currPlayer = new Player(playersTurn.get(indexPlayerInTurn));
             ArrayList<Card> cardsWon = GameManagerScopa.calculateWinTurn(card, currPlayer, table);
             if(!cardsWon.isEmpty()) {
+                System.out.println("carte vinte:" + cardsWon + " " + cardsWon.size());
                 //se ho vinto qualche carta le levo dal tavolo e le aggiungo al mazzetto delle carte vinte
+
                 clearCardsFromTable(cardsWon);
+
                 table.getTeam(playersTurn.indexOf(currPlayer.getId()) % 2).getDeckPlayer().addAll(cardsWon);
             }
             else{
-                //se non ho preso nessuna carta aggiungo la mia carta al tavolo e al gridpane
-                int index = findIndexOfFirstEmptyCell();
-                ImageView cardIV = new ImageView(new Image(getClass().getResource(card.getImage()).toExternalForm()));
-                tableGridPane.getChildren().add(index, cardIV);
-                tableSupport.set(index, true);
                 table.addCard(card);
             }
+            });
         }
     }
 
@@ -578,17 +591,26 @@ public class TableController implements Initializable {
      * @param cardsToRemove
      */
     private void clearCardsFromTable(ArrayList<Card> cardsToRemove){
-        for(Card c : table.getCards()){
-            if(cardsToRemove.contains(c)){
-                table.removeCard(c);
-                int index = findIndexOfTheCard(c);
+        table.addCard(cardsToRemove.getLast());
+        System.out.println("table:::" + table.getCards().toString());
+
+        for(int i = 0; i < cardsToRemove.size(); i++){
+            System.out.println(i + " card " + cardsToRemove.get(i));
+            if(table.contains(cardsToRemove.get(i))){
+                table.removeCard(cardsToRemove.get(i));
+                System.out.println("card to remove" + cardsToRemove.get(i));
+                //int index = table.getCards().indexOf(c);
                 //TODO animazioni carte che si spostano verso il player che le ha vinte
+
+                int index = findIndexOfCardInGridPane(cardsToRemove.get(i), tableGridPane);
+                System.out.println("carte " + cardsToRemove + " " + index);
+
                 tableGridPane.getChildren().remove(index);
                 int targetRow = index / tableCols;
                 int targetCol = targetRow == 0 ? index : index % tableCols;
+                System.out.println("New table "+ table.getCards());
                 tableGridPane.add(new Pane(), targetCol, targetRow);
                 tableSupport.set(index, false);
-
             }
         }
     }
@@ -598,26 +620,15 @@ public class TableController implements Initializable {
      * @param url
      * @return the String of cards'image from the url of the image
      */
-    private String getImagefromURL(String url){
+    private Card getCardfromURL(String url){
         String[] strings = url.split("/");
         String res = strings[strings.length - 2] + "/" + (strings[strings.length - 1]);
-        return res;
+        if(strings[strings.length - 1].charAt(1) == '0'){
+            return new Card(10, strings[strings.length - 1].charAt(3));
+        }
+        return new Card(Character.getNumericValue(strings[strings.length - 1].charAt(0)), strings[strings.length - 1].charAt(2));
     }
 
-    /**
-     * Find the index of the card in the table gridpane
-     * @param card
-     * @return index of the card
-     */
-    private int findIndexOfTheCard(Card card){
-        for(int i = 0; i < tableRows * tableCols; i++){
-            //se le immagini sono uguali ritorno l'indice
-            if((getImagefromURL(((ImageView)tableGridPane.getChildren().get(i)).getImage().getUrl()).equals(card.getImage()))){
-                return i;
-            }
-        }
-        return -1;
-    }
 
     /**
      * Clear the table, its gridpane and tableSupport
@@ -666,6 +677,34 @@ public class TableController implements Initializable {
                 return index;
             }
             index++;
+        }
+        return -1;
+    }
+    private int findIndexOfCardInGridPane(Card card, GridPane gridPane){
+        for(Node node : gridPane.getChildren()){
+            try{
+                Pane pane = (Pane) node;
+                if(!pane.getChildren().isEmpty()){
+                    if(getCardfromURL(((ImageView) pane.getChildren().getFirst()).getImage().getUrl()).getImage().equals(card.getImage())){
+                        return gridPane.getChildren().indexOf(pane);
+                    }
+                }
+            }catch (ClassCastException e){
+                try{
+                    ImageView iv = (ImageView) node;
+                    if(getCardfromURL(iv.getImage().getUrl()).getImage().equals(card.getImage())){
+                        return gridPane.getChildren().indexOf(iv);
+                    }
+
+                }catch (ClassCastException eb){
+                    System.out.println("cazzo");
+                }
+            }
+
+//            if(!((Pane)node).getChildren().isEmpty() && getCardfromURL(((ImageView)((Pane)node).getChildren().getFirst()).getImage().getUrl()).equals(card)){
+//                System.out.println("Iv trovato");
+//                return gridPane.getChildren().indexOf(node);
+//            }
         }
         return -1;
     }
