@@ -48,8 +48,9 @@ public class TableController implements Initializable {
         addAll(SharedData.getInstance().getLobbyPlayers());
     }};
     //fixed dimensioni della grid Table
-    final int tableRows = 3;
-    final int tableCols = 5;
+    final static int TABLE_ROWS = 3;
+    final static int TABLE_COLS = 5;
+
     final HashMap<String, Double> sizeOfCardsInTable = new HashMap<>();
     // { nomeGiocatore1: [imgvw1, imgvw2], nomeGiocatore2: [...] }
     private final HashMap<String, ArrayList<ImageView>> handsWithCardsImView = new HashMap<>();
@@ -58,7 +59,7 @@ public class TableController implements Initializable {
     public int indexPlayerInTurn = 0;
     String currGame = SharedData.getInstance().getSelectedGame();
     //contiene false se non è presente nessuna carta, true viceversa
-    ArrayList<Boolean> tableSupport = new ArrayList<>(tableCols * tableRows);
+    ArrayList<Boolean> tableSupport = new ArrayList<>(TABLE_COLS * TABLE_ROWS);
     boolean twoPlayers = playersSorted.size() == 2;
     int cardGenerated = 0;
     Character briscola;
@@ -149,6 +150,7 @@ public class TableController implements Initializable {
     private Label pointsScopaVesuvio;
 
     private Player lastWinnerPlayerScopa = new Player();
+    //private final int[4][2] positionCardsForTressetteAndBriscola
 
 
     private ArrayList<Label> names = new ArrayList<Label>() {{
@@ -269,8 +271,8 @@ public class TableController implements Initializable {
                         //coordinate globali
                         double startX = cardToMove.localToScene(0, 0).getX();
                         double startY = cardToMove.localToScene(0, 0).getY();
-                        double endX = tableGridPane.localToScene(tableGridPane.getBoundsInLocal()).getMinX() + targetCol * tableGridPane.getPrefWidth() / tableCols;
-                        double endY = tableGridPane.localToScene(tableGridPane.getBoundsInLocal()).getMinY() + targetRow * tableGridPane.getPrefHeight() / tableRows;
+                        double endX = tableGridPane.localToScene(tableGridPane.getBoundsInLocal()).getMinX() + targetCol * tableGridPane.getPrefWidth() / TABLE_COLS;
+                        double endY = tableGridPane.localToScene(tableGridPane.getBoundsInLocal()).getMinY() + targetRow * tableGridPane.getPrefHeight() / TABLE_ROWS;
 
                         //creo una copia di iv
                         Card card = new Card(cardVal, cardSeed);
@@ -282,9 +284,9 @@ public class TableController implements Initializable {
 //                        cardInTable.setFitHeight(hand.getPrefHeight() * 0.9);
                         cardInTable.setVisible(false);
 
-                        tableGridPane.getChildren().remove(targetRow * tableCols + targetCol);
+                        tableGridPane.getChildren().remove(targetRow * TABLE_COLS + targetCol);
                         tableGridPane.add(cardInTable, targetCol, targetRow);
-                        tableSupport.set(targetRow * tableCols + targetCol, true);
+                        tableSupport.set(targetRow * TABLE_COLS + targetCol, true);
                         if (!currGame.equals("Scopa")) {
                             table.addCard(card);
                         }
@@ -473,8 +475,8 @@ public class TableController implements Initializable {
 
                             //target coordinates
                             int index = findIndexOfFirstEmptyCell();
-                            int targetRow = index / tableCols;
-                            int targetCol = targetRow == 0 ? index : index % tableCols;
+                            int targetRow = index / TABLE_COLS;
+                            int targetCol = targetRow == 0 ? index : index % TABLE_COLS;
 
                             //Sending move to server
                             try {
@@ -506,8 +508,8 @@ public class TableController implements Initializable {
                             //coordinate globali
                             double startX = iv.localToScene(0, 0).getX();
                             double startY = iv.localToScene(0, 0).getY();
-                            double endX = tableGridPane.localToScene(tableGridPane.getBoundsInLocal()).getMinX() + targetCol * tableGridPane.getPrefWidth() / tableCols;
-                            double endY = tableGridPane.localToScene(tableGridPane.getBoundsInLocal()).getMinY() + targetRow * tableGridPane.getPrefHeight() / tableRows;
+                            double endX = tableGridPane.localToScene(tableGridPane.getBoundsInLocal()).getMinX() + targetCol * tableGridPane.getPrefWidth() / TABLE_COLS;
+                            double endY = tableGridPane.localToScene(tableGridPane.getBoundsInLocal()).getMinY() + targetRow * tableGridPane.getPrefHeight() / TABLE_ROWS;
 
                             System.out.println("endX: " + endX + "| endY: " + endY);
 
@@ -579,6 +581,7 @@ public class TableController implements Initializable {
 
         if (indexPlayerInTurn == playersTurn.size() - 1) {
             if (cardGenerated == 40 && handPlayer.getCards().isEmpty()) {
+                table.addCard(card);
                 table.getTeam(SharedData.getInstance().getLobbyPlayers().indexOf(lastWinnerPlayerScopa.getId())).getDeckPlayer().getCards().addAll(table.getCards());
                 clearTable();
                 calculatePoints();
@@ -771,7 +774,7 @@ public class TableController implements Initializable {
                 ArrayList<Card> cardsWon = GameManagerScopa.calculateWinTurn(card, table.getTeam(indexPlayerInTurn % 2), table);
                 if (!cardsWon.isEmpty()) {
                     lastWinnerPlayerScopa.setId(currPlayer.getId());
-                    System.out.println("carte vinte:" + cardsWon + " " + cardsWon.size());
+                    System.out.println("carte vinte da :" + currPlayer.getId() + "::" + cardsWon + " " + cardsWon.size());
                     //se ho vinto qualche carta le levo dal tavolo e le aggiungo al mazzetto delle carte vinte
 
                     try {
@@ -782,6 +785,7 @@ public class TableController implements Initializable {
                     }
 
                     table.getTeam(SharedData.getInstance().getLobbyPlayers().indexOf(currPlayer.getId()) % 2).getDeckPlayer().getCards().addAll(cardsWon);
+                    System.out.println("MAzzetto squadra: " + table.getTeam(SharedData.getInstance().getLobbyPlayers().indexOf(currPlayer.getId()) % 2).getDeckPlayer().getCards().size() + " :::" + table.getTeam(SharedData.getInstance().getLobbyPlayers().indexOf(currPlayer.getId()) % 2).getDeckPlayer().getCards());
                 } else {
                     table.addCard(card);
                 }
@@ -831,10 +835,10 @@ public class TableController implements Initializable {
 //
 //        tableGridPane.getChildren().clear();
 //
-//        for (int i = 0; i < tableCols * tableRows; i++) {
+//        for (int i = 0; i < TABLE_COLS * TABLE_ROWS; i++) {
 //
-//            int targetRow = i / tableCols;
-//            int targetCol = targetRow == 0 ? i : i % tableCols;
+//            int targetRow = i / TABLE_COLS;
+//            int targetCol = targetRow == 0 ? i : i % TABLE_COLS;
 //            tableGridPane.add(new Pane(), targetCol, targetRow);
 //            tableSupport.set(i, false);
 //        }
@@ -866,9 +870,9 @@ public class TableController implements Initializable {
                 assert coordinates != null;
                 removeNodeByRowColumnIndex(coordinates.getValue(), coordinates.getKey(), tableGridPane);
 
-                int index = coordinates.getValue() * tableCols + coordinates.getKey();
-                int targetRow = index / tableCols;
-                int targetCol = targetRow == 0 ? index : index % tableCols;
+                int index = coordinates.getValue() * TABLE_COLS + coordinates.getKey();
+                int targetRow = index / TABLE_COLS;
+                int targetCol = targetRow == 0 ? index : index % TABLE_COLS;
                 System.out.println("New table " + table.getCards());
                 tableGridPane.add(new Pane(), targetCol, targetRow);
                 tableSupport.set(index, false);
@@ -914,10 +918,10 @@ public class TableController implements Initializable {
         tableGridPane.getChildren().clear();
         //tableGridPane.getChildren().removeAll();
 
-        for (int i = 0; i < tableCols * tableRows; i++) {
+        for (int i = 0; i < TABLE_COLS * TABLE_ROWS; i++) {
 
-            int targetRow = i / tableCols;
-            int targetCol = targetRow == 0 ? i : i % tableCols;
+            int targetRow = i / TABLE_COLS;
+            int targetCol = targetRow == 0 ? i : i % TABLE_COLS;
             tableGridPane.add(new Pane(), targetCol, targetRow);
             tableSupport.set(i, false);
         }
@@ -1011,8 +1015,8 @@ public class TableController implements Initializable {
         table.setGridLinesVisible(true);
         table.setAlignment(Pos.CENTER);
 
-        for (int i = 0; i < tableCols; i++) {
-            for (int j = 0; j < tableRows; j++) {
+        for (int i = 0; i < TABLE_COLS; i++) {
+            for (int j = 0; j < TABLE_ROWS; j++) {
                 table.add(new Pane(), i, j);
                 tableSupport.add(false);
             }

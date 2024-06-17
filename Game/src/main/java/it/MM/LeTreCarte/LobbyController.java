@@ -62,7 +62,7 @@ public class LobbyController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        leftArrow.setImage(new Image(getClass().getResource("left_arrow.png").toExternalForm()));
+        leftArrow.setImage(new Image(getClass().getResource("Images/left_arrow.png").toExternalForm()));
 
         gameName.setText(SharedData.getInstance().getSelectedGame());
 

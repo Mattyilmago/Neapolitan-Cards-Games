@@ -14,7 +14,7 @@
    <children>
       <ImageView fitHeight="720.0" fitWidth="439.0" layoutX="439.2" layoutY="1.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="-0.6754882812499545" AnchorPane.leftAnchor="439.2" AnchorPane.rightAnchor="439.4151035308837" AnchorPane.topAnchor="1.0">
          <image>
-            <Image url="@Vesuvio.jpg" />
+            <Image url="@../Images/Vesuvio.jpg" />
          </image>
       </ImageView>
       <Text fx:id="title" fontSmoothingType="LCD" layoutX="524.0" layoutY="202.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Le Tre Carte" textAlignment="CENTER" wrappingWidth="231.5830478668213" AnchorPane.topAnchor="147.88623046875">
