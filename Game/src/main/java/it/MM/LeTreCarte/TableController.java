@@ -335,6 +335,7 @@ public class TableController implements Initializable {
                                 Card card = new Card(cardVal, cardSeed);
                                 try {
                                     updateAndCalculateTurn(card);
+                                    indexPlayerInTurn = indexPlayerInTurn == (playersTurn.size() - 1) ? 0 : indexPlayerInTurn + 1;
                                 } catch (InterruptedException e) {
                                     throw new RuntimeException(e);
                                 }
@@ -544,6 +545,7 @@ public class TableController implements Initializable {
                                     Platform.runLater(() -> {
                                         try {
                                             updateAndCalculateTurn(card);
+                                            indexPlayerInTurn = indexPlayerInTurn == (playersTurn.size() - 1) ? 0 : indexPlayerInTurn + 1;
                                         } catch (InterruptedException e) {
                                             throw new RuntimeException(e);
                                         }
@@ -593,11 +595,6 @@ public class TableController implements Initializable {
                 }
                 System.out.println("cardGen: "+ cardGenerated);
             }
-
-            indexPlayerInTurn = 0;
-        } else {
-            System.out.println("aggiornato");
-            indexPlayerInTurn++;
         }
     }
 
@@ -771,14 +768,16 @@ public class TableController implements Initializable {
         {
             Platform.runLater(() -> {
                 Player currPlayer = new Player(playersTurn.get(indexPlayerInTurn));
+                System.out.println("--------------------------------------------------------indice: "+indexPlayerInTurn);
                 ArrayList<Card> cardsWon = GameManagerScopa.calculateWinTurn(card, table.getTeam(indexPlayerInTurn % 2), table);
                 if (!cardsWon.isEmpty()) {
-                    lastWinnerPlayerScopa.setId(currPlayer.getId());
+                    lastWinnerPlayerScopa.setId(table.getTeam(indexPlayerInTurn % 2).getId());
                     System.out.println("carte vinte da :" + currPlayer.getId() + "::" + cardsWon + " " + cardsWon.size());
                     //se ho vinto qualche carta le levo dal tavolo e le aggiungo al mazzetto delle carte vinte
 
                     try {
-                        Thread.sleep(800);
+                        Thread.sleep(800); //Per non far scomparire le carte subito
+
                         clearCardsFromTable(cardsWon);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);

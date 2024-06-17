@@ -114,7 +114,7 @@
                </font></Label>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="pointsEndTurnScopaAnchorPane" layoutX="390.6" layoutY="109.6" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: #c3c3e1;" AnchorPane.bottomAnchor="110.39999999999998" AnchorPane.leftAnchor="390.6" AnchorPane.rightAnchor="389.4" AnchorPane.topAnchor="109.6">
+      <AnchorPane fx:id="pointsEndTurnScopaAnchorPane" layoutX="390.6" layoutY="109.6" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: #c3c3e1;" visible="false" AnchorPane.bottomAnchor="110.39999999999998" AnchorPane.leftAnchor="390.6" AnchorPane.rightAnchor="389.4" AnchorPane.topAnchor="109.6">
          <children>
             <ImageView fitHeight="125.0" fitWidth="125.0" layoutX="14.0" layoutY="361.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="14.0">
                <image>
@@ -151,44 +151,44 @@
                   <Image url="@../Images/vesuvioIcon.png" />
                </image>
             </ImageView>
-            <Label fx:id="pointsCarteMaradona" alignment="CENTER" layoutX="50.0" layoutY="100.0" prefHeight="36.0" prefWidth="15.0" text="0" textAlignment="CENTER" AnchorPane.rightAnchor="393.0" AnchorPane.topAnchor="100.0">
+            <Label fx:id="pointsCarteMaradona" alignment="CENTER" contentDisplay="CENTER" layoutX="50.0" layoutY="100.0" prefHeight="36.0" prefWidth="15.0" text="0" AnchorPane.rightAnchor="393.0" AnchorPane.topAnchor="100.0">
                <font>
-                  <Font name="Retroma Vibes Regular" size="27.0" />
+                  <Font name="Retroma Vibes Regular" size="30.0" />
                </font>
             </Label>
-            <Label fx:id="pointsSettebelloVesuvio" alignment="CENTER" layoutX="394.0" layoutY="319.0" text="0" textAlignment="CENTER" AnchorPane.leftAnchor="393.0">
+            <Label fx:id="pointsSettebelloVesuvio" alignment="CENTER" contentDisplay="CENTER" layoutX="394.0" layoutY="319.0" text="0" AnchorPane.leftAnchor="393.0">
                <font>
-                  <Font name="Retroma Vibes Regular" size="27.0" />
+                  <Font name="Retroma Vibes Regular" size="30.0" />
                </font>
             </Label>
-            <Label fx:id="pointsPrimieraVesuvio" alignment="CENTER" layoutX="393.0" layoutY="237.0" text="0" textAlignment="CENTER" AnchorPane.leftAnchor="393.0">
+            <Label fx:id="pointsPrimieraVesuvio" alignment="CENTER" contentDisplay="CENTER" layoutX="393.0" layoutY="237.0" text="0" AnchorPane.leftAnchor="393.0">
                <font>
-                  <Font name="Retroma Vibes Regular" size="27.0" />
+                  <Font name="Retroma Vibes Regular" size="30.0" />
                </font>
             </Label>
-            <Label fx:id="pointsDenariVesuvio" alignment="CENTER" layoutX="393.0" layoutY="164.0" text="0" textAlignment="CENTER" AnchorPane.leftAnchor="393.0">
+            <Label fx:id="pointsDenariVesuvio" alignment="CENTER" contentDisplay="CENTER" layoutX="393.0" layoutY="164.0" text="0" AnchorPane.leftAnchor="393.0">
                <font>
-                  <Font name="Retroma Vibes Regular" size="27.0" />
+                  <Font name="Retroma Vibes Regular" size="30.0" />
                </font>
             </Label>
-            <Label fx:id="pointsCarteVesuvio" alignment="CENTER" layoutX="393.0" layoutY="100.0" text="0" textAlignment="CENTER" AnchorPane.leftAnchor="393.0" AnchorPane.topAnchor="100.0">
+            <Label fx:id="pointsCarteVesuvio" alignment="CENTER" contentDisplay="CENTER" layoutX="393.0" layoutY="100.0" text="0" AnchorPane.leftAnchor="393.0" AnchorPane.topAnchor="100.0">
                <font>
-                  <Font name="Retroma Vibes Regular" size="27.0" />
+                  <Font name="Retroma Vibes Regular" size="30.0" />
                </font>
             </Label>
-            <Label fx:id="pointsSettebelloMaradona" alignment="CENTER" layoutX="50.0" layoutY="319.0" text="0" textAlignment="CENTER" AnchorPane.rightAnchor="393.0">
+            <Label fx:id="pointsSettebelloMaradona" alignment="CENTER" contentDisplay="CENTER" layoutX="50.0" layoutY="319.0" text="0" AnchorPane.rightAnchor="393.0">
                <font>
-                  <Font name="Retroma Vibes Regular" size="27.0" />
+                  <Font name="Retroma Vibes Regular" size="30.0" />
                </font>
             </Label>
-            <Label fx:id="pointsPrimieraMaradona" alignment="CENTER" layoutX="50.0" layoutY="237.0" text="0" textAlignment="CENTER" AnchorPane.rightAnchor="393.0">
+            <Label fx:id="pointsPrimieraMaradona" alignment="CENTER" contentDisplay="CENTER" layoutX="50.0" layoutY="237.0" text="0" AnchorPane.rightAnchor="393.0">
                <font>
-                  <Font name="Retroma Vibes Regular" size="27.0" />
+                  <Font name="Retroma Vibes Regular" size="30.0" />
                </font>
             </Label>
-            <Label fx:id="pointsDenariMaradona" alignment="CENTER" layoutX="50.0" layoutY="164.0" text="0" textAlignment="CENTER" AnchorPane.rightAnchor="393.0">
+            <Label fx:id="pointsDenariMaradona" alignment="CENTER" contentDisplay="CENTER" layoutX="50.0" layoutY="164.0" text="0" AnchorPane.rightAnchor="393.0">
                <font>
-                  <Font name="Retroma Vibes Regular" size="27.0" />
+                  <Font name="Retroma Vibes Regular" size="30.0" />
                </font>
             </Label>
             <Text layoutX="174.0" layoutY="434.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Scopa" textAlignment="CENTER" wrappingWidth="160.76416015625">

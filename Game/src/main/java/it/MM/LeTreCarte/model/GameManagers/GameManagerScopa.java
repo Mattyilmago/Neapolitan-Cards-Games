@@ -97,7 +97,7 @@ public class GameManagerScopa {
 
             } else {
 
-                boolean hasMostDenari = player.getDeckPlayer().cardsNumberWithSameSeed('D') > 5;
+                boolean hasMostDenari = table.getTeam(SharedData.getInstance().getLobbyPlayers().indexOf(player) % 2).getDeckPlayer().cardsNumberWithSameSeed('D') > 5;
 
                 ArrayList<Card> tableCards = new ArrayList<>(table.getCards());
 
