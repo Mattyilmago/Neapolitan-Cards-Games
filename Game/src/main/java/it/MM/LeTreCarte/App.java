@@ -21,14 +21,14 @@ public class App extends Application {
     public void start(Stage stage) throws Exception {
         Parent root = null;
         try {
-            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("StartPage.fxml")));
+            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Fxml/StartPage.fxml")));
         }
         catch (Exception e) { throw new RuntimeException(e); }
 
         Scene scene = new Scene(root);
         stage.setTitle("Le Tre Carte");
         stage.setResizable(false);
-        scene.getStylesheets().add(getClass().getResource("StartPage.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("Css/StartPage.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }

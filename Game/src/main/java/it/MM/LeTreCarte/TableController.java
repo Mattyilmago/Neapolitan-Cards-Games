@@ -148,6 +148,8 @@ public class TableController implements Initializable {
     @FXML
     private Label pointsScopaVesuvio;
 
+    private Player lastWinnerPlayerScopa = new Player();
+
 
     private ArrayList<Label> names = new ArrayList<Label>() {{
         add(namePlayer);
@@ -577,10 +579,13 @@ public class TableController implements Initializable {
 
         if (indexPlayerInTurn == playersTurn.size() - 1) {
             if (cardGenerated == 40 && handPlayer.getCards().isEmpty()) {
+                table.getTeam(SharedData.getInstance().getLobbyPlayers().indexOf(lastWinnerPlayerScopa.getId())).getDeckPlayer().getCards().addAll(table.getCards());
+                clearTable();
                 calculatePoints();
             } else {
                 drawCards();
                 if (cardGenerated == 40) {
+                    System.out.println("Levo il mazzo");
                     deckStackPane.getChildren().clear();
                 }
                 System.out.println("cardGen: "+ cardGenerated);
@@ -604,9 +609,7 @@ public class TableController implements Initializable {
 
         switch (currGame) {
             case "Scopa": {
-                System.out.println("AAA");
                 if (handPlayer.getCards().isEmpty()) {
-                    System.out.println("AAAAAAAAAAAAAA");
                     try {
                         System.out.println("ENTRATO");
                         SharedData.getGSCInstance().requestCards(3);
@@ -697,6 +700,7 @@ public class TableController implements Initializable {
         pointsPrimieraVesuvio.setText(String.valueOf(GameManagerScopa.pointsForTeam[1][3]));
         pointsScopaVesuvio.setText(String.valueOf(GameManagerScopa.scope[1]));
         pointsScopaMaradona.setText(String.valueOf(GameManagerScopa.scope[0]));
+        GameManagerScopa.scope = new Integer[]{0,0};
     }
 
     private void calculatePoints() throws InterruptedException {
@@ -743,11 +747,11 @@ public class TableController implements Initializable {
      */
     private void showAndFIllTeamsWinAnchorPane(Player team) {
         if (SharedData.getInstance().getLobbyPlayers().indexOf(team.getId()) == 0) {
-            winnerTeamImage.setImage(new Image(getClass().getResource("MaradonaIcon.png").toExternalForm()));
+            winnerTeamImage.setImage(new Image(getClass().getResource("Images/MaradonaIcon.png").toExternalForm()));
             winnerTeamLabel.setText("TEAM MARADONA");
             teamsWin.setStyle("-fx-background-color: #521a6a");
         } else {
-            winnerTeamImage.setImage(new Image(getClass().getResource("VesuvioIcon.png").toExternalForm()));
+            winnerTeamImage.setImage(new Image(getClass().getResource("Images/VesuvioIcon.png").toExternalForm()));
             winnerTeamLabel.setText("TEAM VESUVIO");
             teamsWin.setStyle("-fx-background-color: #6a1a32");
         }
@@ -766,6 +770,7 @@ public class TableController implements Initializable {
                 Player currPlayer = new Player(playersTurn.get(indexPlayerInTurn));
                 ArrayList<Card> cardsWon = GameManagerScopa.calculateWinTurn(card, table.getTeam(indexPlayerInTurn % 2), table);
                 if (!cardsWon.isEmpty()) {
+                    lastWinnerPlayerScopa.setId(currPlayer.getId());
                     System.out.println("carte vinte:" + cardsWon + " " + cardsWon.size());
                     //se ho vinto qualche carta le levo dal tavolo e le aggiungo al mazzetto delle carte vinte
 
@@ -776,12 +781,12 @@ public class TableController implements Initializable {
                         throw new RuntimeException(e);
                     }
 
-                    table.getTeam(SharedData.getInstance().getLobbyPlayers().indexOf(currPlayer.getId()) % 2).getDeckPlayer().addAll(cardsWon);
+                    table.getTeam(SharedData.getInstance().getLobbyPlayers().indexOf(currPlayer.getId()) % 2).getDeckPlayer().getCards().addAll(cardsWon);
                 } else {
                     table.addCard(card);
                 }
 
-                System.out.println("MARADONA " + GameManagerScopa.scope[0] + " " + "VESUVIO" + GameManagerScopa.scope[1]);
+                System.out.println("SCOPE : MARADONA " + GameManagerScopa.scope[0] + " " + "VESUVIO " + GameManagerScopa.scope[1]);
             });
         }
     }
@@ -973,7 +978,6 @@ public class TableController implements Initializable {
 //                    }
 //                }
         for (Node node : gridPane.getChildren()) {
-            System.out.println("bbb");
             try {
                 // Controllo se il nodo è un Pane
                 if (node instanceof Pane) {

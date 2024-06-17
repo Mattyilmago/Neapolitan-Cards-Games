@@ -46,7 +46,7 @@ public class JoinLobbyController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        leftArrow.setImage(new Image(getClass().getResource("left_arrow.png").toExternalForm()));
+        leftArrow.setImage(new Image(getClass().getResource("Images/left_arrow.png").toExternalForm()));
         roomCode.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
@@ -73,10 +73,10 @@ public class JoinLobbyController implements Initializable {
     @FXML
     protected void switchToGamesMenu(ActionEvent event) throws IOException {
         Stage stage;
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("GamesMenu.fxml")));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Fxml/GamesMenu.fxml")));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("GamesMenu.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("Css/GamesMenu.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
@@ -100,13 +100,13 @@ public class JoinLobbyController implements Initializable {
                 Stage stage;
                 Parent root = null;
                 try {
-                    root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Lobby.fxml")));
+                    root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Fxml/Lobby.fxml")));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
                 stage = (Stage)((Node)event.getSource()).getScene().getWindow();
                 Scene scene = new Scene(root);
-                //scene.getStylesheets().addCard(getClass().getResource("Table.css").toExternalForm());
+                scene.getStylesheets().add(getClass().getResource("Css/Lobby.css").toExternalForm());
                 stage.setScene(scene);
                 stage.show();
             }

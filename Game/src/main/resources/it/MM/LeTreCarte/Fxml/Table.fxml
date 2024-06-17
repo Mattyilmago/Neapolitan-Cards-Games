@@ -67,7 +67,7 @@
                <children>
                   <ImageView fitHeight="113.0" fitWidth="85.0" layoutX="6.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@MaradonaIcon.png" />
+                        <Image url="@../Images/MaradonaIcon.png" />
                      </image>
                   </ImageView>
                   <Text layoutX="-1.0" layoutY="14.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Team Maradona" textAlignment="CENTER" wrappingWidth="99.19999999999999" />
@@ -80,16 +80,16 @@
                   <Label fx:id="VesuvioPoints" alignment="CENTER" contentDisplay="CENTER" layoutX="-5.0" layoutY="87.0" prefHeight="24.0" prefWidth="104.0" text="Label" textAlignment="CENTER" />
                   <ImageView fitHeight="113.0" fitWidth="85.0" layoutX="5.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@vesuvioIcon.png" />
+                        <Image url="@../Images/vesuvioIcon.png" />
                      </image>
                   </ImageView>
                </children>
             </AnchorPane>
         </items>
       </SplitPane>
-      <Label fx:id="namePlayer1" layoutX="147.0" layoutY="356.0" rotate="90.0" text="Label" AnchorPane.leftAnchor="147.0" />
+      <Label fx:id="namePlayer1" layoutX="147.0" layoutY="356.0" rotate="90.0" text="Label" AnchorPane.rightAnchor="1104.8" />
       <Label fx:id="namePlayer2" layoutX="626.0" layoutY="141.0" text="Label" />
-      <Label fx:id="namePlayer3" layoutX="1101.0" layoutY="351.0" rotate="270.0" text="Label" AnchorPane.rightAnchor="147.0" />
+      <Label fx:id="namePlayer3" layoutX="1101.0" layoutY="351.0" rotate="270.0" text="Label" AnchorPane.leftAnchor="1104.0" />
       <Label fx:id="namePlayer" alignment="CENTER" contentDisplay="CENTER" layoutX="938.0" layoutY="442.0" prefHeight="100.0" prefWidth="185.0" text="Label" textAlignment="CENTER" />
       <AnchorPane fx:id="teamsWin" layoutX="388.6" layoutY="110.4" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: #ffffff;" visible="false" AnchorPane.bottomAnchor="109.60000000000002" AnchorPane.leftAnchor="388.6" AnchorPane.rightAnchor="391.4" AnchorPane.topAnchor="110.4">
          <children>
@@ -105,11 +105,11 @@
                </font></Label>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="pointsEndTurnScopaAnchorPane" layoutX="390.6" layoutY="109.6" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: #ffffff;" visible="false" AnchorPane.bottomAnchor="110.39999999999998" AnchorPane.leftAnchor="390.6" AnchorPane.rightAnchor="389.4" AnchorPane.topAnchor="109.6">
+      <AnchorPane fx:id="pointsEndTurnScopaAnchorPane" layoutX="390.6" layoutY="109.6" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: #c3c3e1;" AnchorPane.bottomAnchor="110.39999999999998" AnchorPane.leftAnchor="390.6" AnchorPane.rightAnchor="389.4" AnchorPane.topAnchor="109.6">
          <children>
-            <ImageView fitHeight="125.0" fitWidth="128.0" layoutX="14.0" layoutY="361.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="14.0">
+            <ImageView fitHeight="125.0" fitWidth="125.0" layoutX="14.0" layoutY="361.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="14.0">
                <image>
-                  <Image url="@MaradonaIcon.png" />
+                  <Image url="@../Images/MaradonaIcon.png" />
                </image>
             </ImageView>
             <Text layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PUNTI VINTI:" textAlignment="CENTER" wrappingWidth="500.0000000000001" AnchorPane.topAnchor="30.0">
@@ -137,47 +137,47 @@
                   <Font name="Super Monday" size="35.0" />
                </font>
             </Text>
-            <ImageView fitHeight="125.0" fitWidth="128.0" layoutX="358.0" layoutY="360.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="125.0" fitWidth="125.0" layoutX="358.0" layoutY="360.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@vesuvioIcon.png" />
+                  <Image url="@../Images/vesuvioIcon.png" />
                </image>
             </ImageView>
-            <Label fx:id="pointsCarteMaradona" layoutX="50.0" layoutY="100.0" text="Label" textAlignment="CENTER">
+            <Label fx:id="pointsCarteMaradona" alignment="CENTER" layoutX="50.0" layoutY="100.0" prefHeight="28.0" prefWidth="54.0" text="Label" textAlignment="CENTER" AnchorPane.rightAnchor="393.0" AnchorPane.topAnchor="100.0">
                <font>
                   <Font name="Retroma Vibes Regular" size="27.0" />
                </font>
             </Label>
-            <Label fx:id="pointsSettebelloVesuvio" layoutX="394.0" layoutY="319.0" text="Label" textAlignment="CENTER">
+            <Label fx:id="pointsSettebelloVesuvio" alignment="CENTER" layoutX="394.0" layoutY="319.0" text="Label" textAlignment="CENTER" AnchorPane.leftAnchor="393.0">
                <font>
                   <Font name="Retroma Vibes Regular" size="27.0" />
                </font>
             </Label>
-            <Label fx:id="pointsPrimieraVesuvio" layoutX="393.0" layoutY="237.0" text="Label" textAlignment="CENTER">
+            <Label fx:id="pointsPrimieraVesuvio" alignment="CENTER" layoutX="393.0" layoutY="237.0" text="Label" textAlignment="CENTER" AnchorPane.leftAnchor="393.0">
                <font>
                   <Font name="Retroma Vibes Regular" size="27.0" />
                </font>
             </Label>
-            <Label fx:id="pointsDenariVesuvio" layoutX="393.0" layoutY="164.0" text="Label" textAlignment="CENTER">
+            <Label fx:id="pointsDenariVesuvio" alignment="CENTER" layoutX="393.0" layoutY="164.0" text="Label" textAlignment="CENTER" AnchorPane.leftAnchor="393.0">
                <font>
                   <Font name="Retroma Vibes Regular" size="27.0" />
                </font>
             </Label>
-            <Label fx:id="pointsCarteVesuvio" layoutX="394.0" layoutY="100.0" text="Label" textAlignment="CENTER">
+            <Label fx:id="pointsCarteVesuvio" alignment="CENTER" layoutX="393.0" layoutY="100.0" text="Label" textAlignment="CENTER" AnchorPane.leftAnchor="393.0" AnchorPane.topAnchor="100.0">
                <font>
                   <Font name="Retroma Vibes Regular" size="27.0" />
                </font>
             </Label>
-            <Label fx:id="pointsSettebelloMaradona" layoutX="50.0" layoutY="319.0" text="Label" textAlignment="CENTER">
+            <Label fx:id="pointsSettebelloMaradona" alignment="CENTER" layoutX="50.0" layoutY="319.0" text="Label" textAlignment="CENTER" AnchorPane.rightAnchor="393.0">
                <font>
                   <Font name="Retroma Vibes Regular" size="27.0" />
                </font>
             </Label>
-            <Label fx:id="pointsPrimieraMaradona" layoutX="50.0" layoutY="237.0" text="Label" textAlignment="CENTER">
+            <Label fx:id="pointsPrimieraMaradona" alignment="CENTER" layoutX="50.0" layoutY="237.0" text="Label" textAlignment="CENTER" AnchorPane.rightAnchor="393.0">
                <font>
                   <Font name="Retroma Vibes Regular" size="27.0" />
                </font>
             </Label>
-            <Label fx:id="pointsDenariMaradona" layoutX="50.0" layoutY="164.0" text="Label" textAlignment="CENTER">
+            <Label fx:id="pointsDenariMaradona" alignment="CENTER" layoutX="50.0" layoutY="164.0" text="Label" textAlignment="CENTER" AnchorPane.rightAnchor="393.0">
                <font>
                   <Font name="Retroma Vibes Regular" size="27.0" />
                </font>
@@ -187,12 +187,12 @@
                   <Font name="Super Monday" size="35.0" />
                </font>
             </Text>
-            <Label fx:id="pointsScopaMaradona" layoutX="139.0" layoutY="404.0" text="Label" textAlignment="CENTER">
+            <Label fx:id="pointsScopaMaradona" alignment="CENTER" layoutX="139.0" layoutY="404.0" text="Label" textAlignment="CENTER">
                <font>
                   <Font name="Retroma Vibes Regular" size="27.0" />
                </font>
             </Label>
-            <Label fx:id="pointsScopaVesuvio" layoutX="308.0" layoutY="404.0" text="Label" textAlignment="CENTER">
+            <Label fx:id="pointsScopaVesuvio" alignment="CENTER" layoutX="308.0" layoutY="404.0" text="Label" textAlignment="CENTER">
                <font>
                   <Font name="Retroma Vibes Regular" size="27.0" />
                </font>

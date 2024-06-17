@@ -20,6 +20,11 @@ public class Player {
         this.deckPlayer = new DeckPlayer();
         this.points = 0;
     }
+    public Player() {
+        this.Id = "";
+        this.deckPlayer = new DeckPlayer();
+        this.points = 0;
+    }
 
     /**
      * Calculates the highest value for seed in DeckPlayer

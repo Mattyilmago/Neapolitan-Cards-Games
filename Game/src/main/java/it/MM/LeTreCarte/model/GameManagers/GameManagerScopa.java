@@ -1,6 +1,7 @@
 package it.MM.LeTreCarte.model.GameManagers;
 
 import it.MM.LeTreCarte.Player;
+import it.MM.LeTreCarte.SharedData;
 import it.MM.LeTreCarte.TableController;
 import it.MM.LeTreCarte.model.card.Card;
 import it.MM.LeTreCarte.model.card.cardcontainer.CardContainer;
@@ -30,8 +31,6 @@ public class GameManagerScopa {
         put(8, 10);
         put(9, 10);
         put(10, 10);
-        scope[0] = 0;
-        scope[1] = 0;
     }};
 
 
@@ -129,16 +128,16 @@ public class GameManagerScopa {
 
         for (int i = 0; i < 2; i++) {
             for (Character s : Card.seeds) {
-                points[i] += table.getPlayers().get(i).getHighestValueForSeed(conversionTablePrimiera, s);
+                points[i] += table.getTeam(i).getHighestValueForSeed(conversionTablePrimiera, s);
             }
         }
 
-        System.out.println(table.getPlayers().getFirst().getId() + " Has: " + points[0]);
-        System.out.println(table.getPlayers().getLast().getId() + " Has: " + points[1]);
+        System.out.println(table.getTeams().getFirst().getId() + " Has: " + points[0]);
+        System.out.println(table.getTeams().getLast().getId() + " Has: " + points[1]);
         if (points[0] > points[1]) {
-            return table.getPlayers().getFirst();
+            return table.getTeams().getFirst();
         } else if (points[0] < points[1]) {
-            return table.getPlayers().getLast();
+            return table.getTeams().getLast();
         }
         return null;
     }
@@ -149,7 +148,7 @@ public class GameManagerScopa {
     public static void calculatePointsScopa(Table table) {
         pointsForTeam[0] = new int[]{0, 0, 0, 0};
         pointsForTeam[1] = new int[]{0, 0, 0, 0};
-        scope = new Integer[]{0,0};
+
 
         for (Player p : table.getTeams()) {
             calculatePointsForPlayer(p, table);
@@ -163,13 +162,14 @@ public class GameManagerScopa {
     public static void calculatePointsForPlayer(Player player, Table table) {
         int points = 0;
 
+        System.out.println(player.getId() + "cards number "+ player.getDeckPlayer().size());
         //Un punto per chi ha il maggior numero delle carte
         if (player.getDeckPlayer().size() > 20) {
             System.out.println(player.getId() + " wins carte");
             pointsForTeam[table.getTeams().indexOf(player)][0] = 1;
             points++;
         }
-
+        System.out.println(player.getId() + "denari number "+ player.getDeckPlayer().cardsNumberWithSameSeed('D'));
         //Un punto per chi ha il maggior numero di carte di denari
         if (player.getDeckPlayer().cardsNumberWithSameSeed('D') > 5) {
             System.out.println(player.getId() + " wins denari");
@@ -177,6 +177,7 @@ public class GameManagerScopa {
             points++;
         }
 
+        System.out.println(player.getId() + "settebello "+ player.getDeckPlayer().contains(new Card(7, 'D')));
         //un punto per chi ha il settebello
         if (player.getDeckPlayer().contains(new Card(7, 'D'))) {
             System.out.println(player.getId() + " wins settebbello");
@@ -184,6 +185,7 @@ public class GameManagerScopa {
             points++;
         }
 
+        System.out.println("primiera winned by " + playerWinsPrimiera(table));
         //un punto per chi vince la primiera
         if (player.equals(playerWinsPrimiera(table))) {
             System.out.println(player.getId() + " wins primiera");
@@ -191,7 +193,7 @@ public class GameManagerScopa {
             points++;
         }
 
-        points += scope[table.getPlayers().indexOf(player)];
+        points += scope[SharedData.getInstance().getLobbyPlayers().indexOf(player.getId()) % 2];
         player.setPoints(player.getPoints() + points);
         System.out.println(player.getId() + " got " + points + " points");
         System.out.println("Now he has " + player.getPoints() + " points");

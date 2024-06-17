@@ -94,10 +94,10 @@ public class GamesController implements Initializable {
     @FXML
     public void switchToTable(ActionEvent event) throws IOException {
         Stage stage;
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Table.fxml")));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Fxml/Table.fxml")));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("Table.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("Css/Table.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
 
@@ -108,10 +108,10 @@ public class GamesController implements Initializable {
         SharedData.getGSCInstance().createRoom();
 
         Stage stage;
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Lobby.fxml")));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Fxml/Lobby.fxml")));
         stage = (Stage)((Node)mouseEvent.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("Lobby.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("Css/Lobby.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
@@ -120,10 +120,10 @@ public class GamesController implements Initializable {
         SharedData.getInstance().setSelectedGame(games[curGame]);
 
         Stage stage;
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("joinLobby.fxml")));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Fxml/joinLobby.fxml")));
         stage = (Stage)((Node)mouseEvent.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("joinLobby.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("Css/joinLobby.css").toExternalForm());
 
         stage.setScene(scene);
         stage.show();
@@ -156,11 +156,11 @@ public class GamesController implements Initializable {
     public void refreshPlayersButton() {
         if (isTwoPlayers) {
             playersButton.setText("2 GIOCATORI");
-            playersIcon.setImage(new Image(getClass().getResource("due-dita.png").toExternalForm()));
+            playersIcon.setImage(new Image(getClass().getResource("Images/due-dita.png").toExternalForm()));
             playersButton.setStyle("-fx-background-color: #A92222");
         } else {
             playersButton.setText("4 GIOCATORI");
-            playersIcon.setImage(new Image(getClass().getResource("quattro-dita.png").toExternalForm()));
+            playersIcon.setImage(new Image(getClass().getResource("Images/quattro-dita.png").toExternalForm()));
             playersButton.setStyle("-fx-background-color: #521A6A");
         }
     }

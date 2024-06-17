@@ -120,10 +120,10 @@ public class LobbyController implements Initializable {
         SharedData.getInstance().getLobbyPlayers().clear();
 
         Stage stage;
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("GamesMenu.fxml")));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Fxml/GamesMenu.fxml")));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("GamesMenu.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("Css/GamesMenu.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
@@ -155,10 +155,10 @@ public class LobbyController implements Initializable {
                     try {
                         Stage stage;
                         Parent root = null;
-                        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Table.fxml")));
+                        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Fxml/Table.fxml")));
                         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
                         Scene scene = new Scene(root);
-                        scene.getStylesheets().add(getClass().getResource("Table.css").toExternalForm());
+                        scene.getStylesheets().add(getClass().getResource("Css/Table.css").toExternalForm());
                         stage.setScene(scene);
                         stage.show();
                     } catch (IOException e) {

@@ -30,10 +30,10 @@ public class StartPageController{
     @FXML
     protected void switchToGamesMenu(ActionEvent event) throws IOException {
         Stage stage;
-        Parent root = FXMLLoader.load(Objects.requireNonNull(App.class.getResource("GamesMenu.fxml")));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(App.class.getResource("Fxml/GamesMenu.fxml")));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("GamesMenu.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("Css/GamesMenu.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
