@@ -35,10 +35,7 @@ import javafx.util.Pair;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.Semaphore;
 
 
@@ -704,6 +701,13 @@ public class TableController implements Initializable {
     }
 
     private void calculatePoints() throws InterruptedException {
+        ArrayList<Card> tmp = new ArrayList<>(table.getTeam(0).getDeckPlayer().getCards());
+        table.getTeam(0).getDeckPlayer().getCards().clear();
+        table.getTeam(0).getDeckPlayer().getCards().addAll(table.getTeam(1).getDeckPlayer().getCards());
+
+        table.getTeam(1).getDeckPlayer().getCards().clear();
+        table.getTeam(1).getDeckPlayer().getCards().addAll(tmp);
+
         switch (currGame) {
             case "Scopa":
                 GameManagerScopa.calculatePointsScopa(table);
