@@ -332,12 +332,13 @@ public class TableController implements Initializable {
                                 Card card = new Card(cardVal, cardSeed);
                                 try {
                                     updateAndCalculateTurn(card);
-                                    indexPlayerInTurn = indexPlayerInTurn == (playersTurn.size() - 1) ? 0 : indexPlayerInTurn + 1;
                                 } catch (InterruptedException e) {
                                     throw new RuntimeException(e);
                                 }
+
                             }
                         });
+                        indexPlayerInTurn = (indexPlayerInTurn == (playersTurn.size() - 1) ? 0 : indexPlayerInTurn + 1);
                     }
 
                 });
@@ -542,12 +543,12 @@ public class TableController implements Initializable {
                                     Platform.runLater(() -> {
                                         try {
                                             updateAndCalculateTurn(card);
-                                            indexPlayerInTurn = indexPlayerInTurn == (playersTurn.size() - 1) ? 0 : indexPlayerInTurn + 1;
                                         } catch (InterruptedException e) {
                                             throw new RuntimeException(e);
                                         }
 
                                     });
+                                    indexPlayerInTurn = (indexPlayerInTurn == (playersTurn.size() - 1) ? 0 : indexPlayerInTurn + 1);
                                 }
 
 
@@ -562,6 +563,7 @@ public class TableController implements Initializable {
                         }
 
                     }
+
 
                 });
 
