@@ -157,44 +157,44 @@
                   <Image url="@../Images/vesuvioIcon.png" />
                </image>
             </ImageView>
-            <Label fx:id="pointsCarteMaradona" alignment="CENTER" contentDisplay="CENTER" layoutX="50.0" layoutY="100.0" prefHeight="40.0" prefWidth="18.0" text="0" AnchorPane.rightAnchor="393.0" AnchorPane.topAnchor="100.0">
+            <Label fx:id="pointsCarteMaradona" alignment="CENTER" contentDisplay="CENTER" layoutX="88.79999999999998" layoutY="87.8" prefHeight="40.0" prefWidth="18.0" text="0" AnchorPane.rightAnchor="392.8" AnchorPane.topAnchor="87.8">
                <font>
-                  <Font name="Looks Sketchy" size="30.0" />
+                  <Font name="Pacifico Regular" size="30.0" />
                </font>
             </Label>
-            <Label fx:id="pointsSettebelloVesuvio" alignment="CENTER" contentDisplay="CENTER" layoutX="394.0" layoutY="319.0" prefHeight="40.0" prefWidth="18.0" text="0" AnchorPane.leftAnchor="393.0">
+            <Label fx:id="pointsSettebelloVesuvio" alignment="CENTER" contentDisplay="CENTER" layoutX="392.8" layoutY="304.0" prefHeight="40.0" prefWidth="18.0" text="0" AnchorPane.leftAnchor="392.8">
                <font>
-                  <Font name="Looks Sketchy" size="30.0" />
+                  <Font name="Pacifico Regular" size="30.0" />
                </font>
             </Label>
-            <Label fx:id="pointsPrimieraVesuvio" alignment="CENTER" contentDisplay="CENTER" layoutX="393.0" layoutY="237.0" prefHeight="40.0" prefWidth="18.0" text="0" AnchorPane.leftAnchor="393.0">
+            <Label fx:id="pointsPrimieraVesuvio" alignment="CENTER" contentDisplay="CENTER" layoutX="392.8" layoutY="222.0" prefHeight="40.0" prefWidth="18.0" text="0" AnchorPane.leftAnchor="392.8">
                <font>
-                  <Font name="Looks Sketchy" size="30.0" />
+                  <Font name="Pacifico Regular" size="30.0" />
                </font>
             </Label>
-            <Label fx:id="pointsDenariVesuvio" alignment="CENTER" contentDisplay="CENTER" layoutX="393.0" layoutY="164.0" prefHeight="40.0" prefWidth="18.0" text="0" AnchorPane.leftAnchor="393.0">
+            <Label fx:id="pointsDenariVesuvio" alignment="CENTER" contentDisplay="CENTER" layoutX="392.8" layoutY="149.0" prefHeight="40.0" prefWidth="18.0" text="0" AnchorPane.leftAnchor="392.8">
                <font>
-                  <Font name="Looks Sketchy" size="30.0" />
+                  <Font name="Pacifico Regular" size="30.0" />
                </font>
             </Label>
-            <Label fx:id="pointsCarteVesuvio" alignment="CENTER" contentDisplay="CENTER" layoutX="393.0" layoutY="100.0" prefHeight="40.0" prefWidth="18.0" text="0" AnchorPane.leftAnchor="393.0" AnchorPane.topAnchor="100.0">
+            <Label fx:id="pointsCarteVesuvio" alignment="CENTER" contentDisplay="CENTER" layoutX="392.8" layoutY="87.8" prefHeight="40.0" prefWidth="18.0" text="0" AnchorPane.leftAnchor="392.8" AnchorPane.topAnchor="87.8">
                <font>
-                  <Font name="Looks Sketchy" size="30.0" />
+                  <Font name="Pacifico Regular" size="30.0" />
                </font>
             </Label>
-            <Label fx:id="pointsSettebelloMaradona" alignment="CENTER" contentDisplay="CENTER" layoutX="50.0" layoutY="319.0" prefHeight="40.0" prefWidth="18.0" text="0" AnchorPane.rightAnchor="393.0">
+            <Label fx:id="pointsSettebelloMaradona" alignment="CENTER" contentDisplay="CENTER" layoutX="88.79999999999998" layoutY="304.0" prefHeight="40.0" prefWidth="18.0" text="0" AnchorPane.rightAnchor="392.8">
                <font>
-                  <Font name="Looks Sketchy" size="30.0" />
+                  <Font name="Pacifico Regular" size="30.0" />
                </font>
             </Label>
-            <Label fx:id="pointsPrimieraMaradona" alignment="CENTER" contentDisplay="CENTER" layoutX="50.0" layoutY="237.0" prefHeight="40.0" prefWidth="18.0" text="0" AnchorPane.rightAnchor="393.0">
+            <Label fx:id="pointsPrimieraMaradona" alignment="CENTER" contentDisplay="CENTER" layoutX="88.79999999999998" layoutY="222.0" prefHeight="40.0" prefWidth="18.0" text="0" AnchorPane.rightAnchor="392.8">
                <font>
-                  <Font name="Looks Sketchy" size="30.0" />
+                  <Font name="Pacifico Regular" size="30.0" />
                </font>
             </Label>
-            <Label fx:id="pointsDenariMaradona" alignment="CENTER" contentDisplay="CENTER" layoutX="50.0" layoutY="164.0" prefHeight="40.0" prefWidth="18.0" text="0" AnchorPane.rightAnchor="393.0">
+            <Label fx:id="pointsDenariMaradona" alignment="CENTER" contentDisplay="CENTER" layoutX="88.79999999999998" layoutY="149.0" prefHeight="40.0" prefWidth="18.0" text="0" AnchorPane.rightAnchor="392.8">
                <font>
-                  <Font name="Looks Sketchy" size="30.0" />
+                  <Font name="Pacifico Regular" size="30.0" />
                </font>
             </Label>
             <Text layoutX="174.0" layoutY="434.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Scopa" textAlignment="CENTER" wrappingWidth="160.76416015625">
@@ -202,14 +202,14 @@
                   <Font name="Super Monday" size="35.0" />
                </font>
             </Text>
-            <Label fx:id="pointsScopaMaradona" alignment="CENTER" layoutX="139.0" layoutY="404.0" prefHeight="40.0" prefWidth="18.0" text="0" textAlignment="CENTER" textFill="#632828" AnchorPane.rightAnchor="330.0" AnchorPane.topAnchor="404.0">
+            <Label fx:id="pointsScopaMaradona" alignment="CENTER" layoutX="151.20000000000002" layoutY="391.8" prefHeight="40.0" prefWidth="18.0" text="0" textAlignment="CENTER" textFill="#632828" AnchorPane.rightAnchor="330.4" AnchorPane.topAnchor="391.8">
                <font>
-                  <Font name="Looks Sketchy" size="30.0" />
+                  <Font name="Pacifico Regular" size="30.0" />
                </font>
             </Label>
-            <Label fx:id="pointsScopaVesuvio" alignment="CENTER" layoutX="330.0" layoutY="404.0" prefHeight="40.0" prefWidth="18.0" text="0" textAlignment="CENTER" textFill="#632828" AnchorPane.leftAnchor="330.0" AnchorPane.topAnchor="404.0">
+            <Label fx:id="pointsScopaVesuvio" alignment="CENTER" layoutX="330.4" layoutY="391.8" prefHeight="40.0" prefWidth="18.0" text="0" textAlignment="CENTER" textFill="#632828" AnchorPane.leftAnchor="330.4" AnchorPane.topAnchor="391.8">
                <font>
-                  <Font name="Looks Sketchy" size="30.0" />
+                  <Font name="Pacifico Regular" size="30.0" />
                </font>
             </Label>
          </children>
